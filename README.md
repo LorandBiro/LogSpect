@@ -90,7 +90,7 @@ If want to control the serialization of the return values you can also use these
 
 ```C#
 [LogCalls]
-[LogMember]
+[return: LogMembers]
 public int[] Foo()
 {
 }
