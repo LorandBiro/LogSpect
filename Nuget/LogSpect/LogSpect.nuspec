@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>LogSpect</id>
+    <version>1.0.0-alpha001</version>
+    <authors>Loránd Biró</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/LorandBiro/LogSpect/raw/master/LICENSE.txt</licenseUrl>
+    <summary>Simple AOP Logger for .NET</summary>
+    <description>LogSpect is a light-weight, extensible and easy to use AOP logger for .NET that saves you from the repeating efforts of logging. Just mark the methods you want and everything will be logged automatically: method calls, parameters, return values and exceptions. This package contains the LogSpectRewriter tool that will instrument your methods with logging instructions. By installing it you'll include this tool in the build process. This package alone doesn't contain any actual logger implementation, you'll have to connect it with some other logging framework. For simple scenarios see the LogSpect.BasicLoggers package.</description>
+    <language>en-US</language>
+    <tags>log logging logger aspect aop weaving</tags>
+    <iconUrl>https://github.com/LorandBiro/LogSpect/raw/master/Media/LogSpectLogo32x32.png</iconUrl>
+    <projectUrl>https://github.com/LorandBiro/LogSpect</projectUrl>
+    <dependencies>
+      <dependency id="LogSpect.Core" version="1.0.0-alpha001" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\..\Source\LogSpect\bin\Release\LogSpect.dll" target="lib\portable-net40+sl50+win+wpa81+wp80" />
+    <file src="..\..\Source\LogSpect\bin\Release\LogSpect.xml" target="lib\portable-net40+sl50+win+wpa81+wp80" />
+    <file src="..\..\Source\LogSpectRewriter\bin\Release\LogSpect.dll" target="tools" />
+    <file src="..\..\Source\LogSpectRewriter\bin\Release\LogSpect.Core.dll" target="tools" />
+    <file src="..\..\Source\LogSpectRewriter\bin\Release\Mono.Cecil.dll" target="tools" />
+    <file src="..\..\Source\LogSpectRewriter\bin\Release\Mono.Cecil.Mdb.dll" target="tools" />
+    <file src="..\..\Source\LogSpectRewriter\bin\Release\Mono.Cecil.Pdb.dll" target="tools" />
+    <file src="..\..\Source\LogSpectRewriter\bin\Release\Mono.Cecil.Rocks.dll" target="tools" />
+    <file src="..\..\Source\LogSpectRewriter\bin\Release\LogSpectRewriter.exe" target="tools" />
+    <file src="..\..\Source\LogSpectRewriter\bin\Release\LogSpectRewriter.exe.config" target="tools" />
+    <file src="LogSpect.targets" target="build" />
+  </files>
+</package>

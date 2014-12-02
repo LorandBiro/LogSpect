@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>LogSpect.BasicLoggers</id>
+    <version>1.0.0-alpha001</version>
+    <authors>Loránd Biró</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/LorandBiro/LogSpect/raw/master/LICENSE.txt</licenseUrl>
+    <summary>Basic loggers for LogSpect</summary>
+    <description>This package contains some really basic logger implementations (ConsoleLogger, ColoredConsoleLogger and TextFileLogger) for LogSpect. These can be used for simple scenarios, but if you need more functionality and reliability it's highly recommended to use LogSpect with one of the more mature logging frameworks.</description>
+    <language>en-US</language>
+    <tags>log logging logger aspect aop weaving</tags>
+    <iconUrl>https://github.com/LorandBiro/LogSpect/raw/master/Media/LogSpectLogo32x32.png</iconUrl>
+    <projectUrl>https://github.com/LorandBiro/LogSpect</projectUrl>
+    <dependencies>
+      <dependency id="LogSpect.Core" version="1.0.0-alpha001" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\..\Source\LogSpect.BasicLoggers\bin\Release\LogSpect.BasicLoggers.dll" target="lib\net40" />
+    <file src="..\..\Source\LogSpect.BasicLoggers\bin\Release\LogSpect.BasicLoggers.xml" target="lib\net40" />
+  </files>
+</package>

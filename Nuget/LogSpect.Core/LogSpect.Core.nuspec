@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>LogSpect.Core</id>
+    <version>1.0.0-alpha001</version>
+    <authors>Loránd Biró</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/LorandBiro/LogSpect/raw/master/LICENSE.txt</licenseUrl>
+    <summary>The core of the LogSpect framework</summary>
+    <description>LogSpect.Core contains the core implementation of the LogSpect framework. It implements the serialization logic, the basic logging logic and the extensibility points so other logging frameworks can integrate with LogSpect.</description>
+    <language>en-US</language>
+    <tags>log logging logger aspect aop weaving</tags>
+    <iconUrl>https://github.com/LorandBiro/LogSpect/raw/master/Media/LogSpectLogo32x32.png</iconUrl>
+    <projectUrl>https://github.com/LorandBiro/LogSpect</projectUrl>
+  </metadata>
+  <files>
+    <file src="..\..\Source\LogSpect.Core\bin\Release\LogSpect.Core.dll" target="lib\portable-net40+sl50+win+wpa81+wp80" />
+    <file src="..\..\Source\LogSpect.Core\bin\Release\LogSpect.Core.xml" target="lib\portable-net40+sl50+win+wpa81+wp80" />
+  </files>
+</package>

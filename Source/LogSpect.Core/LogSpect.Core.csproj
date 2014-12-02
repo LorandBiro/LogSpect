@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D873C382-74D0-4D53-803F-A3E2282C1659}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LogSpect</RootNamespace>
+    <AssemblyName>LogSpect.Core</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile328</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\LogSpect.Core.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Level.cs" />
+    <Compile Include="Logging\ILoggerAdapterFactory.cs" />
+    <Compile Include="Logging\IMethodLoggerFactory.cs" />
+    <Compile Include="Logging\LogCallsAttributeBase.cs" />
+    <Compile Include="Logging\MethodLogger.cs" />
+    <Compile Include="Logging\ILoggerAdapter.cs" />
+    <Compile Include="Logging\IMethodLogger.cs" />
+    <Compile Include="Logging\IndentationService.cs" />
+    <Compile Include="Logging\MethodLoggerFactory.cs" />
+    <Compile Include="Logging\MethodLoggingSettings.cs" />
+    <Compile Include="LogMembersAttribute.cs" />
+    <Compile Include="Logging\IIndentationService.cs" />
+    <Compile Include="LogSpectServiceLocator.cs" />
+    <Compile Include="Serialization\CachingSerializationModeReader.cs" />
+    <Compile Include="Serialization\IMethodEventSerializer.cs" />
+    <Compile Include="Serialization\ICustomSerializer.cs" />
+    <Compile Include="Serialization\ICustomSerializerService.cs" />
+    <Compile Include="Serialization\MethodEventSerializer.cs" />
+    <Compile Include="Serialization\IParameterSerializer.cs" />
+    <Compile Include="Serialization\ISerializationModeReader.cs" />
+    <Compile Include="LogItemsAttribute.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serialization\SerializationMode.cs" />
+    <Compile Include="Serialization\SerializationModeReader.cs" />
+    <Compile Include="Serialization\ParameterSerializer.cs" />
+    <Compile Include="Serialization\CustomSerializerService.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+</Project>
