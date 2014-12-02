@@ -1,3 +1,4 @@
+&.\NuGet.exe restore ..\Source\LogSpect.sln
 &"c:\Program Files (x86)\MSBuild\12.0\Bin\amd64\MSBuild.exe" ..\Source\LogSpect.sln /t:Rebuild /p:Configuration=Release
 
 if (Test-Path .\Packages)
