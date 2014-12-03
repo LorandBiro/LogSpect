@@ -1,64 +1,64 @@
-﻿namespace LogSpect.CoreTests.Serialization
+﻿namespace LogSpect.CoreTests.Formatting
 {
     using System;
     using System.Reflection;
     using LogSpect;
-    using LogSpect.Serialization;
+    using LogSpect.Formatting;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
-    public class SerializationModeReaderUnitTests
+    public class FormattingModeReaderUnitTests
     {
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ReadSerializationModeWithNullPropertyInfoThrowsArgumentNullException()
+        public void ReadModeWithNullPropertyInfoThrowsArgumentNullException()
         {
-            ISerializationModeReader reader = new SerializationModeReader();
-            reader.ReadSerializationMode((PropertyInfo)null);
+            IFormattingModeReader reader = new FormattingModeReader();
+            reader.ReadMode((PropertyInfo)null);
         }
 
         [TestMethod]
-        public void ReadSerializationModeWithPropertyInfo()
+        public void ReadModeWithPropertyInfo()
         {
-            ISerializationModeReader reader = new SerializationModeReader();
+            IFormattingModeReader reader = new FormattingModeReader();
             PropertyInfo property1 = typeof(TestSubject).GetProperty("PropertyTest1");
             PropertyInfo property2 = typeof(TestSubject).GetProperty("PropertyTest2");
             PropertyInfo property3 = typeof(TestSubject).GetProperty("PropertyTest3");
             PropertyInfo property4 = typeof(TestSubject).GetProperty("PropertyTest4");
 
-            Assert.AreEqual(SerializationMode.Default, reader.ReadSerializationMode(property1));
-            Assert.AreEqual(SerializationMode.Members, reader.ReadSerializationMode(property2));
-            Assert.AreEqual(SerializationMode.Items, reader.ReadSerializationMode(property3));
-            Assert.AreEqual(SerializationMode.ItemsMembers, reader.ReadSerializationMode(property4));
+            Assert.AreEqual(FormattingMode.Default, reader.ReadMode(property1));
+            Assert.AreEqual(FormattingMode.Members, reader.ReadMode(property2));
+            Assert.AreEqual(FormattingMode.Items, reader.ReadMode(property3));
+            Assert.AreEqual(FormattingMode.ItemsMembers, reader.ReadMode(property4));
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ReadSerializationModeWithNullParameterInfoThrowsArgumentNullException()
+        public void ReadModeWithNullParameterInfoThrowsArgumentNullException()
         {
-            ISerializationModeReader reader = new SerializationModeReader();
-            reader.ReadSerializationMode((ParameterInfo)null);
+            IFormattingModeReader reader = new FormattingModeReader();
+            reader.ReadMode((ParameterInfo)null);
         }
 
         [TestMethod]
-        public void ReadSerializationModeWithParameterInfo()
+        public void ReadModeWithParameterInfo()
         {
-            ISerializationModeReader reader = new SerializationModeReader();
+            IFormattingModeReader reader = new FormattingModeReader();
             ParameterInfo[] parameters = typeof(TestSubject).GetMethod("ParameterTests").GetParameters();
             ParameterInfo returnParameter1 = typeof(TestSubject).GetMethod("ReturnValueTest1").ReturnParameter;
             ParameterInfo returnParameter2 = typeof(TestSubject).GetMethod("ReturnValueTest2").ReturnParameter;
             ParameterInfo returnParameter3 = typeof(TestSubject).GetMethod("ReturnValueTest3").ReturnParameter;
             ParameterInfo returnParameter4 = typeof(TestSubject).GetMethod("ReturnValueTest4").ReturnParameter;
 
-            Assert.AreEqual(SerializationMode.Default, reader.ReadSerializationMode(parameters[0]));
-            Assert.AreEqual(SerializationMode.Members, reader.ReadSerializationMode(parameters[1]));
-            Assert.AreEqual(SerializationMode.Items, reader.ReadSerializationMode(parameters[2]));
-            Assert.AreEqual(SerializationMode.ItemsMembers, reader.ReadSerializationMode(parameters[3]));
+            Assert.AreEqual(FormattingMode.Default, reader.ReadMode(parameters[0]));
+            Assert.AreEqual(FormattingMode.Members, reader.ReadMode(parameters[1]));
+            Assert.AreEqual(FormattingMode.Items, reader.ReadMode(parameters[2]));
+            Assert.AreEqual(FormattingMode.ItemsMembers, reader.ReadMode(parameters[3]));
 
-            Assert.AreEqual(SerializationMode.Default, reader.ReadSerializationMode(returnParameter1));
-            Assert.AreEqual(SerializationMode.Members, reader.ReadSerializationMode(returnParameter2));
-            Assert.AreEqual(SerializationMode.Items, reader.ReadSerializationMode(returnParameter3));
-            Assert.AreEqual(SerializationMode.ItemsMembers, reader.ReadSerializationMode(returnParameter4));
+            Assert.AreEqual(FormattingMode.Default, reader.ReadMode(returnParameter1));
+            Assert.AreEqual(FormattingMode.Members, reader.ReadMode(returnParameter2));
+            Assert.AreEqual(FormattingMode.Items, reader.ReadMode(returnParameter3));
+            Assert.AreEqual(FormattingMode.ItemsMembers, reader.ReadMode(returnParameter4));
         }
 
         private class TestSubject

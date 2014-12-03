@@ -1,10 +1,10 @@
-﻿namespace LogSpect.Serialization
+﻿namespace LogSpect.Formatting
 {
     using System;
     using System.Reflection;
     using System.Text;
 
-    public interface IParameterSerializer
+    public interface IParameterFormatter
     {
         void Serialize(StringBuilder sb, object value, ParameterInfo parameter);
     }

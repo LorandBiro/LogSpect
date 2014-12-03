@@ -55,10 +55,10 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serialization\SerializationModeReaderUnitTests.cs" />
-    <Compile Include="Serialization\CachingSerializationModeReaderUnitTests.cs" />
-    <Compile Include="Serialization\TestSubjects\Complex.cs" />
-    <Compile Include="Serialization\ParameterSerializerUnitTests.cs" />
+    <Compile Include="Formatting\FormattingModeReaderUnitTests.cs" />
+    <Compile Include="Formatting\CachedFormattingModeReaderUnitTests.cs" />
+    <Compile Include="Formatting\TestSubjects\Complex.cs" />
+    <Compile Include="Formatting\ParameterFormatterUnitTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LogSpect.Core\LogSpect.Core.csproj">

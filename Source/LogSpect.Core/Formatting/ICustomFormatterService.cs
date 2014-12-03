@@ -1,11 +1,11 @@
-﻿namespace LogSpect.Serialization
+﻿namespace LogSpect.Formatting
 {
     using System;
     using System.Text;
 
-    public interface ICustomSerializerService
+    public interface ICustomFormatterService
     {
-        void AddSerializer(ICustomSerializer customSerializer);
+        void AddFormatter(ICustomFormatter formatter);
 
         bool TrySerialize(StringBuilder sb, object value, IFormatProvider formatProvider);
     }

@@ -3,7 +3,7 @@
     using System;
     using System.Linq;
     using System.Reflection;
-    using LogSpect.Serialization;
+    using LogSpect.Formatting;
 
     public sealed class MethodLogger : IMethodLogger
     {
@@ -11,9 +11,9 @@
 
         private readonly IIndentationService indentationService;
 
-        private readonly IMethodEventSerializer serializer;
+        private readonly IMethodEventFormatter formatter;
 
-        public MethodLogger(MethodBase targetMethod, MethodLoggingSettings settings, ILoggerAdapter adapter, IIndentationService indentationService, IMethodEventSerializer serializer)
+        public MethodLogger(MethodBase targetMethod, MethodLoggingSettings settings, ILoggerAdapter adapter, IIndentationService indentationService, IMethodEventFormatter formatter)
         {
             if (targetMethod == null)
             {
@@ -30,14 +30,14 @@
                 throw new ArgumentNullException("indentationService");
             }
 
-            if (serializer == null)
+            if (formatter == null)
             {
-                throw new ArgumentNullException("serializer");
+                throw new ArgumentNullException("formatter");
             }
             
             this.adapter = adapter;
             this.indentationService = indentationService;
-            this.serializer = serializer;
+            this.formatter = formatter;
 
             this.TargetMethod = targetMethod;
             this.Settings = settings;
@@ -51,7 +51,7 @@
         {
             if (this.adapter.IsLevelEnabled(this.Settings.NormalLogLevel))
             {
-                string message = this.indentationService.Current + this.serializer.SerializeEnter(this.TargetMethod, parameters);
+                string message = this.indentationService.Current + this.formatter.SerializeEnter(this.TargetMethod, parameters);
                 this.adapter.LogMessage(message, this.Settings.NormalLogLevel);
             }
 
@@ -64,7 +64,7 @@
 
             if (this.adapter.IsLevelEnabled(this.Settings.NormalLogLevel))
             {
-                string message = this.indentationService.Current + this.serializer.SerializeLeave(this.TargetMethod, parameters, returnValue);
+                string message = this.indentationService.Current + this.formatter.SerializeLeave(this.TargetMethod, parameters, returnValue);
                 this.adapter.LogMessage(message, this.Settings.NormalLogLevel);
             }
         }
@@ -76,7 +76,7 @@
             if (this.adapter.IsLevelEnabled(this.Settings.ExceptionLogLevel))
             {
                 bool expected = this.Settings.ExpectedExceptions.Any(x => x.IsInstanceOfType(exception));
-                string message = this.indentationService.Current + this.serializer.SerializeException(this.TargetMethod, exception, expected);
+                string message = this.indentationService.Current + this.formatter.SerializeException(this.TargetMethod, exception, expected);
                 this.adapter.LogMessage(message, this.Settings.ExceptionLogLevel, exception);
             }
         }

@@ -1,22 +1,22 @@
-﻿namespace LogSpect.Serialization
+﻿namespace LogSpect.Formatting
 {
     using System;
     using System.Diagnostics;
     using System.Reflection;
     using System.Text;
 
-    public sealed class MethodEventSerializer : IMethodEventSerializer
+    public sealed class MethodEventFormatter : IMethodEventFormatter
     {
-        private readonly IParameterSerializer parameterSerializer;
+        private readonly IParameterFormatter parameterFormatter;
 
-        public MethodEventSerializer(IParameterSerializer parameterSerializer)
+        public MethodEventFormatter(IParameterFormatter parameterFormatter)
         {
-            if (parameterSerializer == null)
+            if (parameterFormatter == null)
             {
-                throw new ArgumentNullException("parameterSerializer");
+                throw new ArgumentNullException("parameterFormatter");
             }
 
-            this.parameterSerializer = parameterSerializer;
+            this.parameterFormatter = parameterFormatter;
         }
 
         public string SerializeEnter(MethodBase method, object[] parameters)
@@ -74,7 +74,7 @@
                 if (methodInfo.ReturnType != typeof(void))
                 {
                     sb.Append(": ");
-                    this.parameterSerializer.Serialize(sb, returnValue, methodInfo.ReturnParameter);
+                    this.parameterFormatter.Serialize(sb, returnValue, methodInfo.ReturnParameter);
                 }
             }
 
@@ -149,7 +149,7 @@
 
                 sb.Append(parameters[i].Name);
                 sb.Append(": ");
-                this.parameterSerializer.Serialize(sb, values[i], parameters[i]);
+                this.parameterFormatter.Serialize(sb, values[i], parameters[i]);
                 appended = true;
             }
         }

@@ -1,9 +1,9 @@
-﻿namespace LogSpect.Serialization
+﻿namespace LogSpect.Formatting
 {
     using System;
     using System.Reflection;
 
-    public interface IMethodEventSerializer
+    public interface IMethodEventFormatter
     {
         string SerializeEnter(MethodBase method, object[] parameters);
 

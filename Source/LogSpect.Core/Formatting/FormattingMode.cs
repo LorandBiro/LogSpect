@@ -1,11 +1,11 @@
-﻿namespace LogSpect.Serialization
+﻿namespace LogSpect.Formatting
 {
     using System;
 
     /// <summary>
-    /// The serialization mode of a property, a parameter or a return value.
+    /// The formatting mode of a property, a parameter or a return value.
     /// </summary>
-    public enum SerializationMode
+    public enum FormattingMode
     {
         Default,
         Members,

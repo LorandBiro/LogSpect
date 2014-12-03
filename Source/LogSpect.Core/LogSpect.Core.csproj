@@ -48,19 +48,19 @@
     <Compile Include="LogMembersAttribute.cs" />
     <Compile Include="Logging\IIndentationService.cs" />
     <Compile Include="LogSpectServiceLocator.cs" />
-    <Compile Include="Serialization\CachingSerializationModeReader.cs" />
-    <Compile Include="Serialization\IMethodEventSerializer.cs" />
-    <Compile Include="Serialization\ICustomSerializer.cs" />
-    <Compile Include="Serialization\ICustomSerializerService.cs" />
-    <Compile Include="Serialization\MethodEventSerializer.cs" />
-    <Compile Include="Serialization\IParameterSerializer.cs" />
-    <Compile Include="Serialization\ISerializationModeReader.cs" />
+    <Compile Include="Formatting\CachedFormattingModeReader.cs" />
+    <Compile Include="Formatting\IMethodEventFormatter.cs" />
+    <Compile Include="Formatting\ICustomFormatter.cs" />
+    <Compile Include="Formatting\ICustomFormatterService.cs" />
+    <Compile Include="Formatting\MethodEventFormatter.cs" />
+    <Compile Include="Formatting\IParameterFormatter.cs" />
+    <Compile Include="Formatting\IFormattingModeReader.cs" />
     <Compile Include="LogItemsAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serialization\SerializationMode.cs" />
-    <Compile Include="Serialization\SerializationModeReader.cs" />
-    <Compile Include="Serialization\ParameterSerializer.cs" />
-    <Compile Include="Serialization\CustomSerializerService.cs" />
+    <Compile Include="Formatting\FormattingMode.cs" />
+    <Compile Include="Formatting\FormattingModeReader.cs" />
+    <Compile Include="Formatting\ParameterFormatter.cs" />
+    <Compile Include="Formatting\CustomFormatterService.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
 </Project>

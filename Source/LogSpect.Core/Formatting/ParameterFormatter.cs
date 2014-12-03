@@ -1,4 +1,4 @@
-﻿namespace LogSpect.Serialization
+﻿namespace LogSpect.Formatting
 {
     using System;
     using System.Collections;
@@ -8,24 +8,24 @@
     using System.Reflection;
     using System.Text;
 
-    public sealed class ParameterSerializer : IParameterSerializer
+    public sealed class ParameterFormatter : IParameterFormatter
     {
-        private readonly ISerializationModeReader reader;
+        private readonly IFormattingModeReader reader;
 
-        private readonly ICustomSerializerService customSerializerService;
+        private readonly ICustomFormatterService customFormatterService;
 
         private readonly IFormatProvider formatProvider;
 
-        public ParameterSerializer(ISerializationModeReader reader, ICustomSerializerService customSerializerService, IFormatProvider formatProvider)
+        public ParameterFormatter(IFormattingModeReader reader, ICustomFormatterService customFormatterService, IFormatProvider formatProvider)
         {
             if (reader == null)
             {
                 throw new ArgumentNullException("reader");
             }
 
-            if (customSerializerService == null)
+            if (customFormatterService == null)
             {
-                throw new ArgumentNullException("customSerializerService");
+                throw new ArgumentNullException("customFormatterService");
             }
 
             if (formatProvider == null)
@@ -34,7 +34,7 @@
             }
 
             this.reader = reader;
-            this.customSerializerService = customSerializerService;
+            this.customFormatterService = customFormatterService;
             this.formatProvider = formatProvider;
         }
 
@@ -50,13 +50,13 @@
                 throw new ArgumentNullException("parameter");
             }
 
-            SerializationMode mode = this.reader.ReadSerializationMode(parameter);
+            FormattingMode mode = this.reader.ReadMode(parameter);
             this.Serialize(sb, value, mode);
         }
 
         private void SerializeToString(StringBuilder sb, object value)
         {
-            if (this.customSerializerService.TrySerialize(sb, value, this.formatProvider))
+            if (this.customFormatterService.TrySerialize(sb, value, this.formatProvider))
             {
                 return;
             }
@@ -80,7 +80,7 @@
             sb.Append(value);
         }
 
-        private void Serialize(StringBuilder sb, object value, SerializationMode mode)
+        private void Serialize(StringBuilder sb, object value, FormattingMode mode)
         {
             if (value == null)
             {
@@ -90,16 +90,16 @@
 
             switch (mode)
             {
-                case SerializationMode.Default:
+                case FormattingMode.Default:
                     this.SerializeToString(sb, value);
                     break;
-                case SerializationMode.Members:
+                case FormattingMode.Members:
                     this.SerializeMembers(sb, value);
                     break;
-                case SerializationMode.Items:
+                case FormattingMode.Items:
                     this.SerializeItems(sb, value, false);
                     break;
-                case SerializationMode.ItemsMembers:
+                case FormattingMode.ItemsMembers:
                     this.SerializeItems(sb, value, true);
                     break;
                 default:
@@ -123,7 +123,7 @@
                 sb.Append(": ");
 
                 object memberValue = properties[i].GetValue(value, null);
-                SerializationMode mode = this.reader.ReadSerializationMode(properties[i]);
+                FormattingMode mode = this.reader.ReadMode(properties[i]);
                 this.Serialize(sb, memberValue, mode);
             }
 

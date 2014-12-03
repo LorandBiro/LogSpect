@@ -1,4 +1,4 @@
-﻿namespace LogSpect.CoreTests.Serialization.TestSubjects
+﻿namespace LogSpect.CoreTests.Formatting.TestSubjects
 {
     using System;
 

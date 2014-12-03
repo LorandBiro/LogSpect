@@ -2,8 +2,8 @@
 {
     using System;
     using System.Globalization;
+    using LogSpect.Formatting;
     using LogSpect.Logging;
-    using LogSpect.Serialization;
 
     public static class LogSpectServiceLocator
     {
@@ -11,7 +11,7 @@
 
         private static IIndentationService indentationServiceInstance;
 
-        private static ICustomSerializerService customSerializerServiceInstance;
+        private static ICustomFormatterService customFormatterServiceInstance;
 
         public static bool IsInitialized { get; private set; }
 
@@ -33,28 +33,28 @@
             }
         }
 
-        public static ICustomSerializerService CustomSerializerService
+        public static ICustomFormatterService CustomFormatterService
         {
             get
             {
                 EnsureInitialized();
-                return customSerializerServiceInstance;
+                return customFormatterServiceInstance;
             }
         }
 
         public static void Initialize(ILoggerAdapterFactory adapterFactory)
         {
             IIndentationService indentationService = new IndentationService(4, 20);
-            ISerializationModeReader serializationModeReader = new CachingSerializationModeReader(new SerializationModeReader());
-            ICustomSerializerService customSerializerService = new CustomSerializerService();
-            IParameterSerializer parameterSerializer = new ParameterSerializer(serializationModeReader, customSerializerService, CultureInfo.InvariantCulture);
-            IMethodEventSerializer methodEventSerializer = new MethodEventSerializer(parameterSerializer);
-            IMethodLoggerFactory factory = new MethodLoggerFactory(adapterFactory, indentationService, methodEventSerializer);
+            IFormattingModeReader formattingModeReader = new CachedFormattingModeReader(new FormattingModeReader());
+            ICustomFormatterService customFormatterService = new CustomFormatterService();
+            IParameterFormatter parameterFormatter = new ParameterFormatter(formattingModeReader, customFormatterService, CultureInfo.InvariantCulture);
+            IMethodEventFormatter methodEventFormatter = new MethodEventFormatter(parameterFormatter);
+            IMethodLoggerFactory factory = new MethodLoggerFactory(adapterFactory, indentationService, methodEventFormatter);
 
             Initialize(factory, indentationService);
         }
 
-        public static void Initialize(IMethodLoggerFactory factory, IIndentationService indentationService = null, ICustomSerializerService customSerializerService = null)
+        public static void Initialize(IMethodLoggerFactory factory, IIndentationService indentationService = null, ICustomFormatterService customFormatterService = null)
         {
             if (IsInitialized)
             {
@@ -68,7 +68,7 @@
 
             factoryInstance = factory;
             indentationServiceInstance = indentationService;
-            customSerializerServiceInstance = customSerializerService;
+            customFormatterServiceInstance = customFormatterService;
 
             IsInitialized = true;
         }

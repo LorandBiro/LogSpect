@@ -2,7 +2,7 @@
 {
     using System;
     using System.Reflection;
-    using LogSpect.Serialization;
+    using LogSpect.Formatting;
 
     public sealed class MethodLoggerFactory : IMethodLoggerFactory
     {
@@ -10,9 +10,9 @@
 
         private readonly IIndentationService indentationService;
 
-        private readonly IMethodEventSerializer methodEventSerializer;
+        private readonly IMethodEventFormatter methodEventFormatter;
 
-        public MethodLoggerFactory(ILoggerAdapterFactory adapterFactory, IIndentationService indentationService, IMethodEventSerializer methodEventSerializer)
+        public MethodLoggerFactory(ILoggerAdapterFactory adapterFactory, IIndentationService indentationService, IMethodEventFormatter methodEventFormatter)
         {
             if (adapterFactory == null)
             {
@@ -24,14 +24,14 @@
                 throw new ArgumentNullException("indentationService");
             }
 
-            if (methodEventSerializer == null)
+            if (methodEventFormatter == null)
             {
-                throw new ArgumentNullException("methodEventSerializer");
+                throw new ArgumentNullException("methodEventFormatter");
             }
 
             this.adapterFactory = adapterFactory;
             this.indentationService = indentationService;
-            this.methodEventSerializer = methodEventSerializer;
+            this.methodEventFormatter = methodEventFormatter;
         }
 
         public IMethodLogger Create(MethodBase targetMethod)
@@ -49,7 +49,7 @@
             }
 
             LogCallsAttributeBase logCallsAttribute = (LogCallsAttributeBase)attributes[0];
-            return new MethodLogger(targetMethod, logCallsAttribute.Settings, adapter, this.indentationService, this.methodEventSerializer);
+            return new MethodLogger(targetMethod, logCallsAttribute.Settings, adapter, this.indentationService, this.methodEventFormatter);
         }
     }
 }

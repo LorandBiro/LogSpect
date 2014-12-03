@@ -1,7 +1,6 @@
 ﻿namespace LogSpect.Logging
 {
     using System;
-    using System.Threading;
 
     public abstract class LogCallsAttributeBase : Attribute
     {

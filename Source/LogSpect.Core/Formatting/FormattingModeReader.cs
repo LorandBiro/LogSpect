@@ -1,11 +1,11 @@
-﻿namespace LogSpect.Serialization
+﻿namespace LogSpect.Formatting
 {
     using System;
     using System.Reflection;
 
-    public sealed class SerializationModeReader : ISerializationModeReader
+    public sealed class FormattingModeReader : IFormattingModeReader
     {
-        public SerializationMode ReadSerializationMode(PropertyInfo property)
+        public FormattingMode ReadMode(PropertyInfo property)
         {
             if (property == null)
             {
@@ -13,10 +13,10 @@
             }
 
             object[] attributes = property.GetCustomAttributes(true);
-            return ReadSerializationMode(attributes);
+            return ReadMode(attributes);
         }
 
-        public SerializationMode ReadSerializationMode(ParameterInfo parameter)
+        public FormattingMode ReadMode(ParameterInfo parameter)
         {
             if (parameter == null)
             {
@@ -24,13 +24,15 @@
             }
 
             object[] attributes = parameter.GetCustomAttributes(true);
-            return ReadSerializationMode(attributes);
+            return ReadMode(attributes);
         }
 
-        private static SerializationMode ReadSerializationMode(object[] attributes)
+        private static FormattingMode ReadMode(object[] attributes)
         {
             bool logMembers = false;
             bool logItems = false;
+
+            // ReSharper disable once ForCanBeConvertedToForeach
             for (int i = 0; i < attributes.Length; i++)
             {
                 if (attributes[i] is LogMembersAttribute)
@@ -45,10 +47,10 @@
 
             if (logItems)
             {
-                return logMembers ? SerializationMode.ItemsMembers : SerializationMode.Items;
+                return logMembers ? FormattingMode.ItemsMembers : FormattingMode.Items;
             }
 
-            return logMembers ? SerializationMode.Members : SerializationMode.Default;
+            return logMembers ? FormattingMode.Members : FormattingMode.Default;
         }
     }
 }
