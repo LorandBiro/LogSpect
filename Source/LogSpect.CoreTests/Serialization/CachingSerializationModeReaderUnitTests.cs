@@ -1,4 +1,4 @@
-﻿namespace LogSpectTests.Serialization
+﻿namespace LogSpect.CoreTests.Serialization
 {
     using System;
     using System.Reflection;

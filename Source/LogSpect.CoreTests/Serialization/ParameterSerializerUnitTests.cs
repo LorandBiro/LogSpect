@@ -1,12 +1,12 @@
-﻿namespace LogSpectTests.Serialization
+﻿namespace LogSpect.CoreTests.Serialization
 {
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Reflection;
     using System.Text;
+    using LogSpect.CoreTests.Serialization.TestSubjects;
     using LogSpect.Serialization;
-    using LogSpectTests.Serialization.TestSubjects;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using NSubstitute;
 
