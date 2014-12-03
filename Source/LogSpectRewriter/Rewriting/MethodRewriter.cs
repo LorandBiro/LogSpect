@@ -53,31 +53,31 @@
 
         public void Rewrite(MethodDefinition method)
         {
-            FieldDefinition methodLoggerField;
-            this.CreateMethodLoggerField(method, out methodLoggerField);
-            this.RewriteMethodWithLogging(methodLoggerField, method);
-        }
-
-        private void CreateMethodLoggerField(MethodDefinition method, out FieldDefinition methodLoggerField)
-        {
-            CustomAttribute compilerGeneratedAttribute = new CustomAttribute(this.compilerGeneratedAttributeConstructor);
-
-            methodLoggerField = new FieldDefinition(
+            FieldDefinition methodLoggerField = new FieldDefinition(
                 string.Format("<>{0}_{1:x8}", method.Name, method.FullName.GetHashCode()),
                 Mono.Cecil.FieldAttributes.Private | Mono.Cecil.FieldAttributes.Static,
                 this.methodLogger);
-            methodLoggerField.CustomAttributes.Add(compilerGeneratedAttribute);
-
+            methodLoggerField.CustomAttributes.Add(new CustomAttribute(this.compilerGeneratedAttributeConstructor));
             method.DeclaringType.Fields.Add(methodLoggerField);
+
+            VariableDefinition argsVariable = new VariableDefinition("<>args", this.objectArray);
+            method.Body.Variables.Add(argsVariable);
+
+            VariableDefinition returnValueVariable = null;
+            if (method.MethodReturnType.ReturnType.MetadataType != MetadataType.Void)
+            {
+                returnValueVariable = new VariableDefinition("<>returnValue", method.ReturnType);
+                method.Body.Variables.Add(returnValueVariable);
+            }
+
+            VariableDefinition exceptionVariable = new VariableDefinition("<>exception", this.exception);
+            method.Body.Variables.Add(exceptionVariable);
+
+            this.RewriteBody(methodLoggerField, method, argsVariable, returnValueVariable, exceptionVariable);
         }
 
-        private void RewriteMethodWithLogging(FieldDefinition methodLoggerField, MethodDefinition method)
+        private void RewriteBody(FieldDefinition methodLoggerField, MethodDefinition method, VariableDefinition argsVariable, VariableDefinition returnValueVariable, VariableDefinition exceptionVariable)
         {
-            VariableDefinition argsVariable;
-            VariableDefinition returnValueVariable;
-            VariableDefinition exceptionVariable;
-            this.CreateVariables(method, out argsVariable, out returnValueVariable, out exceptionVariable);
-
             IEnumerable<Instruction> beforeTryInstructions = this.CreateBeforeTryInstructions(method, methodLoggerField, argsVariable);
             IList<Instruction> tryBodyInstructions = this.CreateTryBodyInstructions(method, methodLoggerField, returnValueVariable, argsVariable);
             IList<Instruction> catchBodyInstructions = this.CreateCatchBodyInstructions(methodLoggerField, exceptionVariable);
@@ -112,26 +112,6 @@
 
             method.Body.OptimizeMacros();
             method.Body.InitLocals = true;
-        }
-
-        private void CreateVariables(
-            MethodDefinition method,
-            out VariableDefinition argsVariable,
-            out VariableDefinition returnValueVariable,
-            out VariableDefinition exceptionVariable)
-        {
-            argsVariable = new VariableDefinition("<>args", this.objectArray);
-            method.Body.Variables.Add(argsVariable);
-
-            returnValueVariable = null;
-            if (method.MethodReturnType.ReturnType.MetadataType != MetadataType.Void)
-            {
-                returnValueVariable = new VariableDefinition("<>returnValue", method.ReturnType);
-                method.Body.Variables.Add(returnValueVariable);
-            }
-
-            exceptionVariable = new VariableDefinition("<>exception", this.exception);
-            method.Body.Variables.Add(exceptionVariable);
         }
 
         /// <summary>
