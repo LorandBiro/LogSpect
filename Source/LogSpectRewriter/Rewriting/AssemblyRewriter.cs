@@ -78,7 +78,7 @@
 
         private static bool LogSpectRewrittenClassExists(ModuleDefinition module)
         {
-            return module.Types.Any(x => x.Namespace == string.Empty && x.Name == LogSpectRewrittenClassName);
+            return module.Types.Any(x => string.IsNullOrEmpty(x.Namespace) && x.Name == LogSpectRewrittenClassName);
         }
 
         private static void CreateLogSpectRewrittenClass(ModuleDefinition module)
