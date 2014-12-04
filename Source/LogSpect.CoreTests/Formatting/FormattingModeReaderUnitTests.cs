@@ -11,14 +11,14 @@
     {
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ReadModeWithNullPropertyInfoThrowsArgumentNullException()
+        public void ReadModePropertyInfo_WithNull_ThrowsArgumentNullException()
         {
             IFormattingModeReader reader = new FormattingModeReader();
             reader.ReadMode((PropertyInfo)null);
         }
 
         [TestMethod]
-        public void ReadModeWithPropertyInfo()
+        public void ReadModePropertyInfo_Tests()
         {
             IFormattingModeReader reader = new FormattingModeReader();
             PropertyInfo property1 = typeof(TestSubject).GetProperty("PropertyTest1");
@@ -34,14 +34,14 @@
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ReadModeWithNullParameterInfoThrowsArgumentNullException()
+        public void ReadModeParameterInfo_WithNull_ThrowsArgumentNullException()
         {
             IFormattingModeReader reader = new FormattingModeReader();
             reader.ReadMode((ParameterInfo)null);
         }
 
         [TestMethod]
-        public void ReadModeWithParameterInfo()
+        public void ReadModeParameterInfo_Tests()
         {
             IFormattingModeReader reader = new FormattingModeReader();
             ParameterInfo[] parameters = typeof(TestSubject).GetMethod("ParameterTests").GetParameters();

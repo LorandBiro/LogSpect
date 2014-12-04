@@ -15,7 +15,7 @@
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ConstructorWithNullBaseReaderThrowsArgumentNullException()
+        public void Constructor_WithNull_ThrowsArgumentNullException()
         {
             // ReSharper disable once UnusedVariable
             IFormattingModeReader reader = new CachedFormattingModeReader(null);
@@ -23,14 +23,14 @@
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ReadModeWithNullParameterInfoThrowsArgumentNullException()
+        public void ReadModeParameterInfo_WithNull_ThrowsArgumentNullException()
         {
             IFormattingModeReader reader = new CachedFormattingModeReader(Substitute.For<IFormattingModeReader>());
             reader.ReadMode((ParameterInfo)null);
         }
 
         [TestMethod]
-        public void ReadModeWithParameterInfoReturnsWrappedObjectsResult()
+        public void ReadModeParameterInfo_ReturnsTheResultOfTheBaseReader()
         {
             // Arrange
             IFormattingModeReader baseReader = Substitute.For<IFormattingModeReader>();
@@ -46,7 +46,7 @@
         }
 
         [TestMethod]
-        public void ReadModeWithParameterInfoCallsReaderOnlyOnce()
+        public void ReadModeParameterInfo_CallsTheBaseReaderAtMostOnce()
         {
             // Arrange
             IFormattingModeReader baseReader = Substitute.For<IFormattingModeReader>();
@@ -63,14 +63,14 @@
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ReadModeWithNullPropertyInfoThrowsArgumentNullException()
+        public void ReadModePropertyInfo_WithNull_ThrowsArgumentNullException()
         {
             IFormattingModeReader reader = new CachedFormattingModeReader(Substitute.For<IFormattingModeReader>());
             reader.ReadMode((PropertyInfo)null);
         }
 
         [TestMethod]
-        public void ReadModeWithPropertyInfoInfoReturnsWrappedObjectsResult()
+        public void ReadModePropertyInfo_ReturnsTheResultOfTheBaseReader()
         {
             // Arrange
             IFormattingModeReader baseReader = Substitute.For<IFormattingModeReader>();
@@ -86,7 +86,7 @@
         }
 
         [TestMethod]
-        public void ReadModeWithPropertyInfoCallsReaderOnlyOnce()
+        public void ReadModePropertyInfo_CallsTheBaseReaderAtMostOnce()
         {
             // Arrange
             IFormattingModeReader baseReader = Substitute.For<IFormattingModeReader>();

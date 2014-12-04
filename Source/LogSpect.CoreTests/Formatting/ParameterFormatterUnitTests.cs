@@ -17,7 +17,7 @@
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ConstructorWithNullRegistryThrowsArgumentNullException()
+        public void Constructor_WithNullRegistry_ThrowsArgumentNullException()
         {
             // ReSharper disable once UnusedVariable
             IParameterFormatter formatter = new ParameterFormatter(null, Substitute.For<ICustomFormatterService>(), CultureInfo.InvariantCulture);
@@ -25,7 +25,7 @@
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ConstructorWithNullCustomFormatterServiceThrowsArgumentNullException()
+        public void Constructor_WithNullCustomFormatterService_ThrowsArgumentNullException()
         {
             // ReSharper disable once UnusedVariable
             IParameterFormatter formatter = new ParameterFormatter(Substitute.For<IFormattingModeReader>(), null, CultureInfo.InvariantCulture);
@@ -33,7 +33,7 @@
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ConstructorWithNullFormatProviderThrowsArgumentNullException()
+        public void Constructor_WithNullFormatProvider_ThrowsArgumentNullException()
         {
             // ReSharper disable once UnusedVariable
             IParameterFormatter formatter = new ParameterFormatter(Substitute.For<IFormattingModeReader>(), Substitute.For<ICustomFormatterService>(), null);
@@ -41,7 +41,7 @@
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void SerializeWithNullStringBuilderThrowsArgumentNullException()
+        public void Serialize_WithNullStringBuilder_ThrowsArgumentNullException()
         {
             IParameterFormatter formatter = new ParameterFormatter(Substitute.For<IFormattingModeReader>(), Substitute.For<ICustomFormatterService>(), CultureInfo.InvariantCulture);
             formatter.Serialize(null, new object(), TestParameter);
@@ -49,14 +49,14 @@
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void SerializeWithNullParameterInfoThrowsArgumentNullException()
+        public void Serialize_WithNullParameterInfo_ThrowsArgumentNullException()
         {
             IParameterFormatter formatter = new ParameterFormatter(Substitute.For<IFormattingModeReader>(), Substitute.For<ICustomFormatterService>(), CultureInfo.InvariantCulture);
             formatter.Serialize(new StringBuilder(), new object(), null);
         }
 
         [TestMethod]
-        public void NullTests()
+        public void Serialize_NullTests()
         {
             TestFormatter(null, FormattingMode.Default, "null");
             TestFormatter(null, FormattingMode.Members, "null");
@@ -65,7 +65,7 @@
         }
 
         [TestMethod]
-        public void ComplexTests()
+        public void Serialize_ComplexTests()
         {
             Complex complex = new Complex { Re = 1, Im = 2 };
             TestFormatter(complex, FormattingMode.Default, "1 + 2i");
@@ -75,7 +75,7 @@
         }
 
         [TestMethod]
-        public void StringTests()
+        public void Serialize_StringTests()
         {
             const string Str = "asdf";
             TestFormatter(Str, FormattingMode.Default, "\"asdf\"");
@@ -85,7 +85,7 @@
         }
 
         [TestMethod]
-        public void FormattableTests()
+        public void Serialize_FormattableTests()
         {
             IFormattable formattable = new DateTime(2000, 1, 1, 0, 0, 0);
             TestFormatter(formattable, FormattingMode.Default, "01/01/2000 00:00:00", null, CultureInfo.InvariantCulture);
@@ -93,7 +93,7 @@
         }
 
         [TestMethod]
-        public void CustomFormatterTests()
+        public void Serialize_CustomFormatterTests()
         {
             Complex complex = new Complex();
 
@@ -109,7 +109,7 @@
         }
 
         [TestMethod]
-        public void ListTests()
+        public void Serialize_ListTests()
         {
             List<Complex> list = new List<Complex> { new Complex { Re = 1, Im = 2 }, new Complex { Re = 2, Im = -1 } };
             TestFormatter(list, FormattingMode.Items, "[1 + 2i, 2 - 1i]");
@@ -117,7 +117,7 @@
         }
 
         [TestMethod]
-        public void DictionaryTests()
+        public void Serialize_DictionaryTests()
         {
             Dictionary<int, Complex> dict = new Dictionary<int, Complex> { { 1, new Complex { Re = 1, Im = 2 } }, { 2, new Complex { Re = 2, Im = -1 } } };
             TestFormatter(dict, FormattingMode.Items, "[1 => 1 + 2i, 2 => 2 - 1i]");
