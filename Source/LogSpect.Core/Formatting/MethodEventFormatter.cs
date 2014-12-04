@@ -101,7 +101,7 @@
                 sb.Append(method.DeclaringType.Name);
                 sb.Append(".");
                 sb.Append(method.Name);
-                sb.Append("() threw an exception ");
+                sb.Append("() threw ");
                 sb.Append(exception.GetType().Name);
                 sb.Append(". Message: ");
                 sb.Append(exception.Message);
@@ -123,7 +123,10 @@
         private void AppendParameters(StringBuilder sb, MethodBase method, object[] values, bool showOutput)
         {
             ParameterInfo[] parameters = method.GetParameters();
-            Debug.Assert(parameters.Length == values.Length, "The specified method has a different number of parameters than the specified values array.");
+            if (parameters.Length != values.Length)
+            {
+                throw new ArgumentException("The specified method has a different number of parameters than the specified values array.");
+            }
 
             bool appended = false;
             for (int i = 0; i < parameters.Length; i++)

@@ -54,6 +54,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Formatting\MethodEventFormatterUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Formatting\FormattingModeReaderUnitTests.cs" />
     <Compile Include="Formatting\CachedFormattingModeReaderUnitTests.cs" />
