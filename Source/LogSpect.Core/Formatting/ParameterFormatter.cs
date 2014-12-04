@@ -54,7 +54,7 @@
             this.Serialize(sb, value, mode);
         }
 
-        private void SerializeToString(StringBuilder sb, object value)
+        private void SerializeDefault(StringBuilder sb, object value)
         {
             if (this.customFormatterService.TrySerialize(sb, value, this.formatProvider))
             {
@@ -91,7 +91,7 @@
             switch (mode)
             {
                 case FormattingMode.Default:
-                    this.SerializeToString(sb, value);
+                    this.SerializeDefault(sb, value);
                     break;
                 case FormattingMode.Members:
                     this.SerializeMembers(sb, value);
@@ -103,7 +103,7 @@
                     this.SerializeItems(sb, value, true);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("mode", string.Format(CultureInfo.InvariantCulture, "Unexpected serialization mode '{0}'.", mode));
+                    throw new ArgumentOutOfRangeException("mode", string.Format(CultureInfo.InvariantCulture, "Unexpected formatting mode '{0}'.", mode));
             }
         }
 
@@ -148,7 +148,7 @@
                         sb.Append(", ");
                     }
 
-                    this.SerializeToString(sb, entry.Key);
+                    this.SerializeDefault(sb, entry.Key);
                     sb.Append(" => ");
                     if (serializeMembers)
                     {
@@ -156,7 +156,7 @@
                     }
                     else
                     {
-                        this.SerializeToString(sb, entry.Value);
+                        this.SerializeDefault(sb, entry.Value);
                     }
                 }
 
@@ -186,7 +186,7 @@
                     }
                     else
                     {
-                        this.SerializeToString(sb, item);
+                        this.SerializeDefault(sb, item);
                     }
                 }
 
@@ -200,7 +200,7 @@
             }
             else
             {
-                this.SerializeToString(sb, value);
+                this.SerializeDefault(sb, value);
             }
         }
     }

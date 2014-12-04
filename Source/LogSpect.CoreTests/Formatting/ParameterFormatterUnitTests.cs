@@ -25,7 +25,7 @@
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ConstructorWithNullCustomSerializerServiceThrowsArgumentNullException()
+        public void ConstructorWithNullCustomFormatterServiceThrowsArgumentNullException()
         {
             // ReSharper disable once UnusedVariable
             IParameterFormatter formatter = new ParameterFormatter(Substitute.For<IFormattingModeReader>(), null, CultureInfo.InvariantCulture);
@@ -93,7 +93,7 @@
         }
 
         [TestMethod]
-        public void CustomSerializerTests()
+        public void CustomFormatterTests()
         {
             Complex complex = new Complex();
 
