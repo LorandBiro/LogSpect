@@ -47,7 +47,7 @@
     <Compile Include="Logging\MethodLoggingSettings.cs" />
     <Compile Include="LogMembersAttribute.cs" />
     <Compile Include="Logging\IIndentationService.cs" />
-    <Compile Include="LogSpectServiceLocator.cs" />
+    <Compile Include="MethodLoggerFactoryLocator.cs" />
     <Compile Include="Formatting\CachedFormattingModeReader.cs" />
     <Compile Include="Formatting\IMethodEventFormatter.cs" />
     <Compile Include="Formatting\ICustomFormatter.cs" />

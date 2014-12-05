@@ -1,6 +1,7 @@
 ﻿namespace LogSpect.Logging
 {
     using System;
+    using System.Globalization;
     using System.Reflection;
     using LogSpect.Formatting;
 
@@ -11,6 +12,14 @@
         private readonly IIndentationService indentationService;
 
         private readonly IMethodEventFormatter methodEventFormatter;
+
+        public MethodLoggerFactory(ILoggerAdapterFactory adapterFactory)
+            : this(
+                adapterFactory,
+                new IndentationService(4, 20),
+                new MethodEventFormatter(new ParameterFormatter(new FormattingModeReader(), new CustomFormatterService(), CultureInfo.InvariantCulture)))
+        {
+        }
 
         public MethodLoggerFactory(ILoggerAdapterFactory adapterFactory, IIndentationService indentationService, IMethodEventFormatter methodEventFormatter)
         {

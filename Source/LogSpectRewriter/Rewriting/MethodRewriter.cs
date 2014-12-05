@@ -48,7 +48,7 @@
             this.methodLoggerLogException.Parameters.Add(new ParameterDefinition(this.exception));
 
             this.methodLoggerFactory = this.module.Import(typeof(IMethodLoggerFactory));
-            this.logSpectServiceLocator = this.module.Import(typeof(LogSpectServiceLocator));
+            this.logSpectServiceLocator = this.module.Import(typeof(MethodLoggerFactoryLocator));
         }
 
         public void Rewrite(MethodDefinition method)
@@ -117,7 +117,7 @@
         /// <summary>
         /// if (methodLogger == null)
         /// {
-        ///     methodLogger = LogSpectServiceLocator.Factory.Create(methodof(Foo));
+        ///     methodLogger = MethodLoggerFactoryLocator.Factory.Create(methodof(Foo));
         /// }
         /// 
         /// object[] args = { p1, p2, p3, ..., pn };
@@ -160,7 +160,7 @@
         }
 
         /// <summary>
-        /// methodLogger = LogSpectServiceLocator.Factory.Create(methodof(Foo));
+        /// methodLogger = MethodLoggerFactoryLocator.Factory.Create(methodof(Foo));
         /// </summary>
         private IEnumerable<Instruction> CreateMethodLoggerInitializationInstructions(MethodDefinition method, FieldDefinition methodLoggerField)
         {
