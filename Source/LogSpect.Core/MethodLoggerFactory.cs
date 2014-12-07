@@ -3,7 +3,7 @@
     using System;
     using LogSpect.Logging;
 
-    public static class MethodLoggerFactoryLocator
+    public static class MethodLoggerFactory
     {
         private static IMethodLoggerFactory factoryInstance;
 
@@ -15,7 +15,7 @@
             }
         }
 
-        public static IMethodLoggerFactory Factory
+        public static IMethodLoggerFactory Current
         {
             get
             {
@@ -28,7 +28,7 @@
             }
         }
 
-        public static void Initialize(IMethodLoggerFactory factory)
+        public static void SetFactory(IMethodLoggerFactory factory)
         {
             if (IsInitialized)
             {

@@ -5,7 +5,7 @@
     using System.Reflection;
     using LogSpect.Formatting;
 
-    public sealed class MethodLogger : IMethodLogger
+    public sealed class FormattingMethodLogger : IMethodLogger
     {
         private readonly ILoggerAdapter adapter;
 
@@ -13,7 +13,7 @@
 
         private readonly IMethodEventFormatter formatter;
 
-        public MethodLogger(MethodBase targetMethod, MethodLoggingSettings settings, ILoggerAdapter adapter, IIndentationService indentationService, IMethodEventFormatter formatter)
+        public FormattingMethodLogger(MethodBase targetMethod, MethodLoggingSettings settings, ILoggerAdapter adapter, IIndentationService indentationService, IMethodEventFormatter formatter)
         {
             if (targetMethod == null)
             {

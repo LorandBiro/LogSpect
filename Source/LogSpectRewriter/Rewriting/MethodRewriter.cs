@@ -24,7 +24,7 @@
         private readonly MethodReference methodLoggerLogLeave;
         private readonly MethodReference methodLoggerLogException;
         private readonly TypeReference methodLoggerFactory;
-        private readonly TypeReference logSpectServiceLocator;
+        private readonly TypeReference methodLoggerFactoryLocator;
 
         public MethodRewriter(ModuleDefinition module)
         {
@@ -48,7 +48,7 @@
             this.methodLoggerLogException.Parameters.Add(new ParameterDefinition(this.exception));
 
             this.methodLoggerFactory = this.module.Import(typeof(IMethodLoggerFactory));
-            this.logSpectServiceLocator = this.module.Import(typeof(MethodLoggerFactoryLocator));
+            this.methodLoggerFactoryLocator = this.module.Import(typeof(MethodLoggerFactory));
         }
 
         public void Rewrite(MethodDefinition method)
@@ -117,7 +117,7 @@
         /// <summary>
         /// if (methodLogger == null)
         /// {
-        ///     methodLogger = MethodLoggerFactoryLocator.Factory.Create(methodof(Foo));
+        ///     methodLogger = MethodLoggerFactory.Current.Create(methodof(Foo));
         /// }
         /// 
         /// object[] args = { p1, p2, p3, ..., pn };
@@ -160,15 +160,15 @@
         }
 
         /// <summary>
-        /// methodLogger = MethodLoggerFactoryLocator.Factory.Create(methodof(Foo));
+        /// methodLogger = MethodLoggerFactory.Current.Create(methodof(Foo));
         /// </summary>
         private IEnumerable<Instruction> CreateMethodLoggerInitializationInstructions(MethodDefinition method, FieldDefinition methodLoggerField)
         {
             List<Instruction> instructions = new List<Instruction>();
 
-            // Getting the current MethodLoggerFactory instance
-            MethodReference getFactoryReference = new MethodReference("get_Factory", this.methodLoggerFactory, this.logSpectServiceLocator);
-            instructions.Add(Instruction.Create(OpCodes.Call, getFactoryReference));
+            // Getting the current IMethodLoggerFactory instance
+            MethodReference getCurrentReference = new MethodReference("get_Current", this.methodLoggerFactory, this.methodLoggerFactoryLocator);
+            instructions.Add(Instruction.Create(OpCodes.Call, getCurrentReference));
 
             // Getting the current MethodBase
             MethodReference getMethodFromHandleReference = new MethodReference("GetMethodFromHandle", this.methodBase, this.methodBase);

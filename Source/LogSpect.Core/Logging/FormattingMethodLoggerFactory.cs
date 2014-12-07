@@ -5,7 +5,7 @@
     using System.Reflection;
     using LogSpect.Formatting;
 
-    public sealed class MethodLoggerFactory : IMethodLoggerFactory
+    public sealed class FormattingMethodLoggerFactory : IMethodLoggerFactory
     {
         private readonly ILoggerAdapterFactory adapterFactory;
 
@@ -13,7 +13,7 @@
 
         private readonly IMethodEventFormatter methodEventFormatter;
 
-        public MethodLoggerFactory(ILoggerAdapterFactory adapterFactory)
+        public FormattingMethodLoggerFactory(ILoggerAdapterFactory adapterFactory)
             : this(
                 adapterFactory,
                 new IndentationService(4, 20),
@@ -21,7 +21,7 @@
         {
         }
 
-        public MethodLoggerFactory(ILoggerAdapterFactory adapterFactory, IIndentationService indentationService, IMethodEventFormatter methodEventFormatter)
+        public FormattingMethodLoggerFactory(ILoggerAdapterFactory adapterFactory, IIndentationService indentationService, IMethodEventFormatter methodEventFormatter)
         {
             if (adapterFactory == null)
             {
@@ -58,7 +58,7 @@
             }
 
             LogCallsAttributeBase logCallsAttribute = (LogCallsAttributeBase)attributes[0];
-            return new MethodLogger(targetMethod, logCallsAttribute.Settings, adapter, this.indentationService, this.methodEventFormatter);
+            return new FormattingMethodLogger(targetMethod, logCallsAttribute.Settings, adapter, this.indentationService, this.methodEventFormatter);
         }
     }
 }
