@@ -2,7 +2,10 @@
 $progressPreference = 'silentlyContinue'
 
 # Download NuGet.exe
-Invoke-WebRequest https://nuget.org/nuget.exe -OutFile NuGet.exe
+if (-not (Test-Path .\NuGet.exe))
+{
+    Invoke-WebRequest https://nuget.org/nuget.exe -OutFile NuGet.exe
+}
 
 # Restore NuGet packages
 &.\NuGet.exe restore ..\Source\LogSpect.sln
