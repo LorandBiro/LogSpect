@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>LogSpect.Log4Net</id>
+    <version>1.0.0-alpha001</version>
+    <authors>Loránd Biró</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/LorandBiro/LogSpect/raw/master/LICENSE</licenseUrl>
+    <summary>Log4Net adapter for LogSpect</summary>
+    <description>Log4Net adapter for LogSpect.</description>
+    <language>en-US</language>
+    <tags>log logging logger aspect aop weaving log4net</tags>
+    <iconUrl>https://github.com/LorandBiro/LogSpect/raw/master/Media/LogSpectLogo128x128.png</iconUrl>
+    <projectUrl>https://github.com/LorandBiro/LogSpect</projectUrl>
+    <dependencies>
+      <dependency id="LogSpect.Core" version="1.0.0-alpha001" />
+      <dependency id="Log4Net" version="2.0.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\Source\LogSpect.Log4Net\LogSpect.Log4Net (Net40)\bin\Release\LogSpect.Log4Net.dll" target="lib\net40" />
+    <file src="..\Source\LogSpect.Log4Net\LogSpect.Log4Net (Net40)\bin\Release\LogSpect.Log4Net.xml" target="lib\net40" />
+    <file src="..\Source\LogSpect.Log4Net\LogSpect.Log4Net (Net40-Client)\bin\Release\LogSpect.Log4Net.dll" target="lib\net40-Client" />
+    <file src="..\Source\LogSpect.Log4Net\LogSpect.Log4Net (Net40-Client)\bin\Release\LogSpect.Log4Net.xml" target="lib\net40-Client" />
+  </files>
+</package>

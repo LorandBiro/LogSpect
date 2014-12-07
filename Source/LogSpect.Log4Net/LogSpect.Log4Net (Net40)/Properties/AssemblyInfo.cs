@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("LogSpectRewriter")]
+[assembly: AssemblyTitle("LogSpect.Log4Net")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("LogSpectRewriter")]
+[assembly: AssemblyProduct("LogSpect.Log4Net")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("2f17e24f-8998-41ad-bd24-76898ca0e8a5")]
+[assembly: Guid("734f0ae7-8a8a-4f61-a451-a14989938eee")]
 
 // Version information for an assembly consists of the following four values:
 //
