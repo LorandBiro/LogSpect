@@ -1,7 +1,6 @@
 ﻿namespace LogSpect.Formatting
 {
     using System;
-    using System.Diagnostics;
     using System.Reflection;
     using System.Text;
 
@@ -19,8 +18,13 @@
             this.parameterFormatter = parameterFormatter;
         }
 
-        public string SerializeEnter(MethodBase method, object[] parameters)
+        public string SerializeEnter(Type type, MethodBase method, object[] parameters)
         {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
             if (method == null)
             {
                 throw new ArgumentNullException("method");
@@ -31,11 +35,9 @@
                 throw new ArgumentNullException("parameters");
             }
 
-            Debug.Assert(method.DeclaringType != null, "Global methods are not supported.");
-
             StringBuilder sb = new StringBuilder();
             sb.Append("Enter ");
-            sb.Append(method.DeclaringType.Name);
+            sb.Append(type.Name);
             sb.Append(".");
             sb.Append(method.Name);
             sb.Append("(");
@@ -45,8 +47,13 @@
             return sb.ToString();
         }
 
-        public string SerializeLeave(MethodBase method, object[] parameters, object returnValue)
+        public string SerializeLeave(Type type, MethodBase method, object[] parameters, object returnValue)
         {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
             if (method == null)
             {
                 throw new ArgumentNullException("method");
@@ -57,11 +64,9 @@
                 throw new ArgumentNullException("parameters");
             }
 
-            Debug.Assert(method.DeclaringType != null, "Global methods are not supported.");
-
             StringBuilder sb = new StringBuilder();
             sb.Append("Leave ");
-            sb.Append(method.DeclaringType.Name);
+            sb.Append(type.Name);
             sb.Append(".");
             sb.Append(method.Name);
             sb.Append("(");
@@ -81,8 +86,13 @@
             return sb.ToString();
         }
 
-        public string SerializeException(MethodBase method, Exception exception, bool expected)
+        public string SerializeException(Type type, MethodBase method, Exception exception, bool expected)
         {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
             if (method == null)
             {
                 throw new ArgumentNullException("method");
@@ -93,12 +103,10 @@
                 throw new ArgumentNullException("exception");
             }
 
-            Debug.Assert(method.DeclaringType != null, "Global methods are not supported.");
-
             StringBuilder sb = new StringBuilder();
             if (expected)
             {
-                sb.Append(method.DeclaringType.Name);
+                sb.Append(type.Name);
                 sb.Append(".");
                 sb.Append(method.Name);
                 sb.Append("() threw ");
@@ -108,7 +116,7 @@
             }
             else
             {
-                sb.Append(method.DeclaringType.Name);
+                sb.Append(type.Name);
                 sb.Append(".");
                 sb.Append(method.Name);
                 sb.Append("() failed with ");

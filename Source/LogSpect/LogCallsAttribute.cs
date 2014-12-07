@@ -29,16 +29,17 @@
     ///     }
     /// 
     ///     int ret;
+    ///     Type type = this.GetType();
     ///     object[] args = { x };
-    ///     logger.LogEnter(args);
+    ///     logger.LogEnter(type, args);
     ///     try
     ///     {
     ///         ret = x * x;
-    ///         logger.LogLeave(args, ret);
+    ///         logger.LogLeave(type, args, ret);
     ///     }
     ///     catch (Exception e)
     ///     {
-    ///         logger.LogException(args, e);
+    ///         logger.LogException(type, args, e);
     ///         throw;
     ///     }
     /// 

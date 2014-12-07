@@ -14,11 +14,14 @@
     {
         private readonly ModuleDefinition module;
 
+        private readonly TypeReference type;
         private readonly TypeReference objectArray;
         private readonly TypeReference runtimeMethodHandle;
         private readonly TypeReference methodBase;
         private readonly TypeReference exception;
+        private readonly MethodReference objectGetType;
         private readonly MethodReference compilerGeneratedAttributeConstructor;
+        private readonly MethodReference getTypeFromHandle;
 
         private readonly TypeReference methodLogger;
         private readonly MethodReference methodLoggerLogLeave;
@@ -30,21 +33,29 @@
         {
             this.module = module;
 
+            this.type = this.module.Import(typeof(Type));
             this.objectArray = new ArrayType(this.module.TypeSystem.Object);
             this.runtimeMethodHandle = this.module.Import(typeof(RuntimeMethodHandle));
             this.methodBase = this.module.Import(typeof(MethodBase));
             this.exception = this.module.Import(typeof(Exception));
+            this.objectGetType = new MethodReference("GetType", this.type, this.module.TypeSystem.Object) { HasThis = true };
 
             TypeReference compilerGeneratedAttributeTypeReference = this.module.Import(typeof(CompilerGeneratedAttribute));
             this.compilerGeneratedAttributeConstructor = new MethodReference(".ctor", this.module.TypeSystem.Void, compilerGeneratedAttributeTypeReference) { HasThis = true };
 
+            TypeReference runtimeTypeHandle = this.module.Import(typeof(RuntimeTypeHandle));
+            this.getTypeFromHandle = new MethodReference("GetTypeFromHandle", this.type, this.type);
+            this.getTypeFromHandle.Parameters.Add(new ParameterDefinition(runtimeTypeHandle));
+
             this.methodLogger = this.module.Import(typeof(IMethodLogger));
 
             this.methodLoggerLogLeave = new MethodReference("LogLeave", this.module.TypeSystem.Void, this.methodLogger) { HasThis = true };
+            this.methodLoggerLogLeave.Parameters.Add(new ParameterDefinition(this.type));
             this.methodLoggerLogLeave.Parameters.Add(new ParameterDefinition(new ArrayType(this.module.TypeSystem.Object)));
             this.methodLoggerLogLeave.Parameters.Add(new ParameterDefinition(this.module.TypeSystem.Object));
 
             this.methodLoggerLogException = new MethodReference("LogException", this.module.TypeSystem.Void, this.methodLogger) { HasThis = true };
+            this.methodLoggerLogException.Parameters.Add(new ParameterDefinition(this.type));
             this.methodLoggerLogException.Parameters.Add(new ParameterDefinition(this.exception));
 
             this.methodLoggerFactory = this.module.Import(typeof(IMethodLoggerFactory));
@@ -63,6 +74,9 @@
             VariableDefinition argsVariable = new VariableDefinition("<>args", this.objectArray);
             method.Body.Variables.Add(argsVariable);
 
+            VariableDefinition typeVariable = new VariableDefinition("<>type", this.type);
+            method.Body.Variables.Add(typeVariable);
+
             VariableDefinition returnValueVariable = null;
             if (method.MethodReturnType.ReturnType.MetadataType != MetadataType.Void)
             {
@@ -73,14 +87,14 @@
             VariableDefinition exceptionVariable = new VariableDefinition("<>exception", this.exception);
             method.Body.Variables.Add(exceptionVariable);
 
-            this.RewriteBody(methodLoggerField, method, argsVariable, returnValueVariable, exceptionVariable);
+            this.RewriteBody(methodLoggerField, method, typeVariable, argsVariable, returnValueVariable, exceptionVariable);
         }
 
-        private void RewriteBody(FieldDefinition methodLoggerField, MethodDefinition method, VariableDefinition argsVariable, VariableDefinition returnValueVariable, VariableDefinition exceptionVariable)
+        private void RewriteBody(FieldDefinition methodLoggerField, MethodDefinition method, VariableDefinition typeVariable, VariableDefinition argsVariable, VariableDefinition returnValueVariable, VariableDefinition exceptionVariable)
         {
-            IEnumerable<Instruction> beforeTryInstructions = this.CreateBeforeTryInstructions(method, methodLoggerField, argsVariable);
-            IList<Instruction> tryBodyInstructions = this.CreateTryBodyInstructions(method, methodLoggerField, returnValueVariable, argsVariable);
-            IList<Instruction> catchBodyInstructions = this.CreateCatchBodyInstructions(methodLoggerField, exceptionVariable);
+            IEnumerable<Instruction> beforeTryInstructions = this.CreateBeforeTryInstructions(method, methodLoggerField, typeVariable, argsVariable);
+            IList<Instruction> tryBodyInstructions = this.CreateTryBodyInstructions(method, methodLoggerField, typeVariable, returnValueVariable, argsVariable);
+            IList<Instruction> catchBodyInstructions = this.CreateCatchBodyInstructions(methodLoggerField, typeVariable, exceptionVariable);
             IList<Instruction> afterTryInstructions = this.CreateAfterTryInstructions(returnValueVariable);
 
             method.Body.Instructions.Clear();
@@ -120,10 +134,11 @@
         ///     methodLogger = MethodLoggerFactory.Current.Create(methodof(Foo));
         /// }
         /// 
+        /// Type type = this.GetType();
         /// object[] args = { p1, p2, p3, ..., pn };
         /// methodLogger.LogEnter(args);
         /// </summary>
-        private IEnumerable<Instruction> CreateBeforeTryInstructions(MethodDefinition method, FieldDefinition methodLoggerField, VariableDefinition argsVariable)
+        private IEnumerable<Instruction> CreateBeforeTryInstructions(MethodDefinition method, FieldDefinition methodLoggerField, VariableDefinition typeVariable, VariableDefinition argsVariable)
         {
             List<Instruction> instructions = new List<Instruction>();
 
@@ -148,7 +163,7 @@
             }
 
             IEnumerable<Instruction> initInstructions = this.CreateMethodLoggerInitializationInstructions(method, methodLoggerField);
-            IList<Instruction> logEnterInstructions = this.CreateCallingLogEnterInstructions(method, methodLoggerField, argsVariable);
+            IList<Instruction> logEnterInstructions = this.CreateCallingLogEnterInstructions(method, methodLoggerField, typeVariable, argsVariable);
 
             // Checking whether the method logger field is null, initializing it if necessary.
             instructions.Add(Instruction.Create(OpCodes.Ldsfld, methodLoggerField));
@@ -186,35 +201,53 @@
         }
 
         /// <summary>
+        /// Type type = this.GetType();
         /// object[] args = { p1, p2, p3, ..., pn };
         /// methodLogger.LogEnter(args);
         /// </summary>
-        private IList<Instruction> CreateCallingLogEnterInstructions(MethodDefinition method, FieldDefinition methodLoggerField, VariableDefinition argsVariable)
+        private IList<Instruction> CreateCallingLogEnterInstructions(MethodDefinition method, FieldDefinition methodLoggerField, VariableDefinition typeVariable, VariableDefinition argsVariable)
         {
-            // Creating the 'args' array.
-            List<Instruction> instructions = new List<Instruction>
+            List<Instruction> instructions = new List<Instruction>();
+
+            // Determining the executing class type
+            if (method.HasThis)
             {
-                Instruction.Create(OpCodes.Ldc_I4, method.Parameters.Count),
-                Instruction.Create(OpCodes.Newarr, this.module.TypeSystem.Object),
-                Instruction.Create(OpCodes.Stloc, argsVariable)
-            };
+                // This isn't a static method so we call this.GetType().
+                instructions.Add(Instruction.Create(OpCodes.Ldarg_0));
+                instructions.Add(Instruction.Create(OpCodes.Call, this.objectGetType));
+            }
+            else
+            {
+                // This is a static method, we have to use typeof(DeclaringType).
+                instructions.Add(Instruction.Create(OpCodes.Ldtoken, method.DeclaringType));
+                instructions.Add(Instruction.Create(OpCodes.Call, this.getTypeFromHandle));
+            }
+
+            instructions.Add(Instruction.Create(OpCodes.Stloc, typeVariable));
+
+            // Creating the 'args' array.
+            instructions.Add(Instruction.Create(OpCodes.Ldc_I4, method.Parameters.Count));
+            instructions.Add(Instruction.Create(OpCodes.Newarr, this.module.TypeSystem.Object));
+            instructions.Add(Instruction.Create(OpCodes.Stloc, argsVariable));
 
             // Filling the 'args' array with the parameters.
             instructions.AddRange(this.CreateFillArgsInstructions(method, argsVariable, false));
 
             // Calling IMethodLogger.LogEnter(object[]) on the method logger field.
             MethodReference logEnterReference = new MethodReference("LogEnter", this.module.TypeSystem.Void, this.methodLogger) { HasThis = true };
+            logEnterReference.Parameters.Add(new ParameterDefinition(this.type));
             logEnterReference.Parameters.Add(new ParameterDefinition(new ArrayType(this.module.TypeSystem.Object)));
             instructions.Add(Instruction.Create(OpCodes.Ldsfld, methodLoggerField));
+            instructions.Add(Instruction.Create(OpCodes.Ldloc, typeVariable));
             instructions.Add(Instruction.Create(OpCodes.Ldloc, argsVariable));
             instructions.Add(Instruction.Create(OpCodes.Callvirt, logEnterReference));
 
             return instructions;
         }
 
-        private IList<Instruction> CreateTryBodyInstructions(MethodDefinition method, FieldDefinition autoLoggerField, VariableDefinition returnValueVariable, VariableDefinition argsVariable)
+        private IList<Instruction> CreateTryBodyInstructions(MethodDefinition method, FieldDefinition autoLoggerField, VariableDefinition typeVariable, VariableDefinition returnValueVariable, VariableDefinition argsVariable)
         {
-            IList<Instruction> callingLogLeaveInstructions = this.CreateCallingLogLeaveInstructions(method, autoLoggerField, returnValueVariable, argsVariable);
+            IList<Instruction> callingLogLeaveInstructions = this.CreateCallingLogLeaveInstructions(method, autoLoggerField, typeVariable, returnValueVariable, argsVariable);
 
             List<Instruction> instructions = new List<Instruction>();
             for (int i = 0; i < method.Body.Instructions.Count; i++)
@@ -254,11 +287,12 @@
             return instructions;
         }
 
-        private IList<Instruction> CreateCallingLogLeaveInstructions(MethodDefinition method, FieldDefinition autoLoggerField, VariableDefinition returnValueVariable, VariableDefinition argsVariable)
+        private IList<Instruction> CreateCallingLogLeaveInstructions(MethodDefinition method, FieldDefinition autoLoggerField, VariableDefinition typeVariable, VariableDefinition returnValueVariable, VariableDefinition argsVariable)
         {
             List<Instruction> instructions = new List<Instruction>();
             instructions.AddRange(this.CreateFillArgsInstructions(method, argsVariable, true));
             instructions.Add(Instruction.Create(OpCodes.Ldsfld, autoLoggerField));
+            instructions.Add(Instruction.Create(OpCodes.Ldloc, typeVariable));
             instructions.Add(Instruction.Create(OpCodes.Ldloc, argsVariable));
 
             // If we have a return value variable we have to pass it to the method.
@@ -289,12 +323,14 @@
         /// </summary>
         private IList<Instruction> CreateCatchBodyInstructions(
             FieldDefinition autoLoggerField,
+            VariableDefinition typeVariable,
             VariableDefinition exceptionVariable)
         {
             return new[]
                        {
                            Instruction.Create(OpCodes.Stloc, exceptionVariable),
                            Instruction.Create(OpCodes.Ldsfld, autoLoggerField),
+                           Instruction.Create(OpCodes.Ldloc, typeVariable),
                            Instruction.Create(OpCodes.Ldloc, exceptionVariable),
                            Instruction.Create(OpCodes.Callvirt, this.methodLoggerLogException),
                            Instruction.Create(OpCodes.Rethrow)

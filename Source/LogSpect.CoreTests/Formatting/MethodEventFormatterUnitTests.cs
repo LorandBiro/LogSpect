@@ -10,6 +10,8 @@
     [TestClass]
     public class MethodEventFormatterUnitTests
     {
+        private static readonly MethodBase ObjectToString = typeof(object).GetMethod("ToString");
+
         private static readonly MethodBase Method1 = typeof(TestSubject).GetMethod("TestMethod1");
 
         private static readonly MethodBase Method2 = typeof(TestSubject).GetMethod("TestMethod2");
@@ -34,10 +36,18 @@
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
+        public void SerializeEnter_WithNullType_ThrowsArgumentNullException()
+        {
+            IMethodEventFormatter formatter = new MethodEventFormatter(Substitute.For<IParameterFormatter>());
+            formatter.SerializeEnter(null, Method1, new object[0]);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void SerializeEnter_WithNullMethod_ThrowsArgumentNullException()
         {
             IMethodEventFormatter formatter = new MethodEventFormatter(Substitute.For<IParameterFormatter>());
-            formatter.SerializeEnter(null, new object[0]);
+            formatter.SerializeEnter(typeof(TestSubject), null, new object[0]);
         }
 
         [TestMethod]
@@ -45,7 +55,7 @@
         public void SerializeEnter_WithNullParameters_ThrowsArgumentNullException()
         {
             IMethodEventFormatter formatter = new MethodEventFormatter(Substitute.For<IParameterFormatter>());
-            formatter.SerializeEnter(Method1, null);
+            formatter.SerializeEnter(typeof(TestSubject), Method1, null);
         }
 
         [TestMethod]
@@ -53,7 +63,7 @@
         public void SerializeEnter_WithParameterCountMismatch_ThrowsArgumentException()
         {
             IMethodEventFormatter formatter = new MethodEventFormatter(Substitute.For<IParameterFormatter>());
-            formatter.SerializeEnter(Method1, new object[100]);
+            formatter.SerializeEnter(typeof(TestSubject), Method1, new object[100]);
         }
 
         [TestMethod]
@@ -61,13 +71,24 @@
         {
             IMethodEventFormatter formatter = CreateTestMethodEventFormatter();
 
-            Assert.AreEqual("Enter TestSubject.TestMethod1()", formatter.SerializeEnter(Method1, new object[0]));
-            Assert.AreEqual("Enter TestSubject.TestMethod2(p1: X)", formatter.SerializeEnter(Method2, new object[1]));
-            Assert.AreEqual("Enter TestSubject.TestMethod3(p1: X, p2: X)", formatter.SerializeEnter(Method3, new object[2]));
-            Assert.AreEqual("Enter TestSubject.TestMethod4(p1: X, p2: X, p3: X)", formatter.SerializeEnter(Method4, new object[3]));
-            Assert.AreEqual("Enter TestSubject.TestMethod5(p1: X, p2: X, p3: X)", formatter.SerializeEnter(Method5, new object[3]));
-            Assert.AreEqual("Enter TestSubject.TestMethod6(p1: X, p2: X, ref p3: X)", formatter.SerializeEnter(Method6, new object[3]));
-            Assert.AreEqual("Enter TestSubject.TestMethod7(p1: X, p2: X)", formatter.SerializeEnter(Method7, new object[3]));
+            Assert.AreEqual("Enter Object.ToString()", formatter.SerializeEnter(typeof(object), ObjectToString, new object[0]));
+            Assert.AreEqual("Enter TestSubject.ToString()", formatter.SerializeEnter(typeof(TestSubject), ObjectToString, new object[0]));
+
+            Assert.AreEqual("Enter TestSubject.TestMethod1()", formatter.SerializeEnter(typeof(TestSubject), Method1, new object[0]));
+            Assert.AreEqual("Enter TestSubject.TestMethod2(p1: X)", formatter.SerializeEnter(typeof(TestSubject), Method2, new object[1]));
+            Assert.AreEqual("Enter TestSubject.TestMethod3(p1: X, p2: X)", formatter.SerializeEnter(typeof(TestSubject), Method3, new object[2]));
+            Assert.AreEqual("Enter TestSubject.TestMethod4(p1: X, p2: X, p3: X)", formatter.SerializeEnter(typeof(TestSubject), Method4, new object[3]));
+            Assert.AreEqual("Enter TestSubject.TestMethod5(p1: X, p2: X, p3: X)", formatter.SerializeEnter(typeof(TestSubject), Method5, new object[3]));
+            Assert.AreEqual("Enter TestSubject.TestMethod6(p1: X, p2: X, ref p3: X)", formatter.SerializeEnter(typeof(TestSubject), Method6, new object[3]));
+            Assert.AreEqual("Enter TestSubject.TestMethod7(p1: X, p2: X)", formatter.SerializeEnter(typeof(TestSubject), Method7, new object[3]));
+        }
+        
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void SerializeLeave_WithNullType_ThrowsArgumentNullException()
+        {
+            IMethodEventFormatter formatter = new MethodEventFormatter(Substitute.For<IParameterFormatter>());
+            formatter.SerializeLeave(null, Method1, new object[0], null);
         }
 
         [TestMethod]
@@ -75,7 +96,7 @@
         public void SerializeLeave_WithNullMethod_ThrowsArgumentNullException()
         {
             IMethodEventFormatter formatter = new MethodEventFormatter(Substitute.For<IParameterFormatter>());
-            formatter.SerializeLeave(null, new object[0], null);
+            formatter.SerializeLeave(typeof(TestSubject), null, new object[0], null);
         }
 
         [TestMethod]
@@ -83,7 +104,7 @@
         public void SerializeLeave_WithNullParameters_ThrowsArgumentNullException()
         {
             IMethodEventFormatter formatter = new MethodEventFormatter(Substitute.For<IParameterFormatter>());
-            formatter.SerializeLeave(Method1, null, null);
+            formatter.SerializeLeave(typeof(TestSubject), Method1, null, null);
         }
 
         [TestMethod]
@@ -91,7 +112,7 @@
         public void SerializeLeave_WithParameterCountMismatch_ThrowsArgumentException()
         {
             IMethodEventFormatter formatter = new MethodEventFormatter(Substitute.For<IParameterFormatter>());
-            formatter.SerializeLeave(Method1, new object[100], null);
+            formatter.SerializeLeave(typeof(TestSubject), Method1, new object[100], null);
         }
 
         [TestMethod]
@@ -99,13 +120,24 @@
         {
             IMethodEventFormatter formatter = CreateTestMethodEventFormatter();
 
-            Assert.AreEqual("Leave TestSubject.TestMethod1()", formatter.SerializeLeave(Method1, new object[0], null));
-            Assert.AreEqual("Leave TestSubject.TestMethod2()", formatter.SerializeLeave(Method2, new object[1], null));
-            Assert.AreEqual("Leave TestSubject.TestMethod3()", formatter.SerializeLeave(Method3, new object[2], null));
-            Assert.AreEqual("Leave TestSubject.TestMethod4()", formatter.SerializeLeave(Method4, new object[3], null));
-            Assert.AreEqual("Leave TestSubject.TestMethod5(): X", formatter.SerializeLeave(Method5, new object[3], null));
-            Assert.AreEqual("Leave TestSubject.TestMethod6(ref p3: X): X", formatter.SerializeLeave(Method6, new object[3], null));
-            Assert.AreEqual("Leave TestSubject.TestMethod7(out p3: X): X", formatter.SerializeLeave(Method7, new object[3], null));
+            Assert.AreEqual("Leave Object.ToString(): X", formatter.SerializeLeave(typeof(object), ObjectToString, new object[0], null));
+            Assert.AreEqual("Leave TestSubject.ToString(): X", formatter.SerializeLeave(typeof(TestSubject), ObjectToString, new object[0], null));
+
+            Assert.AreEqual("Leave TestSubject.TestMethod1()", formatter.SerializeLeave(typeof(TestSubject), Method1, new object[0], null));
+            Assert.AreEqual("Leave TestSubject.TestMethod2()", formatter.SerializeLeave(typeof(TestSubject), Method2, new object[1], null));
+            Assert.AreEqual("Leave TestSubject.TestMethod3()", formatter.SerializeLeave(typeof(TestSubject), Method3, new object[2], null));
+            Assert.AreEqual("Leave TestSubject.TestMethod4()", formatter.SerializeLeave(typeof(TestSubject), Method4, new object[3], null));
+            Assert.AreEqual("Leave TestSubject.TestMethod5(): X", formatter.SerializeLeave(typeof(TestSubject), Method5, new object[3], null));
+            Assert.AreEqual("Leave TestSubject.TestMethod6(ref p3: X): X", formatter.SerializeLeave(typeof(TestSubject), Method6, new object[3], null));
+            Assert.AreEqual("Leave TestSubject.TestMethod7(out p3: X): X", formatter.SerializeLeave(typeof(TestSubject), Method7, new object[3], null));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void SerializeException_WithNullType_ThrowsArgumentNullException()
+        {
+            IMethodEventFormatter formatter = new MethodEventFormatter(Substitute.For<IParameterFormatter>());
+            formatter.SerializeException(null, Method1, new Exception(), false);
         }
 
         [TestMethod]
@@ -113,7 +145,7 @@
         public void SerializeException_WithNullMethod_ThrowsArgumentNullException()
         {
             IMethodEventFormatter formatter = new MethodEventFormatter(Substitute.For<IParameterFormatter>());
-            formatter.SerializeException(null, new Exception(), false);
+            formatter.SerializeException(typeof(TestSubject), null, new Exception(), false);
         }
 
         [TestMethod]
@@ -121,7 +153,7 @@
         public void SerializeException_WithNullException_ThrowsArgumentNullException()
         {
             IMethodEventFormatter formatter = new MethodEventFormatter(Substitute.For<IParameterFormatter>());
-            formatter.SerializeException(Method1, null, false);
+            formatter.SerializeException(typeof(TestSubject), Method1, null, false);
         }
 
         [TestMethod]
@@ -129,8 +161,11 @@
         {
             IMethodEventFormatter formatter = CreateTestMethodEventFormatter();
 
-            Assert.AreEqual("TestSubject.TestMethod1() failed with ArgumentException! Message: Lorem ipsum", formatter.SerializeException(Method1, new ArgumentException("Lorem ipsum"), false));
-            Assert.AreEqual("TestSubject.TestMethod1() threw ArgumentException. Message: Lorem ipsum", formatter.SerializeException(Method1, new ArgumentException("Lorem ipsum"), true));
+            Assert.AreEqual("Object.ToString() failed with ArgumentException! Message: Lorem ipsum", formatter.SerializeException(typeof(object), ObjectToString, new ArgumentException("Lorem ipsum"), false));
+            Assert.AreEqual("TestSubject.ToString() threw ArgumentException. Message: Lorem ipsum", formatter.SerializeException(typeof(TestSubject), ObjectToString, new ArgumentException("Lorem ipsum"), true));
+
+            Assert.AreEqual("TestSubject.TestMethod1() failed with ArgumentException! Message: Lorem ipsum", formatter.SerializeException(typeof(TestSubject), Method1, new ArgumentException("Lorem ipsum"), false));
+            Assert.AreEqual("TestSubject.TestMethod1() threw ArgumentException. Message: Lorem ipsum", formatter.SerializeException(typeof(TestSubject), Method1, new ArgumentException("Lorem ipsum"), true));
         }
 
         private static IMethodEventFormatter CreateTestMethodEventFormatter()

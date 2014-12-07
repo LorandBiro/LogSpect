@@ -47,36 +47,36 @@
 
         public MethodLoggingSettings Settings { get; private set; }
 
-        public void LogEnter(object[] parameters)
+        public void LogEnter(Type type, object[] parameters)
         {
             if (this.adapter.IsLevelEnabled(this.Settings.NormalLogLevel))
             {
-                string message = this.indentationTracker.Current + this.formatter.SerializeEnter(this.TargetMethod, parameters);
+                string message = this.indentationTracker.Current + this.formatter.SerializeEnter(type, this.TargetMethod, parameters);
                 this.adapter.LogMessage(message, this.Settings.NormalLogLevel);
             }
 
             this.indentationTracker.Increase();
         }
 
-        public void LogLeave(object[] parameters, object returnValue)
+        public void LogLeave(Type type, object[] parameters, object returnValue)
         {
             this.indentationTracker.Decrease();
 
             if (this.adapter.IsLevelEnabled(this.Settings.NormalLogLevel))
             {
-                string message = this.indentationTracker.Current + this.formatter.SerializeLeave(this.TargetMethod, parameters, returnValue);
+                string message = this.indentationTracker.Current + this.formatter.SerializeLeave(type, this.TargetMethod, parameters, returnValue);
                 this.adapter.LogMessage(message, this.Settings.NormalLogLevel);
             }
         }
 
-        public void LogException(Exception exception)
+        public void LogException(Type type, Exception exception)
         {
             this.indentationTracker.Decrease();
 
             if (this.adapter.IsLevelEnabled(this.Settings.ExceptionLogLevel))
             {
                 bool expected = this.Settings.ExpectedExceptions.Any(x => x.IsInstanceOfType(exception));
-                string message = this.indentationTracker.Current + this.formatter.SerializeException(this.TargetMethod, exception, expected);
+                string message = this.indentationTracker.Current + this.formatter.SerializeException(type, this.TargetMethod, exception, expected);
                 this.adapter.LogMessage(message, this.Settings.ExceptionLogLevel, exception);
             }
         }

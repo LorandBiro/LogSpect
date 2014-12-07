@@ -5,10 +5,10 @@
 
     public interface IMethodEventFormatter
     {
-        string SerializeEnter(MethodBase method, object[] parameters);
+        string SerializeEnter(Type type, MethodBase method, object[] parameters);
 
-        string SerializeLeave(MethodBase method, object[] parameters, object returnValue);
+        string SerializeLeave(Type type, MethodBase method, object[] parameters, object returnValue);
 
-        string SerializeException(MethodBase method, Exception exception, bool expected);
+        string SerializeException(Type type, MethodBase method, Exception exception, bool expected);
     }
 }

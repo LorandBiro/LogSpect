@@ -7,10 +7,10 @@
     {
         MethodBase TargetMethod { get; }
 
-        void LogEnter(object[] parameters);
+        void LogEnter(Type type, object[] parameters);
 
-        void LogLeave(object[] parameters, object returnValue);
+        void LogLeave(Type type, object[] parameters, object returnValue);
 
-        void LogException(Exception exception);
+        void LogException(Type type, Exception exception);
     }
 }
