@@ -9,28 +9,28 @@
     {
         private readonly ILoggerAdapterFactory adapterFactory;
 
-        private readonly IIndentationService indentationService;
+        private readonly IIndentationTracker indentationTracker;
 
         private readonly IMethodEventFormatter methodEventFormatter;
 
         public FormattingMethodLoggerFactory(ILoggerAdapterFactory adapterFactory)
             : this(
                 adapterFactory,
-                new IndentationService(4, 20),
+                new IndentationTracker(4, 20),
                 new MethodEventFormatter(new ParameterFormatter(new FormattingModeReader(), new CustomFormatterService(), CultureInfo.InvariantCulture)))
         {
         }
 
-        public FormattingMethodLoggerFactory(ILoggerAdapterFactory adapterFactory, IIndentationService indentationService, IMethodEventFormatter methodEventFormatter)
+        public FormattingMethodLoggerFactory(ILoggerAdapterFactory adapterFactory, IIndentationTracker indentationTracker, IMethodEventFormatter methodEventFormatter)
         {
             if (adapterFactory == null)
             {
                 throw new ArgumentNullException("adapterFactory");
             }
 
-            if (indentationService == null)
+            if (indentationTracker == null)
             {
-                throw new ArgumentNullException("indentationService");
+                throw new ArgumentNullException("indentationTracker");
             }
 
             if (methodEventFormatter == null)
@@ -39,7 +39,7 @@
             }
 
             this.adapterFactory = adapterFactory;
-            this.indentationService = indentationService;
+            this.indentationTracker = indentationTracker;
             this.methodEventFormatter = methodEventFormatter;
         }
 
@@ -58,7 +58,7 @@
             }
 
             LogCallsAttributeBase logCallsAttribute = (LogCallsAttributeBase)attributes[0];
-            return new FormattingMethodLogger(targetMethod, logCallsAttribute.Settings, adapter, this.indentationService, this.methodEventFormatter);
+            return new FormattingMethodLogger(targetMethod, logCallsAttribute.Settings, adapter, this.indentationTracker, this.methodEventFormatter);
         }
     }
 }

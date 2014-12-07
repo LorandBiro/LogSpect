@@ -2,7 +2,7 @@
 {
     using System;
 
-    public interface IIndentationService
+    public interface IIndentationTracker
     {
         string Current { get; }
 

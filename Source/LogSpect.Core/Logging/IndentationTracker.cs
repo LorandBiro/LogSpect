@@ -3,14 +3,14 @@ namespace LogSpect.Logging
     using System;
     using System.Linq;
 
-    public sealed class IndentationService : IIndentationService
+    public sealed class IndentationTracker : IIndentationTracker
     {
         [ThreadStatic]
         private static int currentLevel;
 
         private readonly string[] indentationStrings;
 
-        public IndentationService(int indentationWidth, int maxLevel)
+        public IndentationTracker(int indentationWidth, int maxLevel)
         {
             if (indentationWidth < 1)
             {
