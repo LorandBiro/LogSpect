@@ -20,15 +20,7 @@
         public void Constructor_WithNullRegistry_ThrowsArgumentNullException()
         {
             // ReSharper disable once UnusedVariable
-            IParameterFormatter formatter = new ParameterFormatter(null, Substitute.For<ICustomFormatterService>(), CultureInfo.InvariantCulture);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Constructor_WithNullCustomFormatterService_ThrowsArgumentNullException()
-        {
-            // ReSharper disable once UnusedVariable
-            IParameterFormatter formatter = new ParameterFormatter(Substitute.For<IFormattingModeReader>(), null, CultureInfo.InvariantCulture);
+            IParameterFormatter formatter = new ParameterFormatter(null, null, CultureInfo.InvariantCulture);
         }
 
         [TestMethod]
@@ -36,14 +28,14 @@
         public void Constructor_WithNullFormatProvider_ThrowsArgumentNullException()
         {
             // ReSharper disable once UnusedVariable
-            IParameterFormatter formatter = new ParameterFormatter(Substitute.For<IFormattingModeReader>(), Substitute.For<ICustomFormatterService>(), null);
+            IParameterFormatter formatter = new ParameterFormatter(Substitute.For<IFormattingModeReader>(), null, null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Serialize_WithNullStringBuilder_ThrowsArgumentNullException()
         {
-            IParameterFormatter formatter = new ParameterFormatter(Substitute.For<IFormattingModeReader>(), Substitute.For<ICustomFormatterService>(), CultureInfo.InvariantCulture);
+            IParameterFormatter formatter = new ParameterFormatter(Substitute.For<IFormattingModeReader>(), null, CultureInfo.InvariantCulture);
             formatter.Serialize(null, new object(), TestParameter);
         }
 
@@ -51,7 +43,7 @@
         [ExpectedException(typeof(ArgumentNullException))]
         public void Serialize_WithNullParameterInfo_ThrowsArgumentNullException()
         {
-            IParameterFormatter formatter = new ParameterFormatter(Substitute.For<IFormattingModeReader>(), Substitute.For<ICustomFormatterService>(), CultureInfo.InvariantCulture);
+            IParameterFormatter formatter = new ParameterFormatter(Substitute.For<IFormattingModeReader>(), null, CultureInfo.InvariantCulture);
             formatter.Serialize(new StringBuilder(), new object(), null);
         }
 
@@ -88,24 +80,24 @@
         public void Serialize_FormattableTests()
         {
             IFormattable formattable = new DateTime(2000, 1, 1, 0, 0, 0);
-            TestFormatter(formattable, FormattingMode.Default, "01/01/2000 00:00:00", null, CultureInfo.InvariantCulture);
-            TestFormatter(formattable, FormattingMode.Default, "1/1/2000 12:00:00 AM", null, CultureInfo.GetCultureInfo("en-US"));
+            TestFormatter(formattable, FormattingMode.Default, "01/01/2000 00:00:00", CultureInfo.InvariantCulture);
+            TestFormatter(formattable, FormattingMode.Default, "1/1/2000 12:00:00 AM", CultureInfo.GetCultureInfo("en-US"));
         }
 
         [TestMethod]
-        public void Serialize_CustomFormatterTests()
+        public void Serialize_CustomDefaultFormatterTests()
         {
             Complex complex = new Complex();
 
-            ICustomFormatterService customFormatterService = Substitute.For<ICustomFormatterService>();
-            customFormatterService.TrySerialize(Arg.Any<StringBuilder>(), complex, Arg.Any<CultureInfo>()).Returns(
+            ICustomDefaultFormatter customDefaultFormatter = Substitute.For<ICustomDefaultFormatter>();
+            customDefaultFormatter.TrySerialize(Arg.Any<StringBuilder>(), complex, Arg.Any<CultureInfo>()).Returns(
                 x =>
                     {
                         ((StringBuilder)x[0]).Append("complex");
                         return true;
                     });
 
-            TestFormatter(complex, FormattingMode.Default, "complex", customFormatterService);
+            TestFormatter(complex, FormattingMode.Default, "complex", null, customDefaultFormatter);
         }
 
         [TestMethod]
@@ -124,7 +116,7 @@
             TestFormatter(dict, FormattingMode.ItemsMembers, "[1 => { Re: 1, Im: 2 }, 2 => { Re: 2, Im: -1 }]");
         }
 
-        private static void TestFormatter(object value, FormattingMode mode, string expectedOutput, ICustomFormatterService customFormatterService = null, IFormatProvider formatProvider = null)
+        private static void TestFormatter(object value, FormattingMode mode, string expectedOutput, IFormatProvider formatProvider = null, ICustomDefaultFormatter customDefaultFormatter = null)
         {
             // Arrange
             IFormattingModeReader reader = Substitute.For<IFormattingModeReader>();
@@ -132,7 +124,7 @@
 
             IParameterFormatter formatter = new ParameterFormatter(
                 reader,
-                customFormatterService ?? Substitute.For<ICustomFormatterService>(),
+                customDefaultFormatter,
                 formatProvider ?? CultureInfo.InvariantCulture);
 
             StringBuilder sb = new StringBuilder();

@@ -14,10 +14,25 @@
         private readonly IMethodEventFormatter methodEventFormatter;
 
         public FormattingMethodLoggerFactory(ILoggerAdapterFactory adapterFactory)
+            : this(adapterFactory, null, CultureInfo.InvariantCulture)
+        {
+        }
+
+        public FormattingMethodLoggerFactory(ILoggerAdapterFactory adapterFactory, IFormatProvider formatProvider)
+            : this(adapterFactory, null, formatProvider)
+        {
+        }
+
+        public FormattingMethodLoggerFactory(ILoggerAdapterFactory adapterFactory, ICustomDefaultFormatter customDefaultFormatter)
+            : this(adapterFactory, customDefaultFormatter, CultureInfo.InvariantCulture)
+        {
+        }
+
+        public FormattingMethodLoggerFactory(ILoggerAdapterFactory adapterFactory, ICustomDefaultFormatter customDefaultFormatter, IFormatProvider formatProvider)
             : this(
                 adapterFactory,
                 new IndentationTracker(4, 20),
-                new MethodEventFormatter(new ParameterFormatter(new FormattingModeReader(), new CustomFormatterService(), CultureInfo.InvariantCulture)))
+                new MethodEventFormatter(new ParameterFormatter(new FormattingModeReader(), customDefaultFormatter, formatProvider)))
         {
         }
 

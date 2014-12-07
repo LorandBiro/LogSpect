@@ -3,10 +3,8 @@
     using System;
     using System.Text;
 
-    public interface ICustomFormatterService
+    public interface ICustomDefaultFormatter
     {
-        void AddFormatter(ICustomFormatter formatter);
-
         bool TrySerialize(StringBuilder sb, object value, IFormatProvider formatProvider);
     }
 }
