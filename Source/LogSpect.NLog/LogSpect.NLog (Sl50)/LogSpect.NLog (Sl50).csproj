@@ -48,8 +48,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
-    <Reference Include="NLog, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="NLog">
       <HintPath>..\..\packages\NLog.2.0.1.2\lib\sl5\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System.Core">
