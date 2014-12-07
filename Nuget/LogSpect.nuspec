@@ -17,16 +17,16 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\Source\LogSpect\bin\Release\LogSpect.dll" target="lib\portable-net40+sl50+win+wpa81+wp80" />
-    <file src="..\..\Source\LogSpect\bin\Release\LogSpect.xml" target="lib\portable-net40+sl50+win+wpa81+wp80" />
-    <file src="..\..\Source\LogSpectRewriter\bin\Release\LogSpect.dll" target="tools" />
-    <file src="..\..\Source\LogSpectRewriter\bin\Release\LogSpect.Core.dll" target="tools" />
-    <file src="..\..\Source\LogSpectRewriter\bin\Release\Mono.Cecil.dll" target="tools" />
-    <file src="..\..\Source\LogSpectRewriter\bin\Release\Mono.Cecil.Mdb.dll" target="tools" />
-    <file src="..\..\Source\LogSpectRewriter\bin\Release\Mono.Cecil.Pdb.dll" target="tools" />
-    <file src="..\..\Source\LogSpectRewriter\bin\Release\Mono.Cecil.Rocks.dll" target="tools" />
-    <file src="..\..\Source\LogSpectRewriter\bin\Release\LogSpectRewriter.exe" target="tools" />
-    <file src="..\..\Source\LogSpectRewriter\bin\Release\LogSpectRewriter.exe.config" target="tools" />
+    <file src="..\Source\LogSpect\bin\Release\LogSpect.dll" target="lib\portable-net40+sl50+win+wpa81+wp80" />
+    <file src="..\Source\LogSpect\bin\Release\LogSpect.xml" target="lib\portable-net40+sl50+win+wpa81+wp80" />
+    <file src="..\Source\LogSpectRewriter\bin\Release\LogSpect.dll" target="tools" />
+    <file src="..\Source\LogSpectRewriter\bin\Release\LogSpect.Core.dll" target="tools" />
+    <file src="..\Source\LogSpectRewriter\bin\Release\Mono.Cecil.dll" target="tools" />
+    <file src="..\Source\LogSpectRewriter\bin\Release\Mono.Cecil.Mdb.dll" target="tools" />
+    <file src="..\Source\LogSpectRewriter\bin\Release\Mono.Cecil.Pdb.dll" target="tools" />
+    <file src="..\Source\LogSpectRewriter\bin\Release\Mono.Cecil.Rocks.dll" target="tools" />
+    <file src="..\Source\LogSpectRewriter\bin\Release\LogSpectRewriter.exe" target="tools" />
+    <file src="..\Source\LogSpectRewriter\bin\Release\LogSpectRewriter.exe.config" target="tools" />
     <file src="LogSpect.targets" target="build" />
   </files>
 </package>

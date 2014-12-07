@@ -14,7 +14,7 @@
     <projectUrl>https://github.com/LorandBiro/LogSpect</projectUrl>
   </metadata>
   <files>
-    <file src="..\..\Source\LogSpect.Core\bin\Release\LogSpect.Core.dll" target="lib\portable-net40+sl50+win+wpa81+wp80" />
-    <file src="..\..\Source\LogSpect.Core\bin\Release\LogSpect.Core.xml" target="lib\portable-net40+sl50+win+wpa81+wp80" />
+    <file src="..\Source\LogSpect.Core\bin\Release\LogSpect.Core.dll" target="lib\portable-net40+sl50+win+wpa81+wp80" />
+    <file src="..\Source\LogSpect.Core\bin\Release\LogSpect.Core.xml" target="lib\portable-net40+sl50+win+wpa81+wp80" />
   </files>
 </package>
