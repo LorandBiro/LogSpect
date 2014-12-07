@@ -13,6 +13,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogSpectRewriter", "LogSpec
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogSpect", "LogSpect\LogSpect.csproj", "{8F431665-D86E-4B03-A9E0-2AEB71C5D2C0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LogSpect.NLog", "LogSpect.NLog", "{5DBAD0E9-0A3C-4149-ACCD-72835ED89FC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogSpect.NLog (Sl50)", "LogSpect.NLog\LogSpect.NLog (Sl50)\LogSpect.NLog (Sl50).csproj", "{7FCA2F28-EED7-4E95-97AD-6E89D20677E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogSpect.NLog (Net45)", "LogSpect.NLog\LogSpect.NLog (Net45)\LogSpect.NLog (Net45).csproj", "{FD29515B-572E-4462-A720-AAB5B2DDDCF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogSpect.NLog (Net40)", "LogSpect.NLog\LogSpect.NLog (Net40)\LogSpect.NLog (Net40).csproj", "{E81C4046-C92A-446F-B85B-1F59DC7DE8A4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,8 +47,25 @@ Global
 		{8F431665-D86E-4B03-A9E0-2AEB71C5D2C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F431665-D86E-4B03-A9E0-2AEB71C5D2C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F431665-D86E-4B03-A9E0-2AEB71C5D2C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FCA2F28-EED7-4E95-97AD-6E89D20677E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FCA2F28-EED7-4E95-97AD-6E89D20677E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FCA2F28-EED7-4E95-97AD-6E89D20677E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FCA2F28-EED7-4E95-97AD-6E89D20677E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD29515B-572E-4462-A720-AAB5B2DDDCF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD29515B-572E-4462-A720-AAB5B2DDDCF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD29515B-572E-4462-A720-AAB5B2DDDCF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD29515B-572E-4462-A720-AAB5B2DDDCF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E81C4046-C92A-446F-B85B-1F59DC7DE8A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E81C4046-C92A-446F-B85B-1F59DC7DE8A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E81C4046-C92A-446F-B85B-1F59DC7DE8A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E81C4046-C92A-446F-B85B-1F59DC7DE8A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7FCA2F28-EED7-4E95-97AD-6E89D20677E0} = {5DBAD0E9-0A3C-4149-ACCD-72835ED89FC3}
+		{FD29515B-572E-4462-A720-AAB5B2DDDCF3} = {5DBAD0E9-0A3C-4149-ACCD-72835ED89FC3}
+		{E81C4046-C92A-446F-B85B-1F59DC7DE8A4} = {5DBAD0E9-0A3C-4149-ACCD-72835ED89FC3}
 	EndGlobalSection
 EndGlobal

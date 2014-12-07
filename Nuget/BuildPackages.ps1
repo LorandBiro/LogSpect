@@ -25,3 +25,4 @@ else
 &.\NuGet.exe pack .\LogSpect\LogSpect.nuspec -OutputDirectory Packages
 &.\NuGet.exe pack .\LogSpect.Core\LogSpect.Core.nuspec -OutputDirectory Packages
 &.\NuGet.exe pack .\LogSpect.BasicLoggers\LogSpect.BasicLoggers.nuspec -OutputDirectory Packages
+&.\NuGet.exe pack .\LogSpect.NLog\LogSpect.NLog.nuspec -OutputDirectory Packages
