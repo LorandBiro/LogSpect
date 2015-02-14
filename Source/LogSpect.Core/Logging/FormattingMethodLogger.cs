@@ -13,7 +13,12 @@
 
         private readonly IMethodEventFormatter formatter;
 
-        public FormattingMethodLogger(MethodBase targetMethod, MethodLoggingSettings settings, ILoggerAdapter adapter, IIndentationTracker indentationTracker, IMethodEventFormatter formatter)
+        public FormattingMethodLogger(
+            MethodBase targetMethod,
+            MethodLoggingSettings settings,
+            ILoggerAdapter adapter,
+            IIndentationTracker indentationTracker,
+            IMethodEventFormatter formatter)
         {
             if (targetMethod == null)
             {
@@ -34,7 +39,7 @@
             {
                 throw new ArgumentNullException("formatter");
             }
-            
+
             this.adapter = adapter;
             this.indentationTracker = indentationTracker;
             this.formatter = formatter;
@@ -49,6 +54,16 @@
 
         public void LogEnter(Type type, object[] parameters)
         {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException("parameters");
+            }
+
             if (this.adapter.IsLevelEnabled(this.Settings.NormalLogLevel))
             {
                 string message = this.indentationTracker.Current + this.formatter.SerializeEnter(type, this.TargetMethod, parameters);
@@ -60,6 +75,16 @@
 
         public void LogLeave(Type type, object[] parameters, object returnValue)
         {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException("parameters");
+            }
+
             this.indentationTracker.Decrease();
 
             if (this.adapter.IsLevelEnabled(this.Settings.NormalLogLevel))
@@ -71,6 +96,16 @@
 
         public void LogException(Type type, Exception exception)
         {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            if (exception == null)
+            {
+                throw new ArgumentNullException("exception");
+            }
+
             this.indentationTracker.Decrease();
 
             if (this.adapter.IsLevelEnabled(this.Settings.ExceptionLogLevel))
