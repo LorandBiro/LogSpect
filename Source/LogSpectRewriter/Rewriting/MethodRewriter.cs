@@ -9,72 +9,36 @@
     using Mono.Cecil;
     using Mono.Cecil.Cil;
     using Mono.Cecil.Rocks;
+    using FieldAttributes = Mono.Cecil.FieldAttributes;
 
     internal class MethodRewriter
     {
         private readonly ModuleDefinition module;
 
-        private readonly TypeReference type;
-        private readonly TypeReference objectArray;
-        private readonly TypeReference runtimeMethodHandle;
-        private readonly TypeReference methodBase;
-        private readonly TypeReference exception;
-        private readonly MethodReference objectGetType;
-        private readonly MethodReference compilerGeneratedAttributeConstructor;
-        private readonly MethodReference getTypeFromHandle;
+        private readonly TypeReferences typeReferences;
 
-        private readonly TypeReference methodLogger;
-        private readonly MethodReference methodLoggerLogLeave;
-        private readonly MethodReference methodLoggerLogException;
-        private readonly TypeReference methodLoggerFactory;
-        private readonly TypeReference methodLoggerFactoryLocator;
+        private readonly MethodReferences methodReferences;
 
         public MethodRewriter(ModuleDefinition module)
         {
             this.module = module;
-
-            this.type = this.module.Import(typeof(Type));
-            this.objectArray = new ArrayType(this.module.TypeSystem.Object);
-            this.runtimeMethodHandle = this.module.Import(typeof(RuntimeMethodHandle));
-            this.methodBase = this.module.Import(typeof(MethodBase));
-            this.exception = this.module.Import(typeof(Exception));
-            this.objectGetType = new MethodReference("GetType", this.type, this.module.TypeSystem.Object) { HasThis = true };
-
-            TypeReference compilerGeneratedAttributeTypeReference = this.module.Import(typeof(CompilerGeneratedAttribute));
-            this.compilerGeneratedAttributeConstructor = new MethodReference(".ctor", this.module.TypeSystem.Void, compilerGeneratedAttributeTypeReference) { HasThis = true };
-
-            TypeReference runtimeTypeHandle = this.module.Import(typeof(RuntimeTypeHandle));
-            this.getTypeFromHandle = new MethodReference("GetTypeFromHandle", this.type, this.type);
-            this.getTypeFromHandle.Parameters.Add(new ParameterDefinition(runtimeTypeHandle));
-
-            this.methodLogger = this.module.Import(typeof(IMethodLogger));
-
-            this.methodLoggerLogLeave = new MethodReference("LogLeave", this.module.TypeSystem.Void, this.methodLogger) { HasThis = true };
-            this.methodLoggerLogLeave.Parameters.Add(new ParameterDefinition(this.type));
-            this.methodLoggerLogLeave.Parameters.Add(new ParameterDefinition(new ArrayType(this.module.TypeSystem.Object)));
-            this.methodLoggerLogLeave.Parameters.Add(new ParameterDefinition(this.module.TypeSystem.Object));
-
-            this.methodLoggerLogException = new MethodReference("LogException", this.module.TypeSystem.Void, this.methodLogger) { HasThis = true };
-            this.methodLoggerLogException.Parameters.Add(new ParameterDefinition(this.type));
-            this.methodLoggerLogException.Parameters.Add(new ParameterDefinition(this.exception));
-
-            this.methodLoggerFactory = this.module.Import(typeof(IMethodLoggerFactory));
-            this.methodLoggerFactoryLocator = this.module.Import(typeof(MethodLoggerFactory));
+            this.typeReferences = new TypeReferences(this.module);
+            this.methodReferences = new MethodReferences(this.typeReferences);
         }
 
         public void Rewrite(MethodDefinition method)
         {
             FieldDefinition methodLoggerField = new FieldDefinition(
                 string.Format("<>{0}_{1:x8}", method.Name, method.FullName.GetHashCode()),
-                Mono.Cecil.FieldAttributes.Private | Mono.Cecil.FieldAttributes.Static,
-                this.methodLogger);
-            methodLoggerField.CustomAttributes.Add(new CustomAttribute(this.compilerGeneratedAttributeConstructor));
+                FieldAttributes.Private | FieldAttributes.Static,
+                this.typeReferences.IMethodLogger);
+            methodLoggerField.CustomAttributes.Add(new CustomAttribute(this.methodReferences.CompilerGeneratedAttribute_Constructor));
             method.DeclaringType.Fields.Add(methodLoggerField);
 
-            VariableDefinition argsVariable = new VariableDefinition("<>args", this.objectArray);
+            VariableDefinition argsVariable = new VariableDefinition("<>args", this.typeReferences.ObjectArray);
             method.Body.Variables.Add(argsVariable);
 
-            VariableDefinition typeVariable = new VariableDefinition("<>type", this.type);
+            VariableDefinition typeVariable = new VariableDefinition("<>type", this.typeReferences.Type);
             method.Body.Variables.Add(typeVariable);
 
             VariableDefinition returnValueVariable = null;
@@ -84,7 +48,7 @@
                 method.Body.Variables.Add(returnValueVariable);
             }
 
-            VariableDefinition exceptionVariable = new VariableDefinition("<>exception", this.exception);
+            VariableDefinition exceptionVariable = new VariableDefinition("<>exception", this.typeReferences.Exception);
             method.Body.Variables.Add(exceptionVariable);
 
             this.RewriteBody(methodLoggerField, method, typeVariable, argsVariable, returnValueVariable, exceptionVariable);
@@ -117,7 +81,7 @@
             method.Body.ExceptionHandlers.Add(
                 new ExceptionHandler(ExceptionHandlerType.Catch)
                 {
-                    CatchType = this.exception,
+                    CatchType = this.typeReferences.Exception,
                     TryStart = tryBodyInstructions[0],
                     TryEnd = catchBodyInstructions[0],
                     HandlerStart = catchBodyInstructions[0],
@@ -182,19 +146,14 @@
             List<Instruction> instructions = new List<Instruction>();
 
             // Getting the current IMethodLoggerFactory instance
-            MethodReference getCurrentReference = new MethodReference("get_Current", this.methodLoggerFactory, this.methodLoggerFactoryLocator);
-            instructions.Add(Instruction.Create(OpCodes.Call, getCurrentReference));
+            instructions.Add(Instruction.Create(OpCodes.Call, this.methodReferences.MethodLoggerFactory_GetCurrent));
 
             // Getting the current MethodBase
-            MethodReference getMethodFromHandleReference = new MethodReference("GetMethodFromHandle", this.methodBase, this.methodBase);
-            getMethodFromHandleReference.Parameters.Add(new ParameterDefinition(this.runtimeMethodHandle));
             instructions.Add(Instruction.Create(OpCodes.Ldtoken, method));
-            instructions.Add(Instruction.Create(OpCodes.Call, getMethodFromHandleReference));
+            instructions.Add(Instruction.Create(OpCodes.Call, this.methodReferences.MethodBase_GetMethodFromHandle));
 
             // Calling IMethodEventLogger.Create(MethodBase)
-            MethodReference createReference = new MethodReference("Create", this.methodLogger, this.methodLoggerFactory) { HasThis = true };
-            createReference.Parameters.Add(new ParameterDefinition(this.methodBase));
-            instructions.Add(Instruction.Create(OpCodes.Callvirt, createReference));
+            instructions.Add(Instruction.Create(OpCodes.Callvirt, this.methodReferences.IMethodLoggerFactory_Create));
             instructions.Add(Instruction.Create(OpCodes.Stsfld, methodLoggerField));
 
             return instructions;
@@ -214,33 +173,30 @@
             {
                 // This isn't a static method so we call this.GetType().
                 instructions.Add(Instruction.Create(OpCodes.Ldarg_0));
-                instructions.Add(Instruction.Create(OpCodes.Call, this.objectGetType));
+                instructions.Add(Instruction.Create(OpCodes.Call, this.methodReferences.Object_GetType));
             }
             else
             {
                 // This is a static method, we have to use typeof(DeclaringType).
                 instructions.Add(Instruction.Create(OpCodes.Ldtoken, method.DeclaringType));
-                instructions.Add(Instruction.Create(OpCodes.Call, this.getTypeFromHandle));
+                instructions.Add(Instruction.Create(OpCodes.Call, this.methodReferences.Type_GetTypeFromHandle));
             }
 
             instructions.Add(Instruction.Create(OpCodes.Stloc, typeVariable));
 
             // Creating the 'args' array.
             instructions.Add(Instruction.Create(OpCodes.Ldc_I4, method.Parameters.Count));
-            instructions.Add(Instruction.Create(OpCodes.Newarr, this.module.TypeSystem.Object));
+            instructions.Add(Instruction.Create(OpCodes.Newarr, this.typeReferences.Object));
             instructions.Add(Instruction.Create(OpCodes.Stloc, argsVariable));
 
             // Filling the 'args' array with the parameters.
             instructions.AddRange(this.CreateFillArgsInstructions(method, argsVariable, false));
 
             // Calling IMethodLogger.LogEnter(object[]) on the method logger field.
-            MethodReference logEnterReference = new MethodReference("LogEnter", this.module.TypeSystem.Void, this.methodLogger) { HasThis = true };
-            logEnterReference.Parameters.Add(new ParameterDefinition(this.type));
-            logEnterReference.Parameters.Add(new ParameterDefinition(new ArrayType(this.module.TypeSystem.Object)));
             instructions.Add(Instruction.Create(OpCodes.Ldsfld, methodLoggerField));
             instructions.Add(Instruction.Create(OpCodes.Ldloc, typeVariable));
             instructions.Add(Instruction.Create(OpCodes.Ldloc, argsVariable));
-            instructions.Add(Instruction.Create(OpCodes.Callvirt, logEnterReference));
+            instructions.Add(Instruction.Create(OpCodes.Callvirt, this.methodReferences.IMethodLogger_LogEnter));
 
             return instructions;
         }
@@ -312,7 +268,7 @@
                 instructions.Add(Instruction.Create(OpCodes.Ldnull));
             }
 
-            instructions.Add(Instruction.Create(OpCodes.Callvirt, this.methodLoggerLogLeave));
+            instructions.Add(Instruction.Create(OpCodes.Callvirt, this.methodReferences.IMethodLogger_LogLeave));
 
             return instructions;
         }
@@ -332,7 +288,7 @@
                            Instruction.Create(OpCodes.Ldsfld, autoLoggerField),
                            Instruction.Create(OpCodes.Ldloc, typeVariable),
                            Instruction.Create(OpCodes.Ldloc, exceptionVariable),
-                           Instruction.Create(OpCodes.Callvirt, this.methodLoggerLogException),
+                           Instruction.Create(OpCodes.Callvirt, this.methodReferences.IMethodLogger_LogException),
                            Instruction.Create(OpCodes.Rethrow)
                        };
         }
@@ -396,6 +352,107 @@
             }
 
             return instructions;
+        }
+
+        private class TypeReferences
+        {
+            public TypeReferences(ModuleDefinition module)
+            {
+                this.Void = module.TypeSystem.Void;
+                this.Object = module.TypeSystem.Object;
+
+                this.CompilerGeneratedAttribute = module.Import(typeof(CompilerGeneratedAttribute));
+                this.Exception = module.Import(typeof(Exception));
+                this.MethodBase = module.Import(typeof(MethodBase));
+                this.IMethodLogger = module.Import(typeof(IMethodLogger));
+                this.IMethodLoggerFactory = module.Import(typeof(IMethodLoggerFactory));
+                this.MethodLoggerFactory = module.Import(typeof(MethodLoggerFactory));
+                this.RuntimeMethodHandle = module.Import(typeof(RuntimeMethodHandle));
+                this.RuntimeTypeHandle = module.Import(typeof(RuntimeTypeHandle));
+                this.Type = module.Import(typeof(Type));
+
+                this.ObjectArray = new ArrayType(this.Object);
+            }
+
+            // ReSharper disable InconsistentNaming
+            public TypeReference Object { get; private set; }
+
+            public TypeReference Void { get; private set; }
+
+            public TypeReference CompilerGeneratedAttribute { get; private set; }
+
+            public TypeReference Exception { get; private set; }
+
+            public TypeReference MethodBase { get; private set; }
+
+            public TypeReference IMethodLogger { get; private set; }
+
+            public TypeReference IMethodLoggerFactory { get; private set; }
+
+            public TypeReference MethodLoggerFactory { get; private set; }
+
+            public TypeReference RuntimeMethodHandle { get; private set; }
+
+            public TypeReference RuntimeTypeHandle { get; private set; }
+
+            public TypeReference Type { get; private set; }
+
+            public TypeReference ObjectArray { get; private set; }
+            // ReSharper restore InconsistentNaming
+        }
+
+        private class MethodReferences
+        {
+            public MethodReferences(TypeReferences typeReferences)
+            {
+                this.CompilerGeneratedAttribute_Constructor = new MethodReference(".ctor", typeReferences.Void, typeReferences.CompilerGeneratedAttribute) { HasThis = true };
+
+                this.IMethodLogger_LogEnter = new MethodReference("LogEnter", typeReferences.Void, typeReferences.IMethodLogger) { HasThis = true };
+                this.IMethodLogger_LogEnter.Parameters.Add(new ParameterDefinition(typeReferences.Type));
+                this.IMethodLogger_LogEnter.Parameters.Add(new ParameterDefinition(typeReferences.ObjectArray));
+
+                this.IMethodLogger_LogException = new MethodReference("LogException", typeReferences.Void, typeReferences.IMethodLogger) { HasThis = true };
+                this.IMethodLogger_LogException.Parameters.Add(new ParameterDefinition(typeReferences.Type));
+                this.IMethodLogger_LogException.Parameters.Add(new ParameterDefinition(typeReferences.Exception));
+
+                this.IMethodLogger_LogLeave = new MethodReference("LogLeave", typeReferences.Void, typeReferences.IMethodLogger) { HasThis = true };
+                this.IMethodLogger_LogLeave.Parameters.Add(new ParameterDefinition(typeReferences.Type));
+                this.IMethodLogger_LogLeave.Parameters.Add(new ParameterDefinition(new ArrayType(typeReferences.Object)));
+                this.IMethodLogger_LogLeave.Parameters.Add(new ParameterDefinition(typeReferences.Object));
+
+                this.IMethodLoggerFactory_Create = new MethodReference("Create", typeReferences.IMethodLogger, typeReferences.IMethodLoggerFactory) { HasThis = true };
+                this.IMethodLoggerFactory_Create.Parameters.Add(new ParameterDefinition(typeReferences.MethodBase));
+
+                this.MethodBase_GetMethodFromHandle = new MethodReference("GetMethodFromHandle", typeReferences.MethodBase, typeReferences.MethodBase);
+                this.MethodBase_GetMethodFromHandle.Parameters.Add(new ParameterDefinition(typeReferences.RuntimeMethodHandle));
+
+                this.MethodLoggerFactory_GetCurrent = new MethodReference("get_Current", typeReferences.IMethodLoggerFactory, typeReferences.MethodLoggerFactory);
+
+                this.Object_GetType = new MethodReference("GetType", typeReferences.Type, typeReferences.Object) { HasThis = true };
+
+                this.Type_GetTypeFromHandle = new MethodReference("GetTypeFromHandle", typeReferences.Type, typeReferences.Type);
+                this.Type_GetTypeFromHandle.Parameters.Add(new ParameterDefinition(typeReferences.RuntimeTypeHandle));
+            }
+
+            // ReSharper disable InconsistentNaming
+            public MethodReference CompilerGeneratedAttribute_Constructor { get; private set; }
+
+            public MethodReference IMethodLogger_LogEnter { get; private set; }
+
+            public MethodReference IMethodLogger_LogException { get; private set; }
+
+            public MethodReference IMethodLogger_LogLeave { get; private set; }
+
+            public MethodReference IMethodLoggerFactory_Create { get; private set; }
+
+            public MethodReference MethodBase_GetMethodFromHandle { get; private set; }
+
+            public MethodReference MethodLoggerFactory_GetCurrent { get; private set; }
+
+            public MethodReference Object_GetType { get; private set; }
+
+            public MethodReference Type_GetTypeFromHandle { get; private set; }
+            // ReSharper restore InconsistentNaming
         }
     }
 }
