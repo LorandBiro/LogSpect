@@ -54,7 +54,13 @@
             this.RewriteBody(methodLoggerField, method, typeVariable, argsVariable, returnValueVariable, exceptionVariable);
         }
 
-        private void RewriteBody(FieldDefinition methodLoggerField, MethodDefinition method, VariableDefinition typeVariable, VariableDefinition argsVariable, VariableDefinition returnValueVariable, VariableDefinition exceptionVariable)
+        private void RewriteBody(
+            FieldDefinition methodLoggerField,
+            MethodDefinition method,
+            VariableDefinition typeVariable,
+            VariableDefinition argsVariable,
+            VariableDefinition returnValueVariable,
+            VariableDefinition exceptionVariable)
         {
             IEnumerable<Instruction> beforeTryInstructions = this.CreateBeforeTryInstructions(method, methodLoggerField, typeVariable, argsVariable);
             IList<Instruction> tryBodyInstructions = this.CreateTryBodyInstructions(method, methodLoggerField, typeVariable, returnValueVariable, argsVariable);
@@ -102,7 +108,11 @@
         /// object[] args = { p1, p2, p3, ..., pn };
         /// methodLogger.LogEnter(args);
         /// </summary>
-        private IEnumerable<Instruction> CreateBeforeTryInstructions(MethodDefinition method, FieldDefinition methodLoggerField, VariableDefinition typeVariable, VariableDefinition argsVariable)
+        private IEnumerable<Instruction> CreateBeforeTryInstructions(
+            MethodDefinition method,
+            FieldDefinition methodLoggerField,
+            VariableDefinition typeVariable,
+            VariableDefinition argsVariable)
         {
             List<Instruction> instructions = new List<Instruction>();
 
@@ -143,18 +153,19 @@
         /// </summary>
         private IEnumerable<Instruction> CreateMethodLoggerInitializationInstructions(MethodDefinition method, FieldDefinition methodLoggerField)
         {
-            List<Instruction> instructions = new List<Instruction>();
+            List<Instruction> instructions = new List<Instruction>
+            {
+                // Getting the current IMethodLoggerFactory instance
+                Instruction.Create(OpCodes.Call, this.methodReferences.MethodLoggerFactory_GetCurrent),
 
-            // Getting the current IMethodLoggerFactory instance
-            instructions.Add(Instruction.Create(OpCodes.Call, this.methodReferences.MethodLoggerFactory_GetCurrent));
+                // Getting the current MethodBase
+                Instruction.Create(OpCodes.Ldtoken, method),
+                Instruction.Create(OpCodes.Call, this.methodReferences.MethodBase_GetMethodFromHandle),
 
-            // Getting the current MethodBase
-            instructions.Add(Instruction.Create(OpCodes.Ldtoken, method));
-            instructions.Add(Instruction.Create(OpCodes.Call, this.methodReferences.MethodBase_GetMethodFromHandle));
-
-            // Calling IMethodEventLogger.Create(MethodBase)
-            instructions.Add(Instruction.Create(OpCodes.Callvirt, this.methodReferences.IMethodLoggerFactory_Create));
-            instructions.Add(Instruction.Create(OpCodes.Stsfld, methodLoggerField));
+                // Calling IMethodEventLogger.Create(MethodBase)
+                Instruction.Create(OpCodes.Callvirt, this.methodReferences.IMethodLoggerFactory_Create),
+                Instruction.Create(OpCodes.Stsfld, methodLoggerField)
+            };
 
             return instructions;
         }
@@ -164,7 +175,11 @@
         /// object[] args = { p1, p2, p3, ..., pn };
         /// methodLogger.LogEnter(args);
         /// </summary>
-        private IList<Instruction> CreateCallingLogEnterInstructions(MethodDefinition method, FieldDefinition methodLoggerField, VariableDefinition typeVariable, VariableDefinition argsVariable)
+        private IList<Instruction> CreateCallingLogEnterInstructions(
+            MethodDefinition method,
+            FieldDefinition methodLoggerField,
+            VariableDefinition typeVariable,
+            VariableDefinition argsVariable)
         {
             List<Instruction> instructions = new List<Instruction>();
 
@@ -201,7 +216,12 @@
             return instructions;
         }
 
-        private IList<Instruction> CreateTryBodyInstructions(MethodDefinition method, FieldDefinition methodLoggerField, VariableDefinition typeVariable, VariableDefinition returnValueVariable, VariableDefinition argsVariable)
+        private IList<Instruction> CreateTryBodyInstructions(
+            MethodDefinition method,
+            FieldDefinition methodLoggerField,
+            VariableDefinition typeVariable,
+            VariableDefinition returnValueVariable,
+            VariableDefinition argsVariable)
         {
             IList<Instruction> callingLogLeaveInstructions = this.CreateCallingLogLeaveInstructions(method, methodLoggerField, typeVariable, returnValueVariable, argsVariable);
 
@@ -243,7 +263,12 @@
             return instructions;
         }
 
-        private IList<Instruction> CreateCallingLogLeaveInstructions(MethodDefinition method, FieldDefinition methodLoggerField, VariableDefinition typeVariable, VariableDefinition returnValueVariable, VariableDefinition argsVariable)
+        private IList<Instruction> CreateCallingLogLeaveInstructions(
+            MethodDefinition method,
+            FieldDefinition methodLoggerField,
+            VariableDefinition typeVariable,
+            VariableDefinition returnValueVariable,
+            VariableDefinition argsVariable)
         {
             List<Instruction> instructions = new List<Instruction>();
             instructions.AddRange(this.CreateFillArgsInstructions(method, argsVariable, true));
@@ -277,20 +302,20 @@
         /// methodLogger.LogException(exception);
         /// throw;
         /// </summary>
-        private IList<Instruction> CreateCatchBodyInstructions(
-            FieldDefinition methodLoggerField,
-            VariableDefinition typeVariable,
-            VariableDefinition exceptionVariable)
+        private IList<Instruction> CreateCatchBodyInstructions(FieldDefinition methodLoggerField, VariableDefinition typeVariable, VariableDefinition exceptionVariable)
         {
             return new[]
-                       {
-                           Instruction.Create(OpCodes.Stloc, exceptionVariable),
-                           Instruction.Create(OpCodes.Ldsfld, methodLoggerField),
-                           Instruction.Create(OpCodes.Ldloc, typeVariable),
-                           Instruction.Create(OpCodes.Ldloc, exceptionVariable),
-                           Instruction.Create(OpCodes.Callvirt, this.methodReferences.IMethodLogger_LogException),
-                           Instruction.Create(OpCodes.Rethrow)
-                       };
+            {
+                // Store the exception object
+                Instruction.Create(OpCodes.Stloc, exceptionVariable),
+
+                // Call LogException
+                Instruction.Create(OpCodes.Ldsfld, methodLoggerField), Instruction.Create(OpCodes.Ldloc, typeVariable), Instruction.Create(OpCodes.Ldloc, exceptionVariable),
+                Instruction.Create(OpCodes.Callvirt, this.methodReferences.IMethodLogger_LogException),
+
+                // Rethrow exception
+                Instruction.Create(OpCodes.Rethrow)
+            };
         }
 
         /// <summary>
@@ -398,6 +423,7 @@
             public TypeReference Type { get; private set; }
 
             public TypeReference ObjectArray { get; private set; }
+
             // ReSharper restore InconsistentNaming
         }
 
@@ -452,6 +478,7 @@
             public MethodReference Object_GetType { get; private set; }
 
             public MethodReference Type_GetTypeFromHandle { get; private set; }
+
             // ReSharper restore InconsistentNaming
         }
     }
