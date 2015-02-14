@@ -201,9 +201,9 @@
             return instructions;
         }
 
-        private IList<Instruction> CreateTryBodyInstructions(MethodDefinition method, FieldDefinition autoLoggerField, VariableDefinition typeVariable, VariableDefinition returnValueVariable, VariableDefinition argsVariable)
+        private IList<Instruction> CreateTryBodyInstructions(MethodDefinition method, FieldDefinition methodLoggerField, VariableDefinition typeVariable, VariableDefinition returnValueVariable, VariableDefinition argsVariable)
         {
-            IList<Instruction> callingLogLeaveInstructions = this.CreateCallingLogLeaveInstructions(method, autoLoggerField, typeVariable, returnValueVariable, argsVariable);
+            IList<Instruction> callingLogLeaveInstructions = this.CreateCallingLogLeaveInstructions(method, methodLoggerField, typeVariable, returnValueVariable, argsVariable);
 
             List<Instruction> instructions = new List<Instruction>();
             for (int i = 0; i < method.Body.Instructions.Count; i++)
@@ -243,11 +243,11 @@
             return instructions;
         }
 
-        private IList<Instruction> CreateCallingLogLeaveInstructions(MethodDefinition method, FieldDefinition autoLoggerField, VariableDefinition typeVariable, VariableDefinition returnValueVariable, VariableDefinition argsVariable)
+        private IList<Instruction> CreateCallingLogLeaveInstructions(MethodDefinition method, FieldDefinition methodLoggerField, VariableDefinition typeVariable, VariableDefinition returnValueVariable, VariableDefinition argsVariable)
         {
             List<Instruction> instructions = new List<Instruction>();
             instructions.AddRange(this.CreateFillArgsInstructions(method, argsVariable, true));
-            instructions.Add(Instruction.Create(OpCodes.Ldsfld, autoLoggerField));
+            instructions.Add(Instruction.Create(OpCodes.Ldsfld, methodLoggerField));
             instructions.Add(Instruction.Create(OpCodes.Ldloc, typeVariable));
             instructions.Add(Instruction.Create(OpCodes.Ldloc, argsVariable));
 
@@ -278,14 +278,14 @@
         /// throw;
         /// </summary>
         private IList<Instruction> CreateCatchBodyInstructions(
-            FieldDefinition autoLoggerField,
+            FieldDefinition methodLoggerField,
             VariableDefinition typeVariable,
             VariableDefinition exceptionVariable)
         {
             return new[]
                        {
                            Instruction.Create(OpCodes.Stloc, exceptionVariable),
-                           Instruction.Create(OpCodes.Ldsfld, autoLoggerField),
+                           Instruction.Create(OpCodes.Ldsfld, methodLoggerField),
                            Instruction.Create(OpCodes.Ldloc, typeVariable),
                            Instruction.Create(OpCodes.Ldloc, exceptionVariable),
                            Instruction.Create(OpCodes.Callvirt, this.methodReferences.IMethodLogger_LogException),
