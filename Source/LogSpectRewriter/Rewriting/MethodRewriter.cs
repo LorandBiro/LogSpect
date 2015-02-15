@@ -116,24 +116,28 @@
         {
             List<Instruction> instructions = new List<Instruction>();
 
-            if (method.Body.Instructions[0].OpCode == OpCodes.Nop)
+            Instruction firstInstruction = method.Body.Instructions[0];
+            if (firstInstruction.OpCode == OpCodes.Nop)
             {
                 // In debug builds the first instruction of a method is always 'nop' and it has a sequence point pointing to the opening bracket of the method.
                 // We'll place that instruction with its sequence point to the beginning and will skip this 'nop' later when we copy the method body.
-                instructions.Add(method.Body.Instructions[0]);
+                instructions.Add(firstInstruction);
             }
             else
             {
                 // This is a release build and this method doesn't start with 'nop', but our first instruction must have a sequence point or the debugger will
                 // try to step into assembly code. We will create a new sequence point from the first real sequence point.
-                Document document = method.Body.Instructions[0].SequencePoint.Document;
-                int startLine = method.Body.Instructions[0].SequencePoint.StartLine;
-                int startColumn = Math.Max(method.Body.Instructions[0].SequencePoint.StartColumn - 1, 0);
-                int endColumn = method.Body.Instructions[0].SequencePoint.StartColumn;
+                if (firstInstruction.SequencePoint != null)
+                {
+                    Document document = firstInstruction.SequencePoint.Document;
+                    int startLine = firstInstruction.SequencePoint.StartLine;
+                    int startColumn = Math.Max(firstInstruction.SequencePoint.StartColumn - 1, 0);
+                    int endColumn = firstInstruction.SequencePoint.StartColumn;
 
-                Instruction nop = Instruction.Create(OpCodes.Nop);
-                nop.SequencePoint = new SequencePoint(document) { StartLine = startLine, EndLine = startLine, StartColumn = startColumn, EndColumn = endColumn };
-                instructions.Add(nop);
+                    Instruction nop = Instruction.Create(OpCodes.Nop);
+                    nop.SequencePoint = new SequencePoint(document) { StartLine = startLine, EndLine = startLine, StartColumn = startColumn, EndColumn = endColumn };
+                    instructions.Add(nop);
+                }
             }
 
             IEnumerable<Instruction> initInstructions = this.CreateMethodLoggerInitializationInstructions(method, methodLoggerField);
