@@ -9,7 +9,7 @@ LogSpect is a logging (or more accurately a tracing) framework. It doesn't try t
 
 The fastest way to install the library is to use NuGet. For the sake of simplicity we won't use any other logging frameworks, only the included ConsoleLogger. So let's create a new Console Application, right click on References, select "Manage NuGet packages..." and type LogSpect in the search box. (Currently you have to change the "Stable only" dropbox to "Include Prerelease") Then install the "LogSpect" and "LogSpect.BasicLoggers" packages. The latter contains some basic loggers for simple scenarios, but connecting LogSpect with a mature logging framework like NLog or log4net is highly recommended.
 
-By now everything is ready to use. A tool called LogSpectRewriter is included in the project's build process, but to see any actual logging we have to specify which methods to log and we have to tell LogSpect where to log them (NLog, log4net or one of the basic loggers). First let's write a few random methods, decorate them with the LogCallsAttribute and then initialize the `MethodLoggerFactory` with the chosen logger:
+By now everything is ready to use. A tool called LogSpectRewriter is included in the project's build process, but to see any actual logging we have to specify which methods to log and we have to tell LogSpect where to log them (NLog, log4net or one of the basic loggers). First let's write a few random methods, decorate them with the LogCallsAttribute. Before calling any of those methods choose a logger and initialize LogSpect using the `LogSpectInitializer` class:
 
 ```C#
 using System;
@@ -20,7 +20,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        MethodLoggerFactory.SetFactory(new FormattingMethodLoggerFactory(new ColoredConsoleLoggerFactory()));
+        LogSpectInitializer.Initialize(new ColoredConsoleLoggerFactory());
         Foo(10);
         Bar(5);
     }
