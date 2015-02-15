@@ -50,7 +50,7 @@
     <Compile Include="LogSpectInitializer.cs" />
     <Compile Include="Formatting\CachedFormattingModeReader.cs" />
     <Compile Include="Formatting\IMethodEventFormatter.cs" />
-    <Compile Include="Formatting\ICustomDefaultFormatter.cs" />
+    <Compile Include="Formatting\ICustomValueFormatter.cs" />
     <Compile Include="Formatting\MethodEventFormatter.cs" />
     <Compile Include="Formatting\IParameterFormatter.cs" />
     <Compile Include="Formatting\IFormattingModeReader.cs" />

@@ -58,7 +58,7 @@
         public static FormattingMethodLoggerFactory Initialize(
             ILoggerAdapterFactory loggerAdapterFactory,
             IFormatProvider formatProvider,
-            ICustomDefaultFormatter customDefaultFormatter = null)
+            ICustomValueFormatter customValueFormatter = null)
         {
             if (loggerAdapterFactory == null)
             {
@@ -71,7 +71,7 @@
             }
 
             IFormattingModeReader formattingModeReader = new CachedFormattingModeReader(new FormattingModeReader());
-            IMethodEventFormatter methodEventFormatter = new MethodEventFormatter(new ParameterFormatter(formattingModeReader, formatProvider, customDefaultFormatter));
+            IMethodEventFormatter methodEventFormatter = new MethodEventFormatter(new ParameterFormatter(formattingModeReader, formatProvider, customValueFormatter));
 
             FormattingMethodLoggerFactory factory = new FormattingMethodLoggerFactory(loggerAdapterFactory, new IndentationTracker(), methodEventFormatter);
             Factory = factory;

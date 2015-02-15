@@ -14,9 +14,9 @@
 
         private readonly IFormatProvider formatProvider;
 
-        private readonly ICustomDefaultFormatter customDefaultFormatter;
+        private readonly ICustomValueFormatter customValueFormatter;
 
-        public ParameterFormatter(IFormattingModeReader reader, IFormatProvider formatProvider, ICustomDefaultFormatter customDefaultFormatter = null)
+        public ParameterFormatter(IFormattingModeReader reader, IFormatProvider formatProvider, ICustomValueFormatter customValueFormatter = null)
         {
             if (reader == null)
             {
@@ -30,7 +30,7 @@
 
             this.reader = reader;
             this.formatProvider = formatProvider;
-            this.customDefaultFormatter = customDefaultFormatter;
+            this.customValueFormatter = customValueFormatter;
         }
 
         public void Serialize(StringBuilder sb, object value, ParameterInfo parameter)
@@ -51,7 +51,7 @@
 
         private void SerializeDefault(StringBuilder sb, object value)
         {
-            if (this.customDefaultFormatter != null && this.customDefaultFormatter.TrySerialize(sb, value, this.formatProvider))
+            if (this.customValueFormatter != null && this.customValueFormatter.TrySerialize(sb, value, this.formatProvider))
             {
                 return;
             }

@@ -92,19 +92,10 @@
         }
 
         [TestMethod]
-        public void Serialize_CustomDefaultFormatterTests()
+        public void Serialize_CustomValueFormatterTests()
         {
             Complex complex = new Complex();
-
-            ICustomDefaultFormatter customDefaultFormatter = Substitute.For<ICustomDefaultFormatter>();
-            customDefaultFormatter.TrySerialize(Arg.Any<StringBuilder>(), complex, Arg.Any<CultureInfo>()).Returns(
-                x =>
-                    {
-                        ((StringBuilder)x[0]).Append("complex");
-                        return true;
-                    });
-
-            TestFormatter(complex, FormattingMode.Default, "complex", null, customDefaultFormatter);
+            TestFormatter(complex, FormattingMode.Default, "complex", null, new TestValueFormatter());
         }
 
         [TestMethod]
@@ -123,13 +114,13 @@
             TestFormatter(dict, FormattingMode.ItemsMembers, "[1 => { Re: 1, Im: 2 }, 2 => { Re: 2, Im: -1 }]");
         }
 
-        private static void TestFormatter(object value, FormattingMode mode, string expectedOutput, IFormatProvider formatProvider = null, ICustomDefaultFormatter customDefaultFormatter = null)
+        private static void TestFormatter(object value, FormattingMode mode, string expectedOutput, IFormatProvider formatProvider = null, ICustomValueFormatter customValueFormatter = null)
         {
             // Arrange
             IFormattingModeReader reader = Substitute.For<IFormattingModeReader>();
             reader.ReadMode(TestParameter).Returns(mode);
 
-            IParameterFormatter formatter = new ParameterFormatter(reader, formatProvider ?? CultureInfo.InvariantCulture, customDefaultFormatter);
+            IParameterFormatter formatter = new ParameterFormatter(reader, formatProvider ?? CultureInfo.InvariantCulture, customValueFormatter);
 
             StringBuilder sb = new StringBuilder();
 
@@ -138,6 +129,15 @@
 
             // Assert
             Assert.AreEqual(expectedOutput, sb.ToString());
+        }
+
+        private class TestValueFormatter : ICustomValueFormatter
+        {
+            public bool TrySerialize(StringBuilder sb, object value, IFormatProvider formatProvider)
+            {
+                sb.Append("complex");
+                return true;
+            }
         }
     }
 }
