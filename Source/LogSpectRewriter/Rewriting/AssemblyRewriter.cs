@@ -83,7 +83,14 @@
 
         private static void SaveModule(ModuleDefinition module, string assemblyPath)
         {
-            module.Write(assemblyPath, new WriterParameters { WriteSymbols = true, SymbolWriterProvider = new PdbWriterProvider() });
+            if (module.HasSymbols)
+            {
+                module.Write(assemblyPath, new WriterParameters { WriteSymbols = true, SymbolWriterProvider = new PdbWriterProvider() });   
+            }
+            else
+            {
+                module.Write(assemblyPath);
+            }
         }
 
         private static bool LogSpectRewrittenClassExists(ModuleDefinition module)
