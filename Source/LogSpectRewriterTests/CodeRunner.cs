@@ -83,9 +83,9 @@
 
         private static void InitializeLogSpect()
         {
-            if (!MethodLoggerFactory.IsInitialized)
+            if (!LogSpectInitializer.IsInitialized)
             {
-                MethodLoggerFactory.SetFactory(new FormattingMethodLoggerFactory(new InMemoryLoggerAdapterFactory()));
+                LogSpectInitializer.Initialize(new FormattingMethodLoggerFactory(new InMemoryLoggerAdapterFactory()));
             }
 
             InMemoryLoggerAdapterFactory.Adapter.Clear();

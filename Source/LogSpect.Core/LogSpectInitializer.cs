@@ -3,7 +3,7 @@
     using System;
     using LogSpect.Logging;
 
-    public static class MethodLoggerFactory
+    public static class LogSpectInitializer
     {
         private static IMethodLoggerFactory factoryInstance;
 
@@ -15,24 +15,24 @@
             }
         }
 
-        public static IMethodLoggerFactory Current
+        public static IMethodLoggerFactory Factory
         {
             get
             {
                 if (!IsInitialized)
                 {
-                    throw new InvalidOperationException("The LogSpect locator is not initialized yet.");
+                    throw new InvalidOperationException("LogSpect is not initialized yet.");
                 }
 
                 return factoryInstance;
             }
         }
 
-        public static void SetFactory(IMethodLoggerFactory factory)
+        public static void Initialize(IMethodLoggerFactory factory)
         {
             if (IsInitialized)
             {
-                throw new InvalidOperationException("The LogSpect locator is already initialized.");
+                throw new InvalidOperationException("LogSpect is already initialized.");
             }
 
             if (factory == null)

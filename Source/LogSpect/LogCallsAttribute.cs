@@ -25,7 +25,7 @@
     /// {
     ///     if (logger == null)
     ///     {
-    ///         logger = MethodLoggerFactory.Current.Create(methodof(Foo));
+    ///         logger = LogSpectInitializer.Factory.Create(methodof(Foo));
     ///     }
     /// 
     ///     int ret;

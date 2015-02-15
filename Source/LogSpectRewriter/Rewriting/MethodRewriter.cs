@@ -101,7 +101,7 @@
         /// <summary>
         /// if (methodLogger == null)
         /// {
-        ///     methodLogger = MethodLoggerFactory.Current.Create(methodof(Foo));
+        ///     methodLogger = LogSpectInitializer.Factory.Create(methodof(Foo));
         /// }
         /// 
         /// Type type = this.GetType();
@@ -153,14 +153,14 @@
         }
 
         /// <summary>
-        /// methodLogger = MethodLoggerFactory.Current.Create(methodof(Foo));
+        /// methodLogger = LogSpectInitializer.Factory.Create(methodof(Foo));
         /// </summary>
         private IEnumerable<Instruction> CreateMethodLoggerInitializationInstructions(MethodDefinition method, FieldDefinition methodLoggerField)
         {
             List<Instruction> instructions = new List<Instruction>
             {
                 // Getting the current IMethodLoggerFactory instance
-                Instruction.Create(OpCodes.Call, this.methodReferences.MethodLoggerFactory_GetCurrent),
+                Instruction.Create(OpCodes.Call, this.methodReferences.LogSpectInitializer_GetFactory),
 
                 // Getting the current MethodBase
                 Instruction.Create(OpCodes.Ldtoken, method),
@@ -392,10 +392,10 @@
 
                 this.CompilerGeneratedAttribute = module.Import(typeof(CompilerGeneratedAttribute));
                 this.Exception = module.Import(typeof(Exception));
-                this.MethodBase = module.Import(typeof(MethodBase));
                 this.IMethodLogger = module.Import(typeof(IMethodLogger));
                 this.IMethodLoggerFactory = module.Import(typeof(IMethodLoggerFactory));
-                this.MethodLoggerFactory = module.Import(typeof(MethodLoggerFactory));
+                this.LogSpectInitializer = module.Import(typeof(LogSpectInitializer));
+                this.MethodBase = module.Import(typeof(MethodBase));
                 this.RuntimeMethodHandle = module.Import(typeof(RuntimeMethodHandle));
                 this.RuntimeTypeHandle = module.Import(typeof(RuntimeTypeHandle));
                 this.Type = module.Import(typeof(Type));
@@ -412,13 +412,13 @@
 
             public TypeReference Exception { get; private set; }
 
-            public TypeReference MethodBase { get; private set; }
-
             public TypeReference IMethodLogger { get; private set; }
 
             public TypeReference IMethodLoggerFactory { get; private set; }
 
-            public TypeReference MethodLoggerFactory { get; private set; }
+            public TypeReference LogSpectInitializer { get; private set; }
+
+            public TypeReference MethodBase { get; private set; }
 
             public TypeReference RuntimeMethodHandle { get; private set; }
 
@@ -456,7 +456,7 @@
                 this.MethodBase_GetMethodFromHandle = new MethodReference("GetMethodFromHandle", typeReferences.MethodBase, typeReferences.MethodBase);
                 this.MethodBase_GetMethodFromHandle.Parameters.Add(new ParameterDefinition(typeReferences.RuntimeMethodHandle));
 
-                this.MethodLoggerFactory_GetCurrent = new MethodReference("get_Current", typeReferences.IMethodLoggerFactory, typeReferences.MethodLoggerFactory);
+                this.LogSpectInitializer_GetFactory = new MethodReference("get_Factory", typeReferences.IMethodLoggerFactory, typeReferences.LogSpectInitializer);
 
                 this.Object_GetType = new MethodReference("GetType", typeReferences.Type, typeReferences.Object) { HasThis = true };
 
@@ -475,9 +475,9 @@
 
             public MethodReference IMethodLoggerFactory_Create { get; private set; }
 
-            public MethodReference MethodBase_GetMethodFromHandle { get; private set; }
+            public MethodReference LogSpectInitializer_GetFactory { get; private set; }
 
-            public MethodReference MethodLoggerFactory_GetCurrent { get; private set; }
+            public MethodReference MethodBase_GetMethodFromHandle { get; private set; }
 
             public MethodReference Object_GetType { get; private set; }
 
