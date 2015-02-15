@@ -2,7 +2,7 @@
 {
     using System;
 
-    internal interface IOutputWriter
+    public interface IOutputWriter
     {
         void LogMessage(string message);
 

@@ -8,7 +8,7 @@
     using Mono.Cecil;
     using Mono.Cecil.Pdb;
 
-    internal sealed class AssemblyRewriter
+    public sealed class AssemblyRewriter
     {
         private const string LogSpectRewrittenClassName = "<LogSpectRewritten>";
 
@@ -26,6 +26,16 @@
 
         public bool TryRewriteAssembly(string inputAssemblyPath, string outputAssemblyPath)
         {
+            if (inputAssemblyPath == null)
+            {
+                throw new ArgumentNullException("inputAssemblyPath");
+            }
+
+            if (outputAssemblyPath == null)
+            {
+                throw new ArgumentNullException("outputAssemblyPath");
+            }
+
             DateTime startedAt = DateTime.UtcNow;
             try
             {
