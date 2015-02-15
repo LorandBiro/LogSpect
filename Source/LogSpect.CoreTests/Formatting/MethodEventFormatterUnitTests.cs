@@ -69,7 +69,7 @@
         [TestMethod]
         public void SerializeEnter_Tests()
         {
-            IMethodEventFormatter formatter = CreateTestMethodEventFormatter();
+            IMethodEventFormatter formatter = new MethodEventFormatter(new TestParameterFormatter());
 
             Assert.AreEqual("Enter Object.ToString()", formatter.SerializeEnter(typeof(object), ObjectToString, new object[0]));
             Assert.AreEqual("Enter TestSubject.ToString()", formatter.SerializeEnter(typeof(TestSubject), ObjectToString, new object[0]));
@@ -118,7 +118,7 @@
         [TestMethod]
         public void SerializeLeave_Tests()
         {
-            IMethodEventFormatter formatter = CreateTestMethodEventFormatter();
+            IMethodEventFormatter formatter = new MethodEventFormatter(new TestParameterFormatter());
 
             Assert.AreEqual("Leave Object.ToString(): X", formatter.SerializeLeave(typeof(object), ObjectToString, new object[0], null));
             Assert.AreEqual("Leave TestSubject.ToString(): X", formatter.SerializeLeave(typeof(TestSubject), ObjectToString, new object[0], null));
@@ -159,22 +159,29 @@
         [TestMethod]
         public void SerializeException_Tests()
         {
-            IMethodEventFormatter formatter = CreateTestMethodEventFormatter();
+            IMethodEventFormatter formatter = new MethodEventFormatter(new TestParameterFormatter());
 
-            Assert.AreEqual("Object.ToString() failed with ArgumentException! Message: Lorem ipsum", formatter.SerializeException(typeof(object), ObjectToString, new ArgumentException("Lorem ipsum"), false));
-            Assert.AreEqual("TestSubject.ToString() threw ArgumentException. Message: Lorem ipsum", formatter.SerializeException(typeof(TestSubject), ObjectToString, new ArgumentException("Lorem ipsum"), true));
+            Assert.AreEqual(
+                "Object.ToString() failed with ArgumentException! Message: Lorem ipsum",
+                formatter.SerializeException(typeof(object), ObjectToString, new ArgumentException("Lorem ipsum"), false));
+            Assert.AreEqual(
+                "TestSubject.ToString() threw ArgumentException. Message: Lorem ipsum",
+                formatter.SerializeException(typeof(TestSubject), ObjectToString, new ArgumentException("Lorem ipsum"), true));
 
-            Assert.AreEqual("TestSubject.TestMethod1() failed with ArgumentException! Message: Lorem ipsum", formatter.SerializeException(typeof(TestSubject), Method1, new ArgumentException("Lorem ipsum"), false));
-            Assert.AreEqual("TestSubject.TestMethod1() threw ArgumentException. Message: Lorem ipsum", formatter.SerializeException(typeof(TestSubject), Method1, new ArgumentException("Lorem ipsum"), true));
+            Assert.AreEqual(
+                "TestSubject.TestMethod1() failed with ArgumentException! Message: Lorem ipsum",
+                formatter.SerializeException(typeof(TestSubject), Method1, new ArgumentException("Lorem ipsum"), false));
+            Assert.AreEqual(
+                "TestSubject.TestMethod1() threw ArgumentException. Message: Lorem ipsum",
+                formatter.SerializeException(typeof(TestSubject), Method1, new ArgumentException("Lorem ipsum"), true));
         }
 
-        private static IMethodEventFormatter CreateTestMethodEventFormatter()
+        private class TestParameterFormatter : IParameterFormatter
         {
-            IParameterFormatter parameterFormatter = Substitute.For<IParameterFormatter>();
-            parameterFormatter.When(x => x.Serialize(Arg.Any<StringBuilder>(), Arg.Any<object>(), Arg.Any<ParameterInfo>())).Do(x => ((StringBuilder)x[0]).Append("X"));
-
-            IMethodEventFormatter methodEventFormatter = new MethodEventFormatter(parameterFormatter);
-            return methodEventFormatter;
+            public void Serialize(StringBuilder sb, object value, ParameterInfo parameter)
+            {
+                sb.Append("X");
+            }
         }
 
         private class TestSubject
