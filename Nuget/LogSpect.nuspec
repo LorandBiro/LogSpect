@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>LogSpect</id>
-    <version>1.0.0-alpha002</version>
+    <version>1.0.0-alpha003</version>
     <authors>Loránd Biró</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>https://github.com/LorandBiro/LogSpect/raw/master/LICENSE</licenseUrl>
@@ -13,7 +13,7 @@
     <iconUrl>https://github.com/LorandBiro/LogSpect/raw/master/Media/LogSpectLogo128x128.png</iconUrl>
     <projectUrl>https://github.com/LorandBiro/LogSpect</projectUrl>
     <dependencies>
-      <dependency id="LogSpect.Core" version="1.0.0-alpha002" />
+      <dependency id="LogSpect.Core" version="1.0.0-alpha003" />
     </dependencies>
   </metadata>
   <files>
