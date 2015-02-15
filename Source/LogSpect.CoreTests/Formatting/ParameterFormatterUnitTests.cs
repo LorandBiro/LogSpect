@@ -48,6 +48,13 @@
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Serialize_WithInvalidMode_ThrowsArgumentOutOfRangeException()
+        {
+            TestFormatter(1, (FormattingMode)(-1), null);
+        }
+
+        [TestMethod]
         public void Serialize_NullTests()
         {
             TestFormatter(null, FormattingMode.Default, "null");
