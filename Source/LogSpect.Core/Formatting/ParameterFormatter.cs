@@ -12,11 +12,11 @@
     {
         private readonly IFormattingModeReader reader;
 
-        private readonly ICustomDefaultFormatter customDefaultFormatter;
-
         private readonly IFormatProvider formatProvider;
 
-        public ParameterFormatter(IFormattingModeReader reader, ICustomDefaultFormatter customDefaultFormatter, IFormatProvider formatProvider)
+        private readonly ICustomDefaultFormatter customDefaultFormatter;
+
+        public ParameterFormatter(IFormattingModeReader reader, IFormatProvider formatProvider, ICustomDefaultFormatter customDefaultFormatter = null)
         {
             if (reader == null)
             {
@@ -29,8 +29,8 @@
             }
 
             this.reader = reader;
-            this.customDefaultFormatter = customDefaultFormatter;
             this.formatProvider = formatProvider;
+            this.customDefaultFormatter = customDefaultFormatter;
         }
 
         public void Serialize(StringBuilder sb, object value, ParameterInfo parameter)

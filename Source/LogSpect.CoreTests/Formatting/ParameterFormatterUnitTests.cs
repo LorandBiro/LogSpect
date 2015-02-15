@@ -20,7 +20,7 @@
         public void Constructor_WithNullRegistry_ThrowsArgumentNullException()
         {
             // ReSharper disable once UnusedVariable
-            IParameterFormatter formatter = new ParameterFormatter(null, null, CultureInfo.InvariantCulture);
+            IParameterFormatter formatter = new ParameterFormatter(null, CultureInfo.InvariantCulture);
         }
 
         [TestMethod]
@@ -28,14 +28,14 @@
         public void Constructor_WithNullFormatProvider_ThrowsArgumentNullException()
         {
             // ReSharper disable once UnusedVariable
-            IParameterFormatter formatter = new ParameterFormatter(Substitute.For<IFormattingModeReader>(), null, null);
+            IParameterFormatter formatter = new ParameterFormatter(Substitute.For<IFormattingModeReader>(), null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Serialize_WithNullStringBuilder_ThrowsArgumentNullException()
         {
-            IParameterFormatter formatter = new ParameterFormatter(Substitute.For<IFormattingModeReader>(), null, CultureInfo.InvariantCulture);
+            IParameterFormatter formatter = new ParameterFormatter(Substitute.For<IFormattingModeReader>(), CultureInfo.InvariantCulture);
             formatter.Serialize(null, new object(), TestParameter);
         }
 
@@ -43,7 +43,7 @@
         [ExpectedException(typeof(ArgumentNullException))]
         public void Serialize_WithNullParameterInfo_ThrowsArgumentNullException()
         {
-            IParameterFormatter formatter = new ParameterFormatter(Substitute.For<IFormattingModeReader>(), null, CultureInfo.InvariantCulture);
+            IParameterFormatter formatter = new ParameterFormatter(Substitute.For<IFormattingModeReader>(), CultureInfo.InvariantCulture);
             formatter.Serialize(new StringBuilder(), new object(), null);
         }
 
@@ -129,10 +129,7 @@
             IFormattingModeReader reader = Substitute.For<IFormattingModeReader>();
             reader.ReadMode(TestParameter).Returns(mode);
 
-            IParameterFormatter formatter = new ParameterFormatter(
-                reader,
-                customDefaultFormatter,
-                formatProvider ?? CultureInfo.InvariantCulture);
+            IParameterFormatter formatter = new ParameterFormatter(reader, formatProvider ?? CultureInfo.InvariantCulture, customDefaultFormatter);
 
             StringBuilder sb = new StringBuilder();
 

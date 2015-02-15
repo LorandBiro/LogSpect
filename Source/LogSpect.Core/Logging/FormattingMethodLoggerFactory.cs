@@ -1,46 +1,16 @@
 ﻿namespace LogSpect.Logging
 {
     using System;
-    using System.Globalization;
     using System.Reflection;
     using LogSpect.Formatting;
 
     public sealed class FormattingMethodLoggerFactory : IMethodLoggerFactory
     {
-        private readonly ILoggerAdapterFactory adapterFactory;
-
-        private readonly IIndentationTracker indentationTracker;
-
-        private readonly IMethodEventFormatter methodEventFormatter;
-
-        public FormattingMethodLoggerFactory(ILoggerAdapterFactory adapterFactory)
-            : this(adapterFactory, null, CultureInfo.InvariantCulture)
+        public FormattingMethodLoggerFactory(ILoggerAdapterFactory loggerAdapterFactory, IIndentationTracker indentationTracker, IMethodEventFormatter methodEventFormatter)
         {
-        }
-
-        public FormattingMethodLoggerFactory(ILoggerAdapterFactory adapterFactory, IFormatProvider formatProvider)
-            : this(adapterFactory, null, formatProvider)
-        {
-        }
-
-        public FormattingMethodLoggerFactory(ILoggerAdapterFactory adapterFactory, ICustomDefaultFormatter customDefaultFormatter)
-            : this(adapterFactory, customDefaultFormatter, CultureInfo.InvariantCulture)
-        {
-        }
-
-        public FormattingMethodLoggerFactory(ILoggerAdapterFactory adapterFactory, ICustomDefaultFormatter customDefaultFormatter, IFormatProvider formatProvider)
-            : this(
-                adapterFactory,
-                new IndentationTracker(4, 20),
-                new MethodEventFormatter(new ParameterFormatter(new FormattingModeReader(), customDefaultFormatter, formatProvider)))
-        {
-        }
-
-        public FormattingMethodLoggerFactory(ILoggerAdapterFactory adapterFactory, IIndentationTracker indentationTracker, IMethodEventFormatter methodEventFormatter)
-        {
-            if (adapterFactory == null)
+            if (loggerAdapterFactory == null)
             {
-                throw new ArgumentNullException("adapterFactory");
+                throw new ArgumentNullException("loggerAdapterFactory");
             }
 
             if (indentationTracker == null)
@@ -53,10 +23,16 @@
                 throw new ArgumentNullException("methodEventFormatter");
             }
 
-            this.adapterFactory = adapterFactory;
-            this.indentationTracker = indentationTracker;
-            this.methodEventFormatter = methodEventFormatter;
+            this.LoggerAdapterFactory = loggerAdapterFactory;
+            this.IndentationTracker = indentationTracker;
+            this.MethodEventFormatter = methodEventFormatter;
         }
+
+        public ILoggerAdapterFactory LoggerAdapterFactory { get; private set; }
+
+        public IIndentationTracker IndentationTracker { get; private set; }
+
+        public IMethodEventFormatter MethodEventFormatter { get; private set; }
 
         public IMethodLogger Create(MethodBase targetMethod)
         {
@@ -65,15 +41,15 @@
                 throw new ArgumentNullException("targetMethod");
             }
 
-            ILoggerAdapter adapter = this.adapterFactory.Create(targetMethod.DeclaringType);
+            ILoggerAdapter adapter = this.LoggerAdapterFactory.Create(targetMethod.DeclaringType);
             object[] attributes = targetMethod.GetCustomAttributes(typeof(LogCallsAttributeBase), false);
             if (attributes.Length == 0)
             {
-                throw new ArgumentException("Target method must have decorated with the LogCallsAttribute.");
+                throw new ArgumentException("Target method must be decorated with the LogCallsAttribute.");
             }
 
             LogCallsAttributeBase logCallsAttribute = (LogCallsAttributeBase)attributes[0];
-            return new FormattingMethodLogger(targetMethod, logCallsAttribute.Settings, adapter, this.indentationTracker, this.methodEventFormatter);
+            return new FormattingMethodLogger(targetMethod, logCallsAttribute.Settings, adapter, this.IndentationTracker, this.MethodEventFormatter);
         }
     }
 }

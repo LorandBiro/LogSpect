@@ -10,6 +10,11 @@ namespace LogSpect.Logging
 
         private readonly string[] indentationStrings;
 
+        public IndentationTracker()
+            : this(4, 20)
+        {
+        }
+
         public IndentationTracker(int indentationWidth, int maxLevel)
         {
             if (indentationWidth < 1)

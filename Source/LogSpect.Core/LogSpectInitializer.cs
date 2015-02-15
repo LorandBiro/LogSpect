@@ -1,6 +1,8 @@
 ﻿namespace LogSpect
 {
     using System;
+    using System.Globalization;
+    using LogSpect.Formatting;
     using LogSpect.Logging;
 
     public static class LogSpectInitializer
@@ -26,21 +28,79 @@
 
                 return factoryInstance;
             }
+
+            private set
+            {
+                if (IsInitialized)
+                {
+                    throw new InvalidOperationException("LogSpect is already initialized.");
+                }
+
+                factoryInstance = value;
+            }
         }
 
         public static void Initialize(IMethodLoggerFactory factory)
         {
-            if (IsInitialized)
-            {
-                throw new InvalidOperationException("LogSpect is already initialized.");
-            }
-
             if (factory == null)
             {
                 throw new ArgumentNullException("factory");
             }
 
-            factoryInstance = factory;
+            Factory = factory;
+        }
+
+        public static FormattingMethodLoggerFactory Initialize(ILoggerAdapterFactory loggerAdapterFactory)
+        {
+            return Initialize(loggerAdapterFactory, CultureInfo.InvariantCulture);
+        }
+
+        public static FormattingMethodLoggerFactory Initialize(
+            ILoggerAdapterFactory loggerAdapterFactory,
+            IFormatProvider formatProvider,
+            ICustomDefaultFormatter customDefaultFormatter = null)
+        {
+            if (loggerAdapterFactory == null)
+            {
+                throw new ArgumentNullException("loggerAdapterFactory");
+            }
+
+            if (formatProvider == null)
+            {
+                throw new ArgumentNullException("formatProvider");
+            }
+
+            IFormattingModeReader formattingModeReader = new CachedFormattingModeReader(new FormattingModeReader());
+            IMethodEventFormatter methodEventFormatter = new MethodEventFormatter(new ParameterFormatter(formattingModeReader, formatProvider, customDefaultFormatter));
+
+            FormattingMethodLoggerFactory factory = new FormattingMethodLoggerFactory(loggerAdapterFactory, new IndentationTracker(), methodEventFormatter);
+            Factory = factory;
+            return factory;
+        }
+
+        public static FormattingMethodLoggerFactory Initialize(
+            ILoggerAdapterFactory loggerAdapterFactory,
+            IIndentationTracker indentationTracker,
+            IMethodEventFormatter methodEventFormatter)
+        {
+            if (loggerAdapterFactory == null)
+            {
+                throw new ArgumentNullException("loggerAdapterFactory");
+            }
+
+            if (indentationTracker == null)
+            {
+                throw new ArgumentNullException("indentationTracker");
+            }
+
+            if (methodEventFormatter == null)
+            {
+                throw new ArgumentNullException("methodEventFormatter");
+            }
+
+            FormattingMethodLoggerFactory factory = new FormattingMethodLoggerFactory(loggerAdapterFactory, indentationTracker, methodEventFormatter);
+            Factory = factory;
+            return factory;
         }
     }
 }
