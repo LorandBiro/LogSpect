@@ -47,7 +47,7 @@
     /// }
     /// </code>
     /// </remarks>
-    [AttributeUsage(AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Constructor)]
     public class LogCallsAttribute : LogCallsAttributeBase
     {
         /// <summary>
