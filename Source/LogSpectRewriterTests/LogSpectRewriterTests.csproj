@@ -52,7 +52,6 @@
   <ItemGroup>
     <Compile Include="CodeRunner.cs" />
     <Compile Include="Infrastructure\DebugOutputWriter.cs" />
-    <Compile Include="Infrastructure\FileHelper.cs" />
     <Compile Include="Infrastructure\InMemoryLoggerAdapter.cs" />
     <Compile Include="Infrastructure\InMemoryLoggerAdapterFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

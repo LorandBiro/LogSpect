@@ -2,10 +2,8 @@
 {
     using System;
     using System.CodeDom.Compiler;
-    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
-    using System.Linq;
     using System.Reflection;
     using LogSpect;
     using LogSpect.Logging;
@@ -16,24 +14,56 @@
 
     internal static class CodeRunner
     {
-        private const string TempDirectoryPath = "GeneratedAssemblies";
+        private const string TempDirectoryPath = "Temp";
 
-        public static void CompileRewriteAndRun(string source, string expectedOutput)
+        private const string TestClassName = "RewriterTest";
+
+        private const string TestMethodName = "Run";
+
+        private static readonly AssemblyRewriter Rewriter = new AssemblyRewriter(new DebugOutputWriter());
+
+        private static bool isInitialized;
+
+        public static void CompileRewriteAndRun(string classDefinitions, string testCode, string expectedOutput)
         {
-            InitializeTempDirectory();
-            string filePath = CompileAssembly(source);
-            RewriteAssembly(filePath);
-            InitializeLogSpect();
-            LoadAndRunAssembly(filePath);
+            EnsureInitialized();
+
+            string assemblyFilePath = CompileAssemblyFromSource(classDefinitions, testCode);
+            RewriteAssembly(assemblyFilePath);
+
+            InMemoryLoggerAdapterFactory.Adapter.Clear();
+            LoadAssemblyAndRunTest(assemblyFilePath);
             Assert.AreEqual(expectedOutput, InMemoryLoggerAdapterFactory.Adapter.Log);
         }
 
-        private static string CompileAssembly(string source)
+        private static void EnsureInitialized()
         {
-            Debug.WriteLine("= Compiling source code");
+            if (isInitialized)
+            {
+                return;
+            }
+
+            LogSpectInitializer.Initialize(new InMemoryLoggerAdapterFactory());
+
+            if (!Directory.Exists(TempDirectoryPath))
+            {
+                Directory.CreateDirectory(TempDirectoryPath);
+                return;
+            }
+
+            foreach (string filePath in Directory.GetFiles(TempDirectoryPath))
+            {
+                File.Delete(filePath);
+            }
+
+            isInitialized = true;
+        }
+
+        private static string CompileAssemblyFromSource(string classDefinitions, string testCode)
+        {
+            string source = string.Format("{0} public static class {1} {{ public static void {2}() {{ {3} }} }}", classDefinitions, TestClassName, TestMethodName, testCode);
 
             string outputPath = Path.Combine(TempDirectoryPath, Guid.NewGuid() + ".dll");
-            Debug.WriteLine(string.Format("Output path: {0}", outputPath));
 
             CSharpCodeProvider provider = new CSharpCodeProvider();
             CompilerParameters options = new CompilerParameters { GenerateExecutable = false, OutputAssembly = outputPath };
@@ -48,65 +78,21 @@
             }
 
             Assert.IsFalse(results.Errors.HasErrors, "Failed to compile the test code.");
-            Debug.WriteLine("Assembly successfully compiled.");
 
             return outputPath;
         }
 
-        private static void InitializeTempDirectory()
+        private static void RewriteAssembly(string assemblyFilePath)
         {
-            if (!Directory.Exists(TempDirectoryPath))
-            {
-                Directory.CreateDirectory(TempDirectoryPath);
-                return;
-            }
-
-            foreach (string filePath in Directory.GetFiles(TempDirectoryPath))
-            {
-                if (FileHelper.CanBeDeleted(filePath))
-                {
-                    File.Delete(filePath);
-                }
-            }
-        }
-
-        private static void RewriteAssembly(string filePath)
-        {
-            Debug.WriteLine("= Rewriting assembly");
-
-            AssemblyRewriter rewriter = new AssemblyRewriter(new DebugOutputWriter());
-            bool success = rewriter.TryRewriteAssembly(filePath, filePath);
-
+            bool success = Rewriter.TryRewriteAssembly(assemblyFilePath, assemblyFilePath);
             Assert.IsTrue(success, "Failed to rewrite the test subject assembly.");
-            Debug.WriteLine("Assembly rewrite completed successfully.");
         }
 
-        private static void InitializeLogSpect()
+        private static void LoadAssemblyAndRunTest(string filePath)
         {
-            if (!LogSpectInitializer.IsInitialized)
-            {
-                LogSpectInitializer.Initialize(new InMemoryLoggerAdapterFactory());
-            }
-
-            InMemoryLoggerAdapterFactory.Adapter.Clear();
-        }
-
-        private static void LoadAndRunAssembly(string filePath)
-        {
-            Debug.WriteLine("= Loading and running code");
-
-            Assembly assembly = Assembly.LoadFrom(filePath);
-            List<MethodInfo> publicStaticMethods =
-                assembly.GetTypes()
-                    .Where(x => x.IsPublic)
-                    .SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.Static))
-                    .Where(x => x.GetParameters().Length == 0)
-                    .ToList();
-
-            Assert.IsTrue(publicStaticMethods.Count == 1, "The code must contain exactly 1 public static parameterless method to run.");
-
-            MethodInfo method = publicStaticMethods.Single();
-            method.Invoke(null, null);
+            byte[] assembly = File.ReadAllBytes(filePath);
+            MethodInfo testMethod = Assembly.Load(assembly).GetType(TestClassName).GetMethod(TestMethodName);
+            testMethod.Invoke(null, null);
         }
     }
 }

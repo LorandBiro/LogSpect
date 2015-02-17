@@ -1,15 +1,92 @@
 ﻿namespace LogSpectRewriterTests
 {
     using System;
+    using LogSpect;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
     public class RewriterIntegrationTests
     {
         [TestMethod]
+        public void Constructor()
+        {
+            const string ClassDefinitions = @"using LogSpect;
+
+public class Foo
+{
+    [LogCalls]
+    public Foo()
+    {
+    }
+}";
+            const string TestCode = "new Foo();";
+            const string ExpectedOutput = @"  TRACE|Enter Foo..ctor()
+  TRACE|Leave Foo..ctor()
+";
+
+            CodeRunner.CompileRewriteAndRun(ClassDefinitions, TestCode, ExpectedOutput);
+        }
+
+        [TestMethod]
+        public void StaticConstructor()
+        {
+            const string ClassDefinitions = @"using LogSpect;
+
+internal class Foo
+{
+    public static int Bar { get; set; }
+
+    [LogCalls]
+    static Foo()
+    {
+    }
+}";
+            const string TestCode = "Foo.Bar = 0;";
+            const string ExpectedOutput = @"  TRACE|Enter Foo..cctor()
+  TRACE|Leave Foo..cctor()
+";
+
+            CodeRunner.CompileRewriteAndRun(ClassDefinitions, TestCode, ExpectedOutput);
+        }
+
+        [TestMethod]
+        public void PropertyGetter()
+        {
+            const string ClassDefinitions = @"using LogSpect;
+
+internal class Foo
+{
+    public int Bar { [LogCalls] get; set; }
+}";
+            const string TestCode = "int bar = new Foo().Bar;";
+            const string ExpectedOutput = @"  TRACE|Enter Foo.get_Bar()
+  TRACE|Leave Foo.get_Bar(): 0
+";
+
+            CodeRunner.CompileRewriteAndRun(ClassDefinitions, TestCode, ExpectedOutput);
+        }
+
+        [TestMethod]
+        public void PropertySetter()
+        {
+            const string ClassDefinitions = @"using LogSpect;
+
+internal class Foo
+{
+    public int Bar { get; [LogCalls] set; }
+}";
+            const string TestCode = "new Foo().Bar = 3;";
+            const string ExpectedOutput = @"  TRACE|Enter Foo.set_Bar(value: 3)
+  TRACE|Leave Foo.set_Bar()
+";
+
+            CodeRunner.CompileRewriteAndRun(ClassDefinitions, TestCode, ExpectedOutput);
+        }
+
+        [TestMethod]
         public void MethodsInBaseClassShowsTheNameOfTheDerivedClass()
         {
-            const string Source = @"using LogSpect;
+            const string ClassDefinitions = @"using LogSpect;
 
 internal abstract class BaseClass
 {
@@ -19,33 +96,21 @@ internal abstract class BaseClass
     }
 }
 
-internal class DerivedClassA : BaseClass { }
-internal class DerivedClassB : BaseClass { }
-
-public static class InheritenceTest
+internal class DerivedClass : BaseClass
 {
-    public static void Run()
-    {
-        DerivedClassA a = new DerivedClassA();
-        DerivedClassB b = new DerivedClassB();
-        a.Foo();
-        b.Foo();
-    }
 }";
-
-            const string ExpectedOutput = @"  TRACE|Enter DerivedClassA.Foo()
-  TRACE|Leave DerivedClassA.Foo()
-  TRACE|Enter DerivedClassB.Foo()
-  TRACE|Leave DerivedClassB.Foo()
+            const string TestCode = "new DerivedClass().Foo();";
+            const string ExpectedOutput = @"  TRACE|Enter DerivedClass.Foo()
+  TRACE|Leave DerivedClass.Foo()
 ";
 
-            CodeRunner.CompileRewriteAndRun(Source, ExpectedOutput);
+            CodeRunner.CompileRewriteAndRun(ClassDefinitions, TestCode, ExpectedOutput);
         }
 
         [TestMethod]
         public void StaticMethodsInBaseClassShowsTheNameOfTheBaseClass()
         {
-            const string Source = @"using LogSpect;
+            const string ClassDefinitions = @"using LogSpect;
 
 internal abstract class BaseClass
 {
@@ -55,21 +120,15 @@ internal abstract class BaseClass
     }
 }
 
-internal class DerivedClass : BaseClass { }
-
-public static class InheritenceTest
+internal class DerivedClass : BaseClass
 {
-    public static void Run()
-    {
-        DerivedClass.Foo();
-    }
 }";
-
+            const string TestCode = "DerivedClass.Foo();";
             const string ExpectedOutput = @"  TRACE|Enter BaseClass.Foo()
   TRACE|Leave BaseClass.Foo()
 ";
 
-            CodeRunner.CompileRewriteAndRun(Source, ExpectedOutput);
+            CodeRunner.CompileRewriteAndRun(ClassDefinitions, TestCode, ExpectedOutput);
         }
     }
 }
