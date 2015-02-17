@@ -73,9 +73,11 @@
             this.AppendParameters(sb, method, parameters, true);
             sb.Append(")");
 
-            if (!method.IsConstructor)
+            MethodInfo methodInfo = method as MethodInfo;
+            if (methodInfo != null)
             {
-                MethodInfo methodInfo = (MethodInfo)method;
+                // Constructors are represented by the RuntimeConstructorInfo type and do not have return values.
+                // (IsConstructor returns false for static constructors.)
                 if (methodInfo.ReturnType != typeof(void))
                 {
                     sb.Append(": ");
