@@ -97,6 +97,9 @@
                 case FormattingMode.ItemsMembers:
                     this.SerializeItems(sb, value, true);
                     break;
+                case FormattingMode.DoNotLog:
+                    sb.Append("-");
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException("mode", string.Format(CultureInfo.InvariantCulture, "Unexpected formatting mode '{0}'.", mode));
             }

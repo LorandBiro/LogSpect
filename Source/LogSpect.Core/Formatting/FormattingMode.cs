@@ -11,5 +11,6 @@
         Members,
         Items,
         ItemsMembers,
+        DoNotLog,
     }
 }

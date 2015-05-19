@@ -61,6 +61,7 @@
             TestFormatter(null, FormattingMode.Members, "null");
             TestFormatter(null, FormattingMode.Items, "null");
             TestFormatter(null, FormattingMode.ItemsMembers, "null");
+            TestFormatter(null, FormattingMode.DoNotLog, "null");
         }
 
         [TestMethod]
@@ -71,6 +72,7 @@
             TestFormatter(complex, FormattingMode.Members, "{ Re: 1, Im: 2 }");
             TestFormatter(complex, FormattingMode.Items, "1 + 2i");
             TestFormatter(complex, FormattingMode.ItemsMembers, "{ Re: 1, Im: 2 }");
+            TestFormatter(complex, FormattingMode.DoNotLog, "-");
         }
 
         [TestMethod]
@@ -81,6 +83,7 @@
             TestFormatter(Str, FormattingMode.Members, "{ Length: 4 }");
             TestFormatter(Str, FormattingMode.Items, "\"asdf\"");
             TestFormatter(Str, FormattingMode.ItemsMembers, "{ Length: 4 }");
+            TestFormatter(Str, FormattingMode.DoNotLog, "-");
         }
 
         [TestMethod]
@@ -89,6 +92,7 @@
             IFormattable formattable = new DateTime(2000, 1, 1, 0, 0, 0);
             TestFormatter(formattable, FormattingMode.Default, "01/01/2000 00:00:00", CultureInfo.InvariantCulture);
             TestFormatter(formattable, FormattingMode.Default, "1/1/2000 12:00:00 AM", CultureInfo.GetCultureInfo("en-US"));
+            TestFormatter(formattable, FormattingMode.DoNotLog, "-");
         }
 
         [TestMethod]
@@ -96,6 +100,7 @@
         {
             Complex complex = new Complex();
             TestFormatter(complex, FormattingMode.Default, "complex", null, new TestValueFormatter());
+            TestFormatter(complex, FormattingMode.DoNotLog, "-");
         }
 
         [TestMethod]
@@ -104,6 +109,7 @@
             List<Complex> list = new List<Complex> { new Complex { Re = 1, Im = 2 }, new Complex { Re = 2, Im = -1 } };
             TestFormatter(list, FormattingMode.Items, "[1 + 2i, 2 - 1i]");
             TestFormatter(list, FormattingMode.ItemsMembers, "[{ Re: 1, Im: 2 }, { Re: 2, Im: -1 }]");
+            TestFormatter(list, FormattingMode.DoNotLog, "-");
         }
 
         [TestMethod]
@@ -112,6 +118,7 @@
             Dictionary<int, Complex> dict = new Dictionary<int, Complex> { { 1, new Complex { Re = 1, Im = 2 } }, { 2, new Complex { Re = 2, Im = -1 } } };
             TestFormatter(dict, FormattingMode.Items, "[1 => 1 + 2i, 2 => 2 - 1i]");
             TestFormatter(dict, FormattingMode.ItemsMembers, "[1 => { Re: 1, Im: 2 }, 2 => { Re: 2, Im: -1 }]");
+            TestFormatter(dict, FormattingMode.DoNotLog, "-");
         }
 
         private static void TestFormatter(object value, FormattingMode mode, string expectedOutput, IFormatProvider formatProvider = null, ICustomValueFormatter customValueFormatter = null)

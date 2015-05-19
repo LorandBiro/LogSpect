@@ -43,6 +43,10 @@
                 {
                     logItems = true;
                 }
+                else if (attributes[i] is DoNotLogAttribute)
+                {
+                    return FormattingMode.DoNotLog;
+                }
             }
 
             if (logItems)
