@@ -61,7 +61,7 @@
 
         private static string CompileAssemblyFromSource(string classDefinitions, string testCode)
         {
-            string source = string.Format("{0} public static class {1} {{ public static void {2}() {{ {3} }} }}", classDefinitions, TestClassName, TestMethodName, testCode);
+            string source = string.Format("{0} public static class {1} {{ public static bool {2}() {{ {3} return true; }} }}", classDefinitions, TestClassName, TestMethodName, testCode);
 
             string outputPath = Path.Combine(TempDirectoryPath, Guid.NewGuid() + ".dll");
 
@@ -92,7 +92,8 @@
         {
             byte[] assembly = File.ReadAllBytes(filePath);
             MethodInfo testMethod = Assembly.Load(assembly).GetType(TestClassName).GetMethod(TestMethodName);
-            testMethod.Invoke(null, null);
+            object success = testMethod.Invoke(null, null);
+            Assert.IsTrue((bool)success);
         }
     }
 }
