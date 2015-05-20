@@ -5,14 +5,14 @@
 
     public sealed class FormattingModeReader : IFormattingModeReader
     {
-        public FormattingMode ReadMode(PropertyInfo property)
+        public FormattingMode ReadMode(MemberInfo member)
         {
-            if (property == null)
+            if (member == null)
             {
-                throw new ArgumentNullException("property");
+                throw new ArgumentNullException("member");
             }
 
-            object[] attributes = property.GetCustomAttributes(true);
+            object[] attributes = member.GetCustomAttributes(true);
             return ReadMode(attributes);
         }
 

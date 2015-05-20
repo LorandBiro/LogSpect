@@ -8,7 +8,7 @@
     {
         private readonly IFormattingModeReader baseReader;
 
-        private readonly Dictionary<PropertyInfo, FormattingMode> propertyModes = new Dictionary<PropertyInfo, FormattingMode>();
+        private readonly Dictionary<MemberInfo, FormattingMode> memberModes = new Dictionary<MemberInfo, FormattingMode>();
 
         private readonly Dictionary<ParameterInfo, FormattingMode> parameterModes = new Dictionary<ParameterInfo, FormattingMode>();
 
@@ -22,9 +22,9 @@
             this.baseReader = baseReader;
         }
 
-        public FormattingMode ReadMode(PropertyInfo property)
+        public FormattingMode ReadMode(MemberInfo member)
         {
-            return GetOrAdd(this.propertyModes, property, x => this.baseReader.ReadMode(x));
+            return GetOrAdd(this.memberModes, member, x => this.baseReader.ReadMode(x));
         }
 
         public FormattingMode ReadMode(ParameterInfo parameter)
