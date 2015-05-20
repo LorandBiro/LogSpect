@@ -44,7 +44,7 @@
         public void Serialize_WithNullParameterInfo_ThrowsArgumentNullException()
         {
             IParameterFormatter formatter = new ParameterFormatter(Substitute.For<IFormattingModeReader>(), CultureInfo.InvariantCulture);
-            formatter.Serialize(new StringBuilder(), new object(), null);
+            formatter.Serialize(new StringBuilder(), new object(), (ParameterInfo)null);
         }
 
         [TestMethod]

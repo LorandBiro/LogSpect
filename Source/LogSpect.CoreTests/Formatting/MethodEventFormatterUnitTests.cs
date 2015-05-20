@@ -178,6 +178,11 @@
 
         private class TestParameterFormatter : IParameterFormatter
         {
+            public void Serialize(StringBuilder sb, object value, MemberInfo member)
+            {
+                throw new NotImplementedException();
+            }
+
             public void Serialize(StringBuilder sb, object value, ParameterInfo parameter)
             {
                 sb.Append("X");

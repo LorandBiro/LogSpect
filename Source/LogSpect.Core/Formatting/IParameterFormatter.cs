@@ -6,6 +6,8 @@
 
     public interface IParameterFormatter
     {
+        void Serialize(StringBuilder sb, object value, MemberInfo member);
+
         void Serialize(StringBuilder sb, object value, ParameterInfo parameter);
     }
 }

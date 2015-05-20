@@ -33,6 +33,22 @@
             this.customValueFormatter = customValueFormatter;
         }
 
+        public void Serialize(StringBuilder sb, object value, MemberInfo member)
+        {
+            if (sb == null)
+            {
+                throw new ArgumentNullException("sb");
+            }
+
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+
+            FormattingMode mode = this.reader.ReadMode(member);
+            this.Serialize(sb, value, mode);
+        }
+
         public void Serialize(StringBuilder sb, object value, ParameterInfo parameter)
         {
             if (sb == null)
