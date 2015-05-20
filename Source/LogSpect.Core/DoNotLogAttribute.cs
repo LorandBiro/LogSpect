@@ -2,7 +2,7 @@
 {
     using System;
 
-    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.ReturnValue | AttributeTargets.Property)]
+    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Method)]
     public sealed class DoNotLogAttribute : Attribute
     {
     }

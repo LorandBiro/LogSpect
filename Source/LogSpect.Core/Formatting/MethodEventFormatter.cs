@@ -81,7 +81,7 @@
                 if (methodInfo.ReturnType != typeof(void))
                 {
                     sb.Append(": ");
-                    this.parameterFormatter.Serialize(sb, returnValue, methodInfo.ReturnParameter);
+                    this.parameterFormatter.Serialize(sb, returnValue, methodInfo);
                 }
             }
 

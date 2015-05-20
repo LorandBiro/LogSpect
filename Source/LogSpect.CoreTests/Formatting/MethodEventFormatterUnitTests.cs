@@ -180,7 +180,7 @@
         {
             public void Serialize(StringBuilder sb, object value, MemberInfo member)
             {
-                throw new NotImplementedException();
+                sb.Append("X");
             }
 
             public void Serialize(StringBuilder sb, object value, ParameterInfo parameter)

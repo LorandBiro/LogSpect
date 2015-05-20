@@ -2,7 +2,7 @@
 {
     using System;
 
-    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.ReturnValue)]
+    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Method)]
     public sealed class LogItemsAttribute : Attribute
     {
     }

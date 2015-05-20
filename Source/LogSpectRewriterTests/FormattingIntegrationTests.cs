@@ -14,7 +14,7 @@
 public class Foo
 {
     [LogCalls]
-    [return: DoNotLog]
+    [DoNotLog]
     public static int Bar()
     {
         return 42;

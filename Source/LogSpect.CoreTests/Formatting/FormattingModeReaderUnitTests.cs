@@ -53,14 +53,14 @@
         {
             IFormattingModeReader reader = new FormattingModeReader();
             ParameterInfo[] parameters = typeof(TestSubject).GetMethod("ParameterTests").GetParameters();
-            ParameterInfo returnParameter1 = typeof(TestSubject).GetMethod("ReturnValueTest1").ReturnParameter;
-            ParameterInfo returnParameter2 = typeof(TestSubject).GetMethod("ReturnValueTest2").ReturnParameter;
-            ParameterInfo returnParameter3 = typeof(TestSubject).GetMethod("ReturnValueTest3").ReturnParameter;
-            ParameterInfo returnParameter4 = typeof(TestSubject).GetMethod("ReturnValueTest4").ReturnParameter;
-            ParameterInfo returnParameter5 = typeof(TestSubject).GetMethod("ReturnValueTest5").ReturnParameter;
-            ParameterInfo returnParameter6 = typeof(TestSubject).GetMethod("ReturnValueTest6").ReturnParameter;
-            ParameterInfo returnParameter7 = typeof(TestSubject).GetMethod("ReturnValueTest7").ReturnParameter;
-            ParameterInfo returnParameter8 = typeof(TestSubject).GetMethod("ReturnValueTest8").ReturnParameter;
+            MethodInfo method1 = typeof(TestSubject).GetMethod("ReturnValueTest1");
+            MethodInfo method2 = typeof(TestSubject).GetMethod("ReturnValueTest2");
+            MethodInfo method3 = typeof(TestSubject).GetMethod("ReturnValueTest3");
+            MethodInfo method4 = typeof(TestSubject).GetMethod("ReturnValueTest4");
+            MethodInfo method5 = typeof(TestSubject).GetMethod("ReturnValueTest5");
+            MethodInfo method6 = typeof(TestSubject).GetMethod("ReturnValueTest6");
+            MethodInfo method7 = typeof(TestSubject).GetMethod("ReturnValueTest7");
+            MethodInfo method8 = typeof(TestSubject).GetMethod("ReturnValueTest8");
 
             Assert.AreEqual(FormattingMode.Default, reader.ReadMode(parameters[0]));
             Assert.AreEqual(FormattingMode.Members, reader.ReadMode(parameters[1]));
@@ -71,14 +71,14 @@
             Assert.AreEqual(FormattingMode.DoNotLog, reader.ReadMode(parameters[6]));
             Assert.AreEqual(FormattingMode.DoNotLog, reader.ReadMode(parameters[7]));
 
-            Assert.AreEqual(FormattingMode.Default, reader.ReadMode(returnParameter1));
-            Assert.AreEqual(FormattingMode.Members, reader.ReadMode(returnParameter2));
-            Assert.AreEqual(FormattingMode.Items, reader.ReadMode(returnParameter3));
-            Assert.AreEqual(FormattingMode.ItemsMembers, reader.ReadMode(returnParameter4));
-            Assert.AreEqual(FormattingMode.DoNotLog, reader.ReadMode(returnParameter5));
-            Assert.AreEqual(FormattingMode.DoNotLog, reader.ReadMode(returnParameter6));
-            Assert.AreEqual(FormattingMode.DoNotLog, reader.ReadMode(returnParameter7));
-            Assert.AreEqual(FormattingMode.DoNotLog, reader.ReadMode(returnParameter8));
+            Assert.AreEqual(FormattingMode.Default, reader.ReadMode(method1));
+            Assert.AreEqual(FormattingMode.Members, reader.ReadMode(method2));
+            Assert.AreEqual(FormattingMode.Items, reader.ReadMode(method3));
+            Assert.AreEqual(FormattingMode.ItemsMembers, reader.ReadMode(method4));
+            Assert.AreEqual(FormattingMode.DoNotLog, reader.ReadMode(method5));
+            Assert.AreEqual(FormattingMode.DoNotLog, reader.ReadMode(method6));
+            Assert.AreEqual(FormattingMode.DoNotLog, reader.ReadMode(method7));
+            Assert.AreEqual(FormattingMode.DoNotLog, reader.ReadMode(method8));
         }
 
         private class TestSubject
@@ -118,48 +118,48 @@
                 return null;
             }
 
-            [return: LogMembers]
+            [LogMembers]
             public object ReturnValueTest2()
             {
                 return null;
             }
 
-            [return: LogItems]
+            [LogItems]
             public object ReturnValueTest3()
             {
                 return null;
             }
 
-            [return: LogItems]
-            [return: LogMembers]
+            [LogItems]
+            [LogMembers]
             public object ReturnValueTest4()
             {
                 return null;
             }
 
-            [return: DoNotLog]
+            [DoNotLog]
             public object ReturnValueTest5()
             {
                 return null;
             }
 
-            [return: LogMembers]
-            [return: DoNotLog]
+            [LogMembers]
+            [DoNotLog]
             public object ReturnValueTest6()
             {
                 return null;
             }
 
-            [return: LogItems]
-            [return: DoNotLog]
+            [LogItems]
+            [DoNotLog]
             public object ReturnValueTest7()
             {
                 return null;
             }
 
-            [return: LogItems]
-            [return: LogMembers]
-            [return: DoNotLog]
+            [LogItems]
+            [LogMembers]
+            [DoNotLog]
             public object ReturnValueTest8()
             {
                 return null;
