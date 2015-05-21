@@ -1,4 +1,4 @@
-﻿namespace LogSpectRewriterTests
+﻿namespace LogSpectRewriterTests.Infrastructure
 {
     using System;
     using System.CodeDom.Compiler;
@@ -8,7 +8,6 @@
     using LogSpect;
     using LogSpect.Logging;
     using LogSpectRewriter.Rewriting;
-    using LogSpectRewriterTests.Infrastructure;
     using Microsoft.CSharp;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 

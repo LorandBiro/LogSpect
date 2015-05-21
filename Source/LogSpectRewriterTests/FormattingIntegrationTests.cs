@@ -1,6 +1,7 @@
 ﻿namespace LogSpectRewriterTests
 {
     using System;
+    using LogSpectRewriterTests.Infrastructure;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]

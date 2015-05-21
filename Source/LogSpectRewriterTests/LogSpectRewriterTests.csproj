@@ -50,7 +50,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="CodeRunner.cs" />
+    <Compile Include="Infrastructure\CodeRunner.cs" />
     <Compile Include="FormattingIntegrationTests.cs" />
     <Compile Include="Infrastructure\DebugOutputWriter.cs" />
     <Compile Include="Infrastructure\InMemoryLoggerAdapter.cs" />
