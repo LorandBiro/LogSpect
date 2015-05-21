@@ -9,8 +9,7 @@
         [TestMethod]
         public void DoNotLogReturnValue()
         {
-            const string ClassDefinitions = @"using LogSpect;
-
+            const string ClassDefinitions = @"
 public class Foo
 {
     [LogCalls]
@@ -31,8 +30,7 @@ public class Foo
         [TestMethod]
         public void DoNotLogParameter()
         {
-            const string ClassDefinitions = @"using LogSpect;
-
+            const string ClassDefinitions = @"
 public class Foo
 {
     [LogCalls]
@@ -51,7 +49,7 @@ public class Foo
         [TestMethod]
         public void DoNotLogProperty()
         {
-            const string ClassDefinitions = @"using LogSpect;
+            const string ClassDefinitions = @"
 public class Complex
 {
     [DoNotLog]

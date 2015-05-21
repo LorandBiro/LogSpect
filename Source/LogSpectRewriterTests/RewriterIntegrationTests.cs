@@ -11,8 +11,7 @@
         [TestMethod]
         public void Constructor()
         {
-            const string ClassDefinitions = @"using LogSpect;
-
+            const string ClassDefinitions = @"
 public class Foo
 {
     public static bool HasRun;
@@ -34,8 +33,7 @@ public class Foo
         [TestMethod]
         public void StaticConstructor()
         {
-            const string ClassDefinitions = @"using LogSpect;
-
+            const string ClassDefinitions = @"
 internal class Foo
 {
     public static bool HasRun;
@@ -57,8 +55,7 @@ internal class Foo
         [TestMethod]
         public void PropertyGetter()
         {
-            const string ClassDefinitions = @"using LogSpect;
-
+            const string ClassDefinitions = @"
 internal class Foo
 {
     public int Bar { [LogCalls] get; set; }
@@ -74,8 +71,7 @@ internal class Foo
         [TestMethod]
         public void PropertySetter()
         {
-            const string ClassDefinitions = @"using LogSpect;
-
+            const string ClassDefinitions = @"
 internal class Foo
 {
     public int Bar { get; [LogCalls] set; }
@@ -95,8 +91,7 @@ internal class Foo
         [TestMethod]
         public void MethodsInBaseClassShowsTheNameOfTheExecutingClass()
         {
-            const string ClassDefinitions = @"using LogSpect;
-
+            const string ClassDefinitions = @"
 internal abstract class BaseClass
 {
     [LogCalls]
@@ -119,8 +114,7 @@ internal class DerivedClass : BaseClass
         [TestMethod]
         public void StaticMethodsInBaseClassShowsTheNameOfTheBaseClass()
         {
-            const string ClassDefinitions = @"using LogSpect;
-
+            const string ClassDefinitions = @"
 internal abstract class BaseClass
 {
     [LogCalls]
