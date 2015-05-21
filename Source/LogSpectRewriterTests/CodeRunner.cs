@@ -61,14 +61,15 @@
 
         private static string CompileAssemblyFromSource(string classDefinitions, string testCode)
         {
-            string source = string.Format("{0} public static class {1} {{ public static bool {2}() {{ {3} return true; }} }}", classDefinitions, TestClassName, TestMethodName, testCode);
+            string source = string.Format("using Microsoft.VisualStudio.TestTools.UnitTesting; {0} public static class {1} {{ public static void {2}() {{ {3} }} }}", classDefinitions, TestClassName, TestMethodName, testCode);
 
             string outputPath = Path.Combine(TempDirectoryPath, Guid.NewGuid() + ".dll");
 
             CSharpCodeProvider provider = new CSharpCodeProvider();
             CompilerParameters options = new CompilerParameters { GenerateExecutable = false, OutputAssembly = outputPath };
-            options.ReferencedAssemblies.Add(typeof(LogCallsAttribute).Assembly.ManifestModule.Name);
-            options.ReferencedAssemblies.Add(typeof(LogCallsAttributeBase).Assembly.ManifestModule.Name);
+            options.ReferencedAssemblies.Add(typeof(LogCallsAttribute).Assembly.ManifestModule.FullyQualifiedName);
+            options.ReferencedAssemblies.Add(typeof(LogCallsAttributeBase).Assembly.ManifestModule.FullyQualifiedName);
+            options.ReferencedAssemblies.Add(typeof(Assert).Assembly.ManifestModule.FullyQualifiedName);
 
             CompilerResults results = provider.CompileAssemblyFromSource(options, source);
 
@@ -92,8 +93,7 @@
         {
             byte[] assembly = File.ReadAllBytes(filePath);
             MethodInfo testMethod = Assembly.Load(assembly).GetType(TestClassName).GetMethod(TestMethodName);
-            object success = testMethod.Invoke(null, null);
-            Assert.IsTrue((bool)success);
+            testMethod.Invoke(null, null);
         }
     }
 }

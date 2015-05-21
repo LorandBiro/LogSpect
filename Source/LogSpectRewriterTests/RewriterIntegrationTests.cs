@@ -23,7 +23,7 @@ public class Foo
         HasRun = true;
     }
 }";
-            const string TestCode = "new Foo(); return Foo.HasRun;";
+            const string TestCode = "new Foo(); Assert.IsTrue(Foo.HasRun);";
             const string ExpectedOutput = @"  TRACE|Enter Foo..ctor()
   TRACE|Leave Foo..ctor()
 ";
@@ -46,7 +46,7 @@ internal class Foo
         HasRun = true;
     }
 }";
-            const string TestCode = "return Foo.HasRun;";
+            const string TestCode = "Assert.IsTrue(Foo.HasRun);";
             const string ExpectedOutput = @"  TRACE|Enter Foo..cctor()
   TRACE|Leave Foo..cctor()
 ";
@@ -63,7 +63,7 @@ internal class Foo
 {
     public int Bar { [LogCalls] get; set; }
 }";
-            const string TestCode = "Foo foo = new Foo(); foo.Bar = 3; return foo.Bar == 3;";
+            const string TestCode = "Foo foo = new Foo(); foo.Bar = 3; Assert.AreEqual(3, foo.Bar);";
             const string ExpectedOutput = @"  TRACE|Enter Foo.get_Bar()
   TRACE|Leave Foo.get_Bar(): 3
 ";
@@ -80,7 +80,7 @@ internal class Foo
 {
     public int Bar { get; [LogCalls] set; }
 }";
-            const string TestCode = "Foo foo = new Foo(); foo.Bar = 3; return foo.Bar == 3;";
+            const string TestCode = "Foo foo = new Foo(); foo.Bar = 3; Assert.AreEqual(3, foo.Bar);";
             const string ExpectedOutput = @"  TRACE|Enter Foo.set_Bar(value: 3)
   TRACE|Leave Foo.set_Bar()
 ";
