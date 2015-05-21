@@ -1,6 +1,5 @@
 ﻿### DoNotLogReturnValue
 
-Code:
 ```C#
 public class Foo
 {
@@ -13,7 +12,6 @@ public class Foo
 }
 ```
 
-Run:
 ```C#
 Foo.Bar();
 ```
@@ -28,7 +26,6 @@ Output:
 
 ### DoNotLogParameter
 
-Code:
 ```C#
 public class Foo
 {
@@ -39,7 +36,6 @@ public class Foo
 }
 ```
 
-Run:
 ```C#
 Foo.Bar(42);
 ```
@@ -54,7 +50,6 @@ Output:
 
 ### DoNotLogProperty
 
-Code:
 ```C#
 public class Complex
 {
@@ -73,7 +68,6 @@ public class Foo
 }
 ```
 
-Run:
 ```C#
 Foo.Bar(new Complex { Re = 1, Im = 2 });
 ```

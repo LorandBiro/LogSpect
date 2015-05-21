@@ -86,8 +86,8 @@ private IList<Test> ParseMarkdown(string markdown)
             break;
         }
 
-        string code = ReadCodeBlock(lines, ref i, "Code:", "C#");
-        string run = ReadCodeBlock(lines, ref i, "Run:", "C#");
+        string code = ReadCodeBlock(lines, ref i, null, "C#");
+        string run = ReadCodeBlock(lines, ref i, null, "C#");
         string output = ReadCodeBlock(lines, ref i, "Output:", string.Empty);
 
         tests.Add(new Test { Name = name, Code = code, Run = run, Output = output });
@@ -112,7 +112,11 @@ private string ReadTestName(string[] lines, ref int i)
 private string ReadCodeBlock(string[] lines, ref int i, string label, string syntax)
 {
     StringBuilder buffer = new StringBuilder();
-    while (lines[i++] != label) { }
+    if (label != null)
+    {
+        while (lines[i++] != label) { }
+    }
+
     while (lines[i++] != "```" + syntax) { }
     while (lines[i++] != "```")
     {

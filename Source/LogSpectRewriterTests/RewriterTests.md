@@ -1,6 +1,5 @@
 ﻿### Constructor
 
-Code:
 ```C#
 public class Foo
 {
@@ -14,7 +13,6 @@ public class Foo
 }
 ```
 
-Run:
 ```C#
 Foo foo = new Foo();
 Assert.IsTrue(Foo.HasRun);
@@ -30,7 +28,6 @@ Output:
 
 ### StaticConstructor
 
-Code:
 ```C#
 internal class Foo
 {
@@ -44,7 +41,6 @@ internal class Foo
 }
 ```
 
-Run:
 ```C#
 Assert.IsTrue(Foo.HasRun);
 ```
@@ -59,7 +55,6 @@ Output:
 
 ### PropertyGetter
 
-Code:
 ```C#
 internal class Foo
 {
@@ -67,7 +62,6 @@ internal class Foo
 }
 ```
 
-Run:
 ```C#
 Foo foo = new Foo();
 foo.Bar = 3;
@@ -84,7 +78,6 @@ Output:
 
 ### PropertySetter
 
-Code:
 ```C#
 internal class Foo
 {
@@ -92,7 +85,6 @@ internal class Foo
 }
 ```
 
-Run:
 ```C#
 Foo foo = new Foo();
 foo.Bar = 3;
@@ -109,7 +101,6 @@ Output:
 
 ### MethodsInBaseClassShowsTheNameOfTheExecutingClass
 
-Code:
 ```C#
 internal abstract class BaseClass
 {
@@ -124,7 +115,6 @@ internal class DerivedClass : BaseClass
 }
 ```
 
-Run:
 ```C#
 DerivedClass derived = new DerivedClass();
 derived.Foo();
@@ -140,7 +130,6 @@ Output:
 
 ### StaticMethodsInBaseClassShowsTheNameOfTheBaseClass
 
-Code:
 ```C#
 internal abstract class BaseClass
 {
@@ -155,7 +144,6 @@ internal class DerivedClass : BaseClass
 }
 ```
 
-Run:
 ```C#
 DerivedClass.Foo();
 ```
