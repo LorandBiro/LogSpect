@@ -62,10 +62,13 @@
 
         private static ModuleDefinition LoadModule(string assemblyPath)
         {
+            DefaultAssemblyResolver assemblyResolver = new DefaultAssemblyResolver();
+            assemblyResolver.AddSearchDirectory(Path.GetDirectoryName(assemblyPath));
+
             string pdbPath = Path.ChangeExtension(assemblyPath, "pdb");
             if (!File.Exists(pdbPath))
             {
-                return ModuleDefinition.ReadModule(assemblyPath, new ReaderParameters());
+                return ModuleDefinition.ReadModule(assemblyPath, new ReaderParameters { AssemblyResolver = assemblyResolver });
             }
 
             using (FileStream symbolStream = File.OpenRead(pdbPath))
@@ -74,7 +77,8 @@
                 {
                     ReadSymbols = true,
                     SymbolReaderProvider = new PdbReaderProvider(),
-                    SymbolStream = symbolStream
+                    SymbolStream = symbolStream,
+                    AssemblyResolver = assemblyResolver
                 };
 
                 return ModuleDefinition.ReadModule(assemblyPath, readerParametersWithSymbolStream);
