@@ -3,6 +3,6 @@
   <UsingTask TaskName="LogSpectRewriterTask" AssemblyFile="$(MSbuildThisFileDirectory)..\tools\LogSpectRewriter.exe" />
   
   <Target Name="LogSpectTarget" AfterTargets="CoreCompile" DependsOnTargets="$(LogSpectDependsOn)">
-    <LogSpectRewriterTask AssemblyPath="@(IntermediateAssembly)" />
+    <LogSpectRewriterTask AssemblyPath="@(IntermediateAssembly)" References="@(ReferencePath)" />
   </Target>
 </Project>

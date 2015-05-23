@@ -84,7 +84,7 @@
 
         private static void RewriteAssembly(string assemblyFilePath)
         {
-            bool success = Rewriter.TryRewriteAssembly(assemblyFilePath, assemblyFilePath);
+            bool success = Rewriter.TryRewriteAssembly(assemblyFilePath, assemblyFilePath, null);
             Assert.IsTrue(success, "Failed to rewrite the test subject assembly.");
         }
 

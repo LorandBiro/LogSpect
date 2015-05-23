@@ -1,6 +1,7 @@
 ﻿namespace LogSpectRewriter.Rewriting
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using LogSpect;
@@ -24,7 +25,7 @@
             this.outputWriter = outputWriter;
         }
 
-        public bool TryRewriteAssembly(string inputAssemblyPath, string outputAssemblyPath)
+        public bool TryRewriteAssembly(string inputAssemblyPath, string outputAssemblyPath, ICollection<string> assemblySearchPaths)
         {
             if (inputAssemblyPath == null)
             {
@@ -39,7 +40,7 @@
             DateTime startedAt = DateTime.UtcNow;
             try
             {
-                ModuleDefinition module = LoadModule(inputAssemblyPath);
+                ModuleDefinition module = LoadModule(inputAssemblyPath, assemblySearchPaths);
                 if (LogSpectRewrittenClassExists(module))
                 {
                     this.outputWriter.LogMessage(string.Format("{0} has been already rewritten.", module.Name));
@@ -60,10 +61,20 @@
             return true;
         }
 
-        private static ModuleDefinition LoadModule(string assemblyPath)
+        private static ModuleDefinition LoadModule(string assemblyPath, ICollection<string> assemblySearchPaths)
         {
             DefaultAssemblyResolver assemblyResolver = new DefaultAssemblyResolver();
-            assemblyResolver.AddSearchDirectory(Path.GetDirectoryName(assemblyPath));
+            if (assemblySearchPaths == null)
+            {
+                assemblyResolver.AddSearchDirectory(Path.GetDirectoryName(assemblyPath));   
+            }
+            else
+            {
+                foreach (string assemblySearchPath in assemblySearchPaths)
+                {
+                    assemblyResolver.AddSearchDirectory(assemblySearchPath);
+                }
+            }
 
             string pdbPath = Path.ChangeExtension(assemblyPath, "pdb");
             if (!File.Exists(pdbPath))

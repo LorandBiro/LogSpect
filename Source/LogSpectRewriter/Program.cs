@@ -33,7 +33,7 @@
             }
 
             AssemblyRewriter rewriter = new AssemblyRewriter(new ConsoleOutputWriter());
-            bool success = rewriter.TryRewriteAssembly(inputAssemblyPath, outputAssemblyPath);
+            bool success = rewriter.TryRewriteAssembly(inputAssemblyPath, outputAssemblyPath, null);
             return success ? 0 : 3;
         }
     }
