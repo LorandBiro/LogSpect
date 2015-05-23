@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>LogSpect.Core</id>
-    <version>1.0.0-alpha004</version>
+    <version>1.0.0-alpha005</version>
     <authors>Loránd Biró</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>https://github.com/LorandBiro/LogSpect/raw/master/LICENSE</licenseUrl>
