@@ -3,7 +3,23 @@ LogSpect
 
 Usually debugging is easy while you work on a software, but after you deploy a software to the production environment debugging becomes much harder. You lose the IDE, you lose control. You can't just put a breakpoint somewhere and investigate in the debugger, you have to rely on something else. If your software have a trace log you have a tool to start the investigation, but otherwise you'll have to guess and experiment. The more you log the better the chance it will contain something useful about the error and its circumstances.
 
-LogSpect is a logging (or more accurately a tracing) framework. It doesn't try to replace the already popular frameworks (like NLog or log4net), but it works together with them to decrease the effort of logging by automatizing it. You mark your methods you need to log and LogSpect will use your favorite logging framework to log everything: the name of the method, the input and output parameters, the return value and even the exceptions. Additionally it will indent the log entries so it will be really easy to read.
+LogSpect is a logging (or more accurately a tracing) framework. It doesn't try to replace the already popular frameworks (like NLog or log4net), but it works together with them to decrease the effort of logging by automatizing it. Just mark your methods you need to log and LogSpect will actually rewrite your application to instert logging instructions. It will log the method calls, the input and output parameters, the return values and even the exceptions. The result is exceptional quality and readability.
+
+# How to use
+
+> (To find the NuGet packages you have to change the "Stable only" dropbox to "Include Prerelease")
+
+1. Install the `LogSpect.Core` NuGet package and a logger adapter on the project where you will initialize the logging. (Entry point/Bootstrapper)
+  - `LogSpect.BasicLoggers` contains simple console and file loggers for basic scenarios.
+  - `LogSpect.NLog` contains an adapter to NLog.
+  - `LogSpect.Log4Net` contains an adapter to log4net.
+2. Initialize LogSpect and specify the logger using the `LogSpectInitializer` class.
+3. Install the `LogSpect` NuGet package on the projects you want to log. That package will include the rewriter into the build process.
+4. Decorate your methods with the `LogCallsAttribute` and fine-tune the output by decorating your parameters:
+  - `LogMembersAttribute` - Log the properties of this value.
+  - `LogItemsAttribute` - Log the items of this collection.
+  - `DoNotLogAttribute` - Do not log the value.
+5. Run your application and enjoy the results.
 
 # Quick tutorial
 
@@ -86,11 +102,11 @@ Leave Program.Foo()
 
 You can see that LogSpect used the `ToString` method to serialize the first parameter. Important: `LogItemsAttribute` doesn't support IEnumerable, it can only be used on `ICollection` and `IDictionary` types, because enumerating an IEnumerable can cause bugs due to its possible side effects. Static code analyzers usually catch these problems, but in this case it's impossible to detect.
 
-If want to control the serialization of the return values you can also use these attributes, but you have to decorate the return value and not the method:
+If want to control the serialization of the return values you can also use these attributes on the methods:
 
 ```C#
 [LogCalls]
-[return: LogMembers]
+[LogMembers]
 public int[] Foo()
 {
 }
