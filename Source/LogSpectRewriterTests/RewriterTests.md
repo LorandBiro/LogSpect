@@ -315,3 +315,117 @@ Warnings:
 ```
 System.Void Foo::set_Item(System.Int32,System.Int32) - LogCallsAttribute doesn't have any effect on abstract members.
 ```
+
+
+
+### DoNotLogAttributeOnMethodWithoutLogCallsAttribute
+
+```C#
+internal class Foo
+{
+    [DoNotLog]
+    public int Bar()
+    {
+        return 0;
+    }
+}
+```
+
+Warnings:
+```
+System.Int32 Foo::Bar() - DoNotLogAttribute doesn't have any effect on methods without LogCallsAttribute.
+```
+
+
+
+### DoNotLogAttributeOnParameterWithoutLogCallsAttribute
+
+```C#
+internal class Foo
+{
+    public void Bar([DoNotLog] int a)
+    {
+    }
+}
+```
+
+Warnings:
+```
+System.Void Foo::Bar(System.Int32) - DoNotLogAttribute doesn't have any effect on methods without LogCallsAttribute.
+```
+
+
+
+### LogItemsAttributeOnMethodWithoutLogCallsAttribute
+
+```C#
+internal class Foo
+{
+    [LogItems]
+    public int[] Bar()
+    {
+        return null;
+    }
+}
+```
+
+Warnings:
+```
+System.Int32[] Foo::Bar() - LogItemsAttribute doesn't have any effect on methods without LogCallsAttribute.
+```
+
+
+
+### LogItemsAttributeOnParameterWithoutLogCallsAttribute
+
+```C#
+internal class Foo
+{
+    public void Bar([LogItems] int[] a)
+    {
+    }
+}
+```
+
+Warnings:
+```
+System.Void Foo::Bar(System.Int32[]) - LogItemsAttribute doesn't have any effect on methods without LogCallsAttribute.
+```
+
+
+
+### LogMembersAttributeOnMethodWithoutLogCallsAttribute
+
+```C#
+internal class Foo
+{
+    [LogMembers]
+    public string Bar()
+    {
+        return null;
+    }
+}
+```
+
+Warnings:
+```
+System.String Foo::Bar() - LogMembersAttribute doesn't have any effect on methods without LogCallsAttribute.
+```
+
+
+
+### LogMembersAttributeOnParameterWithoutLogCallsAttribute
+
+```C#
+internal class Foo
+{
+    public void Bar([LogMembers] string a)
+    {
+    }
+}
+```
+
+Warnings:
+```
+System.Void Foo::Bar(System.String) - LogMembersAttribute doesn't have any effect on methods without LogCallsAttribute.
+```
