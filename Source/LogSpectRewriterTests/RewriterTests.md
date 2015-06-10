@@ -156,7 +156,7 @@ Output:
 
 
 
-### InterfaceMethod
+### LogCallsAttributeOnInterfaceMethod
 
 ```C#
 internal interface IFoo
@@ -173,7 +173,7 @@ System.Void IFoo::Bar() - LogCallsAttribute doesn't have any effect on interface
 
 
 
-### InterfacePropertyGetter
+### LogCallsAttributeOnInterfacePropertyGetter
 
 ```C#
 internal interface IFoo
@@ -189,7 +189,7 @@ System.Int32 IFoo::get_Bar() - LogCallsAttribute doesn't have any effect on inte
 
 
 
-### InterfacePropertySetter
+### LogCallsAttributeOnInterfacePropertySetter
 
 ```C#
 internal interface IFoo
@@ -205,7 +205,7 @@ System.Void IFoo::set_Bar(System.Int32) - LogCallsAttribute doesn't have any eff
 
 
 
-### InterfaceIndexerGetter
+### LogCallsAttributeOnInterfaceIndexerGetter
 
 ```C#
 internal interface IFoo
@@ -221,7 +221,7 @@ System.Int32 IFoo::get_Item(System.Int32) - LogCallsAttribute doesn't have any e
 
 
 
-### InterfaceIndexerSetter
+### LogCallsAttributeOnInterfaceIndexerSetter
 
 ```C#
 internal interface IFoo
@@ -237,7 +237,7 @@ System.Void IFoo::set_Item(System.Int32,System.Int32) - LogCallsAttribute doesn'
 
 
 
-### AbstractMethod
+### LogCallsAttributeOnAbstractMethod
 
 ```C#
 internal abstract class Foo
@@ -254,7 +254,7 @@ System.Void Foo::Bar() - LogCallsAttribute doesn't have any effect on abstract m
 
 
 
-### AbstractPropertyGetter
+### LogCallsAttributeOnAbstractPropertyGetter
 
 ```C#
 internal abstract class Foo
@@ -270,7 +270,7 @@ System.Int32 Foo::get_Bar() - LogCallsAttribute doesn't have any effect on abstr
 
 
 
-### AbstractPropertySetter
+### LogCallsAttributeOnAbstractPropertySetter
 
 ```C#
 internal abstract class Foo
@@ -286,7 +286,7 @@ System.Void Foo::set_Bar(System.Int32) - LogCallsAttribute doesn't have any effe
 
 
 
-### AbstractIndexerGetter
+### LogCallsAttributeOnAbstractIndexerGetter
 
 ```C#
 internal abstract class Foo
@@ -302,7 +302,7 @@ System.Int32 Foo::get_Item(System.Int32) - LogCallsAttribute doesn't have any ef
 
 
 
-### AbstractIndexerSetter
+### LogCallsAttributeOnAbstractIndexerSetter
 
 ```C#
 internal abstract class Foo
