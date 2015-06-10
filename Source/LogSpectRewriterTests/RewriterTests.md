@@ -153,3 +153,31 @@ Output:
   TRACE|Enter BaseClass.Foo()
   TRACE|Leave BaseClass.Foo()
 ```
+
+
+
+### InterfaceMethod
+
+```C#
+internal interface IFoo
+{
+    [LogCalls]
+    void Bar();
+}
+
+internal class Foo : IFoo
+{
+    public void Bar()
+    {
+    }
+}
+```
+
+```C#
+Foo foo = new Foo();
+foo.Bar();
+```
+
+Output:
+```
+```
