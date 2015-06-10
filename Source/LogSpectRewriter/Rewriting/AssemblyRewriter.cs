@@ -138,6 +138,12 @@
             {
                 validator.Validate(typeDefinition);
 
+                if (typeDefinition.IsInterface)
+                {
+                    // There's nothing to rewrite on interfaces.
+                    continue;
+                }
+
                 foreach (MethodDefinition methodDefinition in typeDefinition.Methods)
                 {
                     if (methodDefinition.CustomAttributes.Any(x => x.AttributeType.IsEquivalentTo(typeof(LogCallsAttribute))))
