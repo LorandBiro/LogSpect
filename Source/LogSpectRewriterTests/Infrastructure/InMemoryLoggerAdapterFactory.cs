@@ -5,11 +5,9 @@
 
     internal class InMemoryLoggerAdapterFactory : ILoggerAdapterFactory
     {
-        public static readonly InMemoryLoggerAdapter Adapter = new InMemoryLoggerAdapter();
-
         public ILoggerAdapter Create(Type targetType)
         {
-            return Adapter;
+            return InMemoryLoggerAdapter.Instance;
         }
     }
 }

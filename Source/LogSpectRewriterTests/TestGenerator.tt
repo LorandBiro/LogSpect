@@ -25,6 +25,22 @@ foreach (TestSet testSet in ReadDirectory(Path.GetDirectoryName(Host.TemplateFil
     {<#
     foreach (Test test in testSet.Tests)
     {
+        if (test.Warnings != null)
+        {
+#>
+
+        [TestMethod]
+        public void <#= test.Name #>()
+        {
+            const string ClassDefinitions = @"<#= test.Code.Trim().Replace("\"", "\\\"").Replace("\\", "\\\\") #>";
+            const string ExpectedWarnings = @"<#= test.Warnings.Replace("\"", "\\\"").Replace("\\", "\\\\") #>";
+
+            CodeRunner.CompileAndRewrite(ClassDefinitions, ExpectedWarnings);
+        }
+<#
+        }
+        else
+        {
 #>
 
         [TestMethod]
@@ -37,6 +53,7 @@ foreach (TestSet testSet in ReadDirectory(Path.GetDirectoryName(Host.TemplateFil
             CodeRunner.CompileRewriteAndRun(ClassDefinitions, TestCode, ExpectedOutput);
         }
 <#
+        }
     }
 #>
     }
@@ -46,6 +63,15 @@ foreach (TestSet testSet in ReadDirectory(Path.GetDirectoryName(Host.TemplateFil
 }
 <#+
 
+private class CodeBlock
+{
+    public string Label { get; set; }
+
+    public string Syntax { get; set; }
+
+    public string Code { get; set; }
+}
+
 private class TestSet
 {
     public string Name { get; set; }
@@ -53,7 +79,7 @@ private class TestSet
     public IList<Test> Tests { get; set; }
 }
 
-public class Test
+private class Test
 {
     public string Name { get; set; }
 
@@ -62,6 +88,8 @@ public class Test
     public string Run { get; set; }
 
     public string Output { get; set; }
+
+    public string Warnings { get; set; }
 }
 
 private IList<TestSet> ReadDirectory(string directoryPath)
@@ -86,11 +114,17 @@ private IList<Test> ParseMarkdown(string markdown)
             break;
         }
 
-        string code = ReadCodeBlock(lines, ref i, null, "C#");
-        string run = ReadCodeBlock(lines, ref i, null, "C#");
-        string output = ReadCodeBlock(lines, ref i, "Output:", string.Empty);
-
-        tests.Add(new Test { Name = name, Code = code, Run = run, Output = output });
+        CodeBlock firstBlock = ReadCodeBlock(lines, ref i);
+        CodeBlock secondBlock = ReadCodeBlock(lines, ref i);
+        if (secondBlock.Label == "Warnings")
+        {
+            tests.Add(new Test { Name = name, Code = firstBlock.Code, Warnings = secondBlock.Code });
+        }
+        else
+        {
+            CodeBlock thirdBlock = ReadCodeBlock(lines, ref i);
+            tests.Add(new Test { Name = name, Code = firstBlock.Code, Run = secondBlock.Code, Output = thirdBlock.Code });
+        }
     }
 
     return tests;
@@ -109,20 +143,51 @@ private string ReadTestName(string[] lines, ref int i)
     return null;
 }
 
-private string ReadCodeBlock(string[] lines, ref int i, string label, string syntax)
+private CodeBlock ReadCodeBlock(string[] lines, ref int i)
 {
-    StringBuilder buffer = new StringBuilder();
-    if (label != null)
+    string label = null;
+    for (; ; i++)
     {
-        while (lines[i++] != label) { }
+        if (lines[i].StartsWith("```"))
+        {
+            break;
+        }
+
+        if (lines[i].EndsWith(":"))
+        {
+            label = lines[i].Substring(0, lines[i].Length - 1);
+            i++;
+            break;
+        }
     }
 
-    while (lines[i++] != "```" + syntax) { }
-    while (lines[i++] != "```")
+    string syntax = null;
+    for (; ; i++)
     {
-        buffer.AppendLine(lines[i - 1]);
+        if (lines[i].StartsWith("```"))
+        {
+            if (lines[i].Length > 3)
+            {
+                syntax = lines[i].Substring(3);
+            }
+
+            i++;
+            break;
+        }
     }
 
-    return buffer.ToString();
+    StringBuilder code = new StringBuilder();
+    for (; ; i++)
+    {
+        if (lines[i] == "```")
+        {
+            i++;
+            break;
+        }
+
+        code.AppendLine(lines[i]);
+    }
+
+    return new CodeBlock { Label = label, Syntax = syntax, Code = code.ToString() };
 }
 #>

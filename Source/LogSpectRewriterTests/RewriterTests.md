@@ -164,20 +164,9 @@ internal interface IFoo
     [LogCalls]
     void Bar();
 }
-
-internal class Foo : IFoo
-{
-    public void Bar()
-    {
-    }
-}
 ```
 
-```C#
-Foo foo = new Foo();
-foo.Bar();
+Warnings:
 ```
-
-Output:
-```
+System.Void IFoo::Bar() - LogCallsAttribute doesn't have any effect on interface members.
 ```

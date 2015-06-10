@@ -19,9 +19,19 @@
 
         private const string TestMethodName = "Run";
 
-        private static readonly AssemblyRewriter Rewriter = new AssemblyRewriter(new DebugOutputWriter());
+        private static readonly AssemblyRewriter Rewriter = new AssemblyRewriter(DebugOutputWriter.Instance);
 
         private static bool isInitialized;
+
+        public static void CompileAndRewrite(string classDefinitions, string expectedWarnings)
+        {
+            EnsureInitialized();
+
+            DebugOutputWriter.Instance.Clear();
+            string assemblyFilePath = CompileAssemblyFromSource(classDefinitions, string.Empty);
+            RewriteAssembly(assemblyFilePath);
+            Assert.AreEqual(expectedWarnings, DebugOutputWriter.Instance.Warnings);
+        }
 
         public static void CompileRewriteAndRun(string classDefinitions, string testCode, string expectedOutput)
         {
@@ -30,9 +40,9 @@
             string assemblyFilePath = CompileAssemblyFromSource(classDefinitions, testCode);
             RewriteAssembly(assemblyFilePath);
 
-            InMemoryLoggerAdapterFactory.Adapter.Clear();
+            InMemoryLoggerAdapter.Instance.Clear();
             LoadAssemblyAndRunTest(assemblyFilePath);
-            Assert.AreEqual(expectedOutput, InMemoryLoggerAdapterFactory.Adapter.Log);
+            Assert.AreEqual(expectedOutput, InMemoryLoggerAdapter.Instance.Log);
         }
 
         private static void EnsureInitialized()

@@ -7,7 +7,13 @@
 
     internal class InMemoryLoggerAdapter : ILoggerAdapter
     {
+        public static readonly InMemoryLoggerAdapter Instance = new InMemoryLoggerAdapter();
+
         private readonly StringBuilder stringBuilder = new StringBuilder();
+
+        private InMemoryLoggerAdapter()
+        {
+        }
 
         public string Log
         {
