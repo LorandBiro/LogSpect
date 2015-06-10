@@ -146,6 +146,12 @@
 
                 foreach (MethodDefinition methodDefinition in typeDefinition.Methods)
                 {
+                    if (methodDefinition.IsAbstract)
+                    {
+                        // Can't rewrite abstract methods.
+                        continue;
+                    }
+
                     if (methodDefinition.CustomAttributes.Any(x => x.AttributeType.IsEquivalentTo(typeof(LogCallsAttribute))))
                     {
                         try

@@ -26,15 +26,19 @@
                 throw new ArgumentNullException("type");
             }
 
-            if (type.IsInterface)
+            foreach (MethodDefinition method in type.Methods)
             {
-                foreach (MethodDefinition method in type.Methods)
+                foreach (CustomAttribute attribute in method.CustomAttributes)
                 {
-                    foreach (CustomAttribute attribute in method.CustomAttributes)
+                    if (attribute.AttributeType.IsEquivalentTo(typeof(LogCallsAttribute)))
                     {
-                        if (attribute.AttributeType.IsEquivalentTo(typeof(LogCallsAttribute)))
+                        if (type.IsInterface)
                         {
                             this.outputWriter.LogWarning(string.Format("{0} doesn't have any effect on interface members.", typeof(LogCallsAttribute).Name), method);
+                        }
+                        else if (type.IsAbstract)
+                        {
+                            this.outputWriter.LogWarning(string.Format("{0} doesn't have any effect on abstract members.", typeof(LogCallsAttribute).Name), method);
                         }
                     }
                 }
