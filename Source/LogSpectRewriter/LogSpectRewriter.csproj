@@ -51,6 +51,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Rewriting\AttributeUsageValidator.cs" />
     <Compile Include="Rewriting\RewriterHelper.cs" />
     <Compile Include="Rewriting\AssemblyRewriter.cs" />
     <Compile Include="Output\ConsoleOutputWriter.cs" />

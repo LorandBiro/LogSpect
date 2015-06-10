@@ -15,6 +15,8 @@
 
         private readonly IOutputWriter outputWriter;
 
+        private readonly AttributeUsageValidator attributeUsageValidator;
+
         public AssemblyRewriter(IOutputWriter outputWriter)
         {
             if (outputWriter == null)
@@ -23,6 +25,7 @@
             }
 
             this.outputWriter = outputWriter;
+            this.attributeUsageValidator = new AttributeUsageValidator(this.outputWriter);
         }
 
         public bool TryRewriteAssembly(string inputAssemblyPath, string outputAssemblyPath, ICollection<string> assemblySearchPaths)
@@ -124,8 +127,10 @@
             MethodRewriter methodRewriter = new MethodRewriter(module);
 
             int counter = 0;
-            foreach (TypeDefinition typeDefinition in module.Types.Where(typeDefinition => typeDefinition.Methods.Count > 0))
+            foreach (TypeDefinition typeDefinition in module.Types)
             {
+                this.attributeUsageValidator.Validate(typeDefinition);
+
                 foreach (MethodDefinition methodDefinition in typeDefinition.Methods)
                 {
                     if (methodDefinition.CustomAttributes.Any(x => x.AttributeType.IsEquivalentTo(typeof(LogCallsAttribute))))

@@ -30,5 +30,15 @@
             this.log.LogError(Prefix + error);
             this.log.LogErrorFromException(exception, true);
         }
+
+        public void LogWarning(string warning)
+        {
+            this.log.LogWarning(null, null, null, null, 0, 0, 0, 0, Prefix + warning);
+        }
+
+        public void LogWarning(string warning, string filePath, int lineNumber, int columnNumber)
+        {
+            this.log.LogWarning(null, null, null, filePath, lineNumber, columnNumber, 0, 0, Prefix + warning);
+        }
     }
 }
