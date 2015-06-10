@@ -70,7 +70,7 @@
 
         private static string CompileAssemblyFromSource(string classDefinitions, string testCode)
         {
-            string source = string.Format("using LogSpect; using Microsoft.VisualStudio.TestTools.UnitTesting; {0} public static class {1} {{ public static void {2}() {{ {3} }} }}", classDefinitions, TestClassName, TestMethodName, testCode);
+            string source = string.Format("using System.Collections.Generic; using LogSpect; using Microsoft.VisualStudio.TestTools.UnitTesting; {0} public static class {1} {{ public static void {2}() {{ {3} }} }}", classDefinitions, TestClassName, TestMethodName, testCode);
 
             string outputPath = Path.Combine(TempDirectoryPath, Guid.NewGuid() + ".dll");
 

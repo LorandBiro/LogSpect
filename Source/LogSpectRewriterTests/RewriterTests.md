@@ -394,6 +394,63 @@ System.Void Foo::Bar(System.Int32[]) - LogItemsAttribute doesn't have any effect
 
 
 
+### LogItemsAttributeOnIEnumerableParameter
+
+```C#
+internal class Foo
+{
+    [LogCalls]
+    public void Bar([LogItems] IEnumerable<int> a)
+    {
+    }
+}
+```
+
+Warnings:
+```
+System.Void Foo::Bar(System.Collections.Generic.IEnumerable`1<System.Int32>) - LogItemsAttribute will work only on ICollection and IDictionary values.
+```
+
+
+
+### LogItemsAttributeOnIEnumerableMethod
+
+```C#
+internal class Foo
+{
+    [LogCalls]
+    [LogItems]
+    public IEnumerable<int> Bar()
+    {
+        return null;
+    }
+}
+```
+
+Warnings:
+```
+System.Collections.Generic.IEnumerable`1<System.Int32> Foo::Bar() - LogItemsAttribute will work only on ICollection and IDictionary values.
+```
+
+
+
+### LogItemsAttributeOnIEnumerableProperty
+
+```C#
+internal class Foo
+{
+    [LogItems]
+    public IEnumerable<int> Bar { get; set; }
+}
+```
+
+Warnings:
+```
+System.Collections.Generic.IEnumerable`1<System.Int32> Foo::Bar() - LogItemsAttribute will work only on ICollection and IDictionary values.
+```
+
+
+
 ### LogMembersAttributeOnMethodWithoutLogCallsAttribute
 
 ```C#
