@@ -15,8 +15,6 @@
 
         private readonly IOutputWriter outputWriter;
 
-        private readonly AttributeUsageValidator attributeUsageValidator;
-
         public AssemblyRewriter(IOutputWriter outputWriter)
         {
             if (outputWriter == null)
@@ -25,7 +23,6 @@
             }
 
             this.outputWriter = outputWriter;
-            this.attributeUsageValidator = new AttributeUsageValidator(this.outputWriter);
         }
 
         public bool TryRewriteAssembly(string inputAssemblyPath, string outputAssemblyPath, ICollection<string> assemblySearchPaths)
@@ -40,28 +37,36 @@
                 throw new ArgumentNullException("outputAssemblyPath");
             }
 
+            this.outputWriter.LogMessage(string.Format("Rewriter started on '{0}'.", inputAssemblyPath));
             DateTime startedAt = DateTime.UtcNow;
+            bool success;
+
             try
             {
                 ModuleDefinition module = LoadModule(inputAssemblyPath, assemblySearchPaths);
                 if (LogSpectRewrittenClassExists(module))
                 {
-                    this.outputWriter.LogMessage(string.Format("{0} has been already rewritten.", module.Name));
-                    return true;
+                    success = true;
+                    this.outputWriter.LogMessage(string.Format("Assembly has been already rewritten."));
                 }
-
-                this.RewriteModule(module);
-                CreateLogSpectRewrittenClass(module);
-                SaveModule(module, outputAssemblyPath);
+                else
+                {
+                    success = this.RewriteModule(module);
+                    if (success)
+                    {
+                        CreateLogSpectRewrittenClass(module);
+                        SaveModule(module, outputAssemblyPath);
+                    }
+                }
             }
             catch (Exception exception)
             {
+                success = false;
                 this.outputWriter.LogError("Rewriter failed with unexpected exception.", exception);
-                return false;
             }
 
             this.outputWriter.LogMessage(string.Format("Rewriter completed under {0}.", DateTime.UtcNow - startedAt));
-            return true;
+            return success;
         }
 
         private static ModuleDefinition LoadModule(string assemblyPath, ICollection<string> assemblySearchPaths)
@@ -122,26 +127,37 @@
             module.Types.Add(logSpectRewritten);
         }
 
-        private void RewriteModule(ModuleDefinition module)
+        private bool RewriteModule(ModuleDefinition module)
         {
             MethodRewriter methodRewriter = new MethodRewriter(module);
+            AttributeUsageValidator validator = new AttributeUsageValidator(this.outputWriter);
 
             int counter = 0;
+            bool success = true;
             foreach (TypeDefinition typeDefinition in module.Types)
             {
-                this.attributeUsageValidator.Validate(typeDefinition);
+                validator.Validate(typeDefinition);
 
                 foreach (MethodDefinition methodDefinition in typeDefinition.Methods)
                 {
                     if (methodDefinition.CustomAttributes.Any(x => x.AttributeType.IsEquivalentTo(typeof(LogCallsAttribute))))
                     {
-                        methodRewriter.Rewrite(methodDefinition);
-                        counter++;
+                        try
+                        {
+                            methodRewriter.Rewrite(methodDefinition);
+                            counter++;
+                        }
+                        catch (Exception exception)
+                        {
+                            success = false;
+                            this.outputWriter.LogError("Rewriting the method failed with unexpected exception.", exception, methodDefinition);
+                        }
                     }
                 }
             }
 
-            this.outputWriter.LogMessage(string.Format("{0} methods have been rewritten for {1}.", counter, module.Name));
+            this.outputWriter.LogMessage(string.Format("{0} methods have been rewritten.", counter));
+            return success;
         }
     }
 }

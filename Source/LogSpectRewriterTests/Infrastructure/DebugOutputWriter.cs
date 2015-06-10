@@ -13,18 +13,24 @@
 
         public void LogError(string error, Exception exception)
         {
-            Debug.WriteLine("LogSpect: " + error);
+            Debug.WriteLine("LogSpect Error: " + error);
+            Debug.WriteLine(exception.ToString());
+        }
+
+        public void LogError(string error, Exception exception, string filePath, int lineNumber, int columnNumber)
+        {
+            Debug.WriteLine("LogSpect Error: " + error);
             Debug.WriteLine(exception.ToString());
         }
 
         public void LogWarning(string warning)
         {
-            Debug.WriteLine("LogSpect: " + warning);
+            Debug.WriteLine("LogSpect Warning: " + warning);
         }
 
         public void LogWarning(string warning, string filePath, int lineNumber, int columnNumber)
         {
-            Debug.WriteLine("LogSpect: " + warning);
+            Debug.WriteLine("LogSpect Warning: " + warning);
         }
     }
 }

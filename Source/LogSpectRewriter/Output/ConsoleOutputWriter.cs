@@ -11,7 +11,13 @@
 
         public void LogError(string error, Exception exception)
         {
-            Console.Error.WriteLine(error);
+            Console.Error.WriteLine("error : {0}", error);
+            Console.Error.WriteLine(exception);
+        }
+
+        public void LogError(string error, Exception exception, string filePath, int lineNumber, int columnNumber)
+        {
+            Console.Error.WriteLine("{0}({1},{2},{3},{4}): error : {5}", filePath, lineNumber, columnNumber, 0, 0, error);
             Console.Error.WriteLine(exception);
         }
 

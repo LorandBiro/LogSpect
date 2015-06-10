@@ -28,12 +28,18 @@
         public void LogError(string error, Exception exception)
         {
             this.log.LogError(Prefix + error);
-            this.log.LogErrorFromException(exception, true);
+            this.log.LogErrorFromException(exception, true, true, null);
+        }
+
+        public void LogError(string error, Exception exception, string filePath, int lineNumber, int columnNumber)
+        {
+            this.log.LogError(null, null, null, filePath, lineNumber, columnNumber, 0, 0, Prefix + error);
+            this.log.LogErrorFromException(exception, true, true, null);
         }
 
         public void LogWarning(string warning)
         {
-            this.log.LogWarning(null, null, null, null, 0, 0, 0, 0, Prefix + warning);
+            this.log.LogWarning(Prefix + warning);
         }
 
         public void LogWarning(string warning, string filePath, int lineNumber, int columnNumber)
