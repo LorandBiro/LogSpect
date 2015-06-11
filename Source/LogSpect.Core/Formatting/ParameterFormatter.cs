@@ -84,7 +84,13 @@
             IFormattable formattable = value as IFormattable;
             if (formattable != null)
             {
-                sb.Append(formattable.ToString(null, this.formatProvider));
+                string format = null;
+                if (value is DateTime || value is DateTimeOffset)
+                {
+                    format = "o";
+                }
+
+                sb.Append(formattable.ToString(format, this.formatProvider));
                 return;
             }
 

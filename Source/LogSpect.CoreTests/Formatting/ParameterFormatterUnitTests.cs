@@ -89,10 +89,26 @@
         [TestMethod]
         public void Serialize_FormattableTests()
         {
-            IFormattable formattable = new DateTime(2000, 1, 1, 0, 0, 0);
-            TestFormatter(formattable, FormattingMode.Default, "01/01/2000 00:00:00", CultureInfo.InvariantCulture);
-            TestFormatter(formattable, FormattingMode.Default, "1/1/2000 12:00:00 AM", CultureInfo.GetCultureInfo("en-US"));
+            IFormattable formattable = 3.14;
+            TestFormatter(formattable, FormattingMode.Default, "3.14", CultureInfo.InvariantCulture);
+            TestFormatter(formattable, FormattingMode.Default, "3,14", CultureInfo.GetCultureInfo("hu-HU"));
             TestFormatter(formattable, FormattingMode.DoNotLog, "-");
+        }
+
+        [TestMethod]
+        public void Serialize_DateTimeTests()
+        {
+            TestFormatter(new DateTime(2009, 6, 15, 13, 45, 30), FormattingMode.Default, "2009-06-15T13:45:30.0000000");
+            TestFormatter(new DateTime(2009, 6, 15, 13, 45, 30), FormattingMode.DoNotLog, "-");
+
+            TestFormatter(new DateTime(2009, 6, 15, 13, 45, 30, DateTimeKind.Utc), FormattingMode.Default, "2009-06-15T13:45:30.0000000Z");
+        }
+
+        [TestMethod]
+        public void Serialize_DateTimeOffsetTests()
+        {
+            TestFormatter(new DateTimeOffset(2009, 6, 15, 13, 45, 30, TimeSpan.FromHours(-7.0)), FormattingMode.Default, "2009-06-15T13:45:30.0000000-07:00");
+            TestFormatter(new DateTimeOffset(2009, 6, 15, 13, 45, 30, TimeSpan.FromHours(-7.0)), FormattingMode.DoNotLog, "-");
         }
 
         [TestMethod]
