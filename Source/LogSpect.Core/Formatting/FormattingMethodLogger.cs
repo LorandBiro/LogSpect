@@ -8,6 +8,10 @@
 
     public sealed class FormattingMethodLogger : IMethodLogger
     {
+        private readonly MethodBase targetMethod;
+
+        private readonly MethodLoggingSettings settings;
+
         private readonly ILoggerAdapter adapter;
 
         private readonly IIndentationTracker indentationTracker;
@@ -41,17 +45,12 @@
                 throw new ArgumentNullException("formatter");
             }
 
+            this.targetMethod = targetMethod;
+            this.settings = settings;
             this.adapter = adapter;
             this.indentationTracker = indentationTracker;
             this.formatter = formatter;
-
-            this.TargetMethod = targetMethod;
-            this.Settings = settings;
         }
-
-        public MethodBase TargetMethod { get; private set; }
-
-        public MethodLoggingSettings Settings { get; private set; }
 
         public void LogEnter(Type type, object[] parameters)
         {
@@ -65,10 +64,10 @@
                 throw new ArgumentNullException("parameters");
             }
 
-            if (this.adapter.IsLevelEnabled(this.Settings.NormalLogLevel))
+            if (this.adapter.IsLevelEnabled(this.settings.NormalLogLevel))
             {
-                string message = this.indentationTracker.Current + this.formatter.SerializeEnter(type, this.TargetMethod, parameters);
-                this.adapter.LogMessage(message, this.Settings.NormalLogLevel);
+                string message = this.indentationTracker.Current + this.formatter.SerializeEnter(type, this.targetMethod, parameters);
+                this.adapter.LogMessage(message, this.settings.NormalLogLevel);
 
                 this.indentationTracker.Increase();
             }
@@ -86,12 +85,12 @@
                 throw new ArgumentNullException("parameters");
             }
 
-            if (this.adapter.IsLevelEnabled(this.Settings.NormalLogLevel))
+            if (this.adapter.IsLevelEnabled(this.settings.NormalLogLevel))
             {
                 this.indentationTracker.Decrease();
 
-                string message = this.indentationTracker.Current + this.formatter.SerializeLeave(type, this.TargetMethod, parameters, returnValue);
-                this.adapter.LogMessage(message, this.Settings.NormalLogLevel);
+                string message = this.indentationTracker.Current + this.formatter.SerializeLeave(type, this.targetMethod, parameters, returnValue);
+                this.adapter.LogMessage(message, this.settings.NormalLogLevel);
             }
         }
 
@@ -107,13 +106,13 @@
                 throw new ArgumentNullException("exception");
             }
 
-            if (this.adapter.IsLevelEnabled(this.Settings.ExceptionLogLevel))
+            if (this.adapter.IsLevelEnabled(this.settings.ExceptionLogLevel))
             {
                 this.indentationTracker.Decrease();
 
-                bool expected = this.Settings.ExpectedExceptions.Any(x => x.IsInstanceOfType(exception));
-                string message = this.indentationTracker.Current + this.formatter.SerializeException(type, this.TargetMethod, exception, expected);
-                this.adapter.LogMessage(message, this.Settings.ExceptionLogLevel, exception);
+                bool expected = this.settings.ExpectedExceptions.Any(x => x.IsInstanceOfType(exception));
+                string message = this.indentationTracker.Current + this.formatter.SerializeException(type, this.targetMethod, exception, expected);
+                this.adapter.LogMessage(message, this.settings.ExceptionLogLevel, exception);
             }
         }
     }
