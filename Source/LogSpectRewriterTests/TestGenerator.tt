@@ -32,10 +32,10 @@ foreach (TestSet testSet in ReadDirectory(Path.GetDirectoryName(Host.TemplateFil
         [TestMethod]
         public void <#= test.Name #>()
         {
-            const string ClassDefinitions = @"<#= test.Code.Trim().Replace("\"", "\\\"").Replace("\\", "\\\\") #>";
-            const string ExpectedWarnings = @"<#= test.Warnings.Replace("\"", "\\\"").Replace("\\", "\\\\") #>";
-            const string TestCode = @"<#= test.Run.Trim().Replace("\"", "\\\"").Replace("\\", "\\\\") #>";
-            const string ExpectedOutput = @"<#= test.Output.Replace("\"", "\\\"").Replace("\\", "\\\\") #>";
+            const string ClassDefinitions = @"<#= test.Code.Trim().Replace("\"", "\"\"") #>";
+            const string ExpectedWarnings = @"<#= test.Warnings.Replace("\"", "\"\"") #>";
+            const string TestCode = @"<#= test.Run.Trim().Replace("\"", "\"\"") #>";
+            const string ExpectedOutput = @"<#= test.Output.Replace("\"", "\"\"") #>";
 
             CodeRunner.CompileRewriteAndRun(ClassDefinitions, ExpectedWarnings, TestCode, ExpectedOutput);
         }
@@ -48,8 +48,8 @@ foreach (TestSet testSet in ReadDirectory(Path.GetDirectoryName(Host.TemplateFil
         [TestMethod]
         public void <#= test.Name #>()
         {
-            const string ClassDefinitions = @"<#= test.Code.Trim().Replace("\"", "\\\"").Replace("\\", "\\\\") #>";
-            const string ExpectedWarnings = @"<#= test.Warnings.Replace("\"", "\\\"").Replace("\\", "\\\\") #>";
+            const string ClassDefinitions = @"<#= test.Code.Trim().Replace("\"", "\"\"") #>";
+            const string ExpectedWarnings = @"<#= test.Warnings.Replace("\"", "\"\"") #>";
 
             CodeRunner.CompileAndRewrite(ClassDefinitions, ExpectedWarnings);
         }
@@ -62,9 +62,9 @@ foreach (TestSet testSet in ReadDirectory(Path.GetDirectoryName(Host.TemplateFil
         [TestMethod]
         public void <#= test.Name #>()
         {
-            const string ClassDefinitions = @"<#= test.Code.Trim().Replace("\"", "\\\"").Replace("\\", "\\\\") #>";
-            const string TestCode = @"<#= test.Run.Trim().Replace("\"", "\\\"").Replace("\\", "\\\\") #>";
-            const string ExpectedOutput = @"<#= test.Output.Replace("\"", "\\\"").Replace("\\", "\\\\") #>";
+            const string ClassDefinitions = @"<#= test.Code.Trim().Replace("\"", "\"\"") #>";
+            const string TestCode = @"<#= test.Run.Trim().Replace("\"", "\"\"") #>";
+            const string ExpectedOutput = @"<#= test.Output.Replace("\"", "\"\"") #>";
 
             CodeRunner.CompileRewriteAndRun(ClassDefinitions, TestCode, ExpectedOutput);
         }
