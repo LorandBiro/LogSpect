@@ -4,6 +4,7 @@
     using System.CodeDom.Compiler;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
     using LogSpect;
     using LogSpect.Logging;
@@ -45,6 +46,20 @@
             Assert.AreEqual(expectedOutput, InMemoryLoggerAdapter.Instance.Log);
         }
 
+        public static void CompileRewriteAndRun(string classDefinitions, string expectedWarnings, string testCode, string expectedOutput)
+        {
+            EnsureInitialized();
+
+            DebugOutputWriter.Instance.Clear();
+            string assemblyFilePath = CompileAssemblyFromSource(classDefinitions, testCode);
+            RewriteAssembly(assemblyFilePath);
+            Assert.AreEqual(expectedWarnings, DebugOutputWriter.Instance.Warnings);
+
+            InMemoryLoggerAdapter.Instance.Clear();
+            LoadAssemblyAndRunTest(assemblyFilePath);
+            Assert.AreEqual(expectedOutput, InMemoryLoggerAdapter.Instance.Log);
+        }
+
         private static void EnsureInitialized()
         {
             if (isInitialized)
@@ -70,7 +85,7 @@
 
         private static string CompileAssemblyFromSource(string classDefinitions, string testCode)
         {
-            string source = string.Format("using System.Collections.Generic; using LogSpect; using Microsoft.VisualStudio.TestTools.UnitTesting; {0} public static class {1} {{ public static void {2}() {{ {3} }} }}", classDefinitions, TestClassName, TestMethodName, testCode);
+            string source = string.Format("using System.Collections.Generic; using System.Linq; using LogSpect; using Microsoft.VisualStudio.TestTools.UnitTesting; {0} public static class {1} {{ public static void {2}() {{ {3} }} }}", classDefinitions, TestClassName, TestMethodName, testCode);
 
             string outputPath = Path.Combine(TempDirectoryPath, Guid.NewGuid() + ".dll");
 
@@ -79,6 +94,7 @@
             options.ReferencedAssemblies.Add(typeof(LogCallsAttribute).Assembly.ManifestModule.FullyQualifiedName);
             options.ReferencedAssemblies.Add(typeof(LogCallsAttributeBase).Assembly.ManifestModule.FullyQualifiedName);
             options.ReferencedAssemblies.Add(typeof(Assert).Assembly.ManifestModule.FullyQualifiedName);
+            options.ReferencedAssemblies.Add(typeof(Enumerable).Assembly.ManifestModule.FullyQualifiedName);
 
             CompilerResults results = provider.CompileAssemblyFromSource(options, source);
 
