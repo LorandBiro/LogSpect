@@ -3,6 +3,7 @@
     using System;
     using System.Globalization;
     using LogSpect.Formatting;
+    using LogSpect.Formatting.MethodEvents;
     using LogSpect.Logging;
 
     public static class LogSpectInitializer

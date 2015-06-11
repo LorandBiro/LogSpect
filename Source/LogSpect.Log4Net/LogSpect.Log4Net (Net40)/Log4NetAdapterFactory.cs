@@ -2,7 +2,7 @@
 {
     using System;
     using log4net.Core;
-    using LogSpect.Logging;
+    using LogSpect.Formatting;
 
     public sealed class Log4NetAdapterFactory : ILoggerAdapterFactory
     {

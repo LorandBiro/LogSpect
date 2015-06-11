@@ -2,7 +2,7 @@
 {
     using System;
     using System.IO;
-    using LogSpect.Logging;
+    using LogSpect.Formatting;
 
     public sealed class TextFileLogger : ILoggerAdapter
     {

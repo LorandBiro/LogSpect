@@ -1,12 +1,12 @@
-﻿namespace LogSpect.CoreTests.Formatting
+﻿namespace LogSpect.CoreTests.Formatting.MethodEvents
 {
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Reflection;
     using System.Text;
-    using LogSpect.CoreTests.Formatting.TestSubjects;
-    using LogSpect.Formatting;
+    using LogSpect.CoreTests.Formatting.MethodEvents.TestSubjects;
+    using LogSpect.Formatting.MethodEvents;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using NSubstitute;
 

@@ -1,4 +1,4 @@
-﻿namespace LogSpect.CoreTests.Formatting.TestSubjects
+﻿namespace LogSpect.CoreTests.Formatting.MethodEvents.TestSubjects
 {
     using System;
 

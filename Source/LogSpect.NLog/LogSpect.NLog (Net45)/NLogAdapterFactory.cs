@@ -1,7 +1,7 @@
 ﻿namespace LogSpect.NLog
 {
     using System;
-    using LogSpect.Logging;
+    using LogSpect.Formatting;
     using global::NLog;
 
     public sealed class NLogAdapterFactory : ILoggerAdapterFactory

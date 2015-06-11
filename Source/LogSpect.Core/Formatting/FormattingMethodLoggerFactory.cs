@@ -1,8 +1,9 @@
-﻿namespace LogSpect.Logging
+﻿namespace LogSpect.Formatting
 {
     using System;
     using System.Reflection;
-    using LogSpect.Formatting;
+    using LogSpect.Formatting.MethodEvents;
+    using LogSpect.Logging;
 
     public sealed class FormattingMethodLoggerFactory : IMethodLoggerFactory
     {

@@ -1,4 +1,4 @@
-﻿namespace LogSpect.Formatting
+﻿namespace LogSpect.Formatting.MethodEvents
 {
     using System;
     using System.Collections;

@@ -1,7 +1,7 @@
 ﻿namespace LogSpectRewriterTests.Infrastructure
 {
     using System;
-    using LogSpect.Logging;
+    using LogSpect.Formatting;
 
     internal class InMemoryLoggerAdapterFactory : ILoggerAdapterFactory
     {

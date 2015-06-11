@@ -37,29 +37,30 @@
   <ItemGroup>
     <Compile Include="DoNotLogAttribute.cs" />
     <Compile Include="Level.cs" />
-    <Compile Include="Logging\ILoggerAdapterFactory.cs" />
+    <Compile Include="Formatting\ILoggerAdapterFactory.cs" />
     <Compile Include="Logging\IMethodLoggerFactory.cs" />
     <Compile Include="Logging\LogCallsAttributeBase.cs" />
-    <Compile Include="Logging\FormattingMethodLogger.cs" />
-    <Compile Include="Logging\ILoggerAdapter.cs" />
+    <Compile Include="Formatting\FormattingMethodLogger.cs" />
+    <Compile Include="Formatting\ILoggerAdapter.cs" />
     <Compile Include="Logging\IMethodLogger.cs" />
-    <Compile Include="Logging\IndentationTracker.cs" />
-    <Compile Include="Logging\FormattingMethodLoggerFactory.cs" />
+    <Compile Include="Formatting\IndentationTracker.cs" />
+    <Compile Include="Formatting\FormattingMethodLoggerFactory.cs" />
     <Compile Include="Logging\MethodLoggingSettings.cs" />
     <Compile Include="LogMembersAttribute.cs" />
-    <Compile Include="Logging\IIndentationTracker.cs" />
+    <Compile Include="Formatting\IIndentationTracker.cs" />
     <Compile Include="LogSpectInitializer.cs" />
-    <Compile Include="Formatting\CachedFormattingModeReader.cs" />
-    <Compile Include="Formatting\IMethodEventFormatter.cs" />
-    <Compile Include="Formatting\ICustomValueFormatter.cs" />
-    <Compile Include="Formatting\MethodEventFormatter.cs" />
-    <Compile Include="Formatting\IParameterFormatter.cs" />
-    <Compile Include="Formatting\IFormattingModeReader.cs" />
+    <Compile Include="Formatting\MethodEvents\CachedFormattingModeReader.cs" />
+    <Compile Include="Formatting\MethodEvents\IMethodEventFormatter.cs" />
+    <Compile Include="Formatting\MethodEvents\ICustomValueFormatter.cs" />
+    <Compile Include="Formatting\MethodEvents\MethodEventFormatter.cs" />
+    <Compile Include="Formatting\MethodEvents\IParameterFormatter.cs" />
+    <Compile Include="Formatting\MethodEvents\IFormattingModeReader.cs" />
     <Compile Include="LogItemsAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Formatting\FormattingMode.cs" />
-    <Compile Include="Formatting\FormattingModeReader.cs" />
-    <Compile Include="Formatting\ParameterFormatter.cs" />
+    <Compile Include="Formatting\MethodEvents\FormattingMode.cs" />
+    <Compile Include="Formatting\MethodEvents\FormattingModeReader.cs" />
+    <Compile Include="Formatting\MethodEvents\ParameterFormatter.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
 </Project>

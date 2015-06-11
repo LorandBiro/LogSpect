@@ -1,4 +1,4 @@
-namespace LogSpect.Logging
+namespace LogSpect.Formatting
 {
     using System;
     using System.Linq;

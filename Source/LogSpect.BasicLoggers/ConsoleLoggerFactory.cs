@@ -1,7 +1,7 @@
 ﻿namespace LogSpect.BasicLoggers
 {
     using System;
-    using LogSpect.Logging;
+    using LogSpect.Formatting;
 
     public sealed class ConsoleLoggerFactory : ILoggerAdapterFactory
     {

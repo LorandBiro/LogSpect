@@ -2,7 +2,7 @@
 {
     using System;
     using log4net.Core;
-    using LogSpect.Logging;
+    using LogSpect.Formatting;
     using Level = LogSpect.Level;
     using Log4NetLevel = log4net.Core.Level;
 

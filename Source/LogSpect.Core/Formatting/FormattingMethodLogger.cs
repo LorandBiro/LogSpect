@@ -1,9 +1,10 @@
-﻿namespace LogSpect.Logging
+﻿namespace LogSpect.Formatting
 {
     using System;
     using System.Linq;
     using System.Reflection;
-    using LogSpect.Formatting;
+    using LogSpect.Formatting.MethodEvents;
+    using LogSpect.Logging;
 
     public sealed class FormattingMethodLogger : IMethodLogger
     {

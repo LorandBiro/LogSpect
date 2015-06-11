@@ -54,12 +54,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Formatting\MethodEventFormatterUnitTests.cs" />
+    <Compile Include="Formatting\MethodEvents\MethodEventFormatterUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Formatting\FormattingModeReaderUnitTests.cs" />
-    <Compile Include="Formatting\CachedFormattingModeReaderUnitTests.cs" />
-    <Compile Include="Formatting\TestSubjects\Complex.cs" />
-    <Compile Include="Formatting\ParameterFormatterUnitTests.cs" />
+    <Compile Include="Formatting\MethodEvents\FormattingModeReaderUnitTests.cs" />
+    <Compile Include="Formatting\MethodEvents\CachedFormattingModeReaderUnitTests.cs" />
+    <Compile Include="Formatting\MethodEvents\TestSubjects\Complex.cs" />
+    <Compile Include="Formatting\MethodEvents\ParameterFormatterUnitTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LogSpect.Core\LogSpect.Core.csproj">

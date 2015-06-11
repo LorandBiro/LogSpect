@@ -3,7 +3,7 @@
     using System;
     using System.Text;
     using LogSpect;
-    using LogSpect.Logging;
+    using LogSpect.Formatting;
 
     internal class InMemoryLoggerAdapter : ILoggerAdapter
     {

@@ -1,9 +1,9 @@
-﻿namespace LogSpect.CoreTests.Formatting
+﻿namespace LogSpect.CoreTests.Formatting.MethodEvents
 {
     using System;
     using System.Reflection;
     using LogSpect;
-    using LogSpect.Formatting;
+    using LogSpect.Formatting.MethodEvents;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
