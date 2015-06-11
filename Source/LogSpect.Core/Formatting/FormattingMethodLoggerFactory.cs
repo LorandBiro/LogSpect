@@ -42,15 +42,9 @@
                 throw new ArgumentNullException("targetMethod");
             }
 
+            MethodLoggingSettings settings = MethodLoggingSettings.GetForMethod(targetMethod);
             ILoggerAdapter adapter = this.LoggerAdapterFactory.Create(targetMethod.DeclaringType);
-            object[] attributes = targetMethod.GetCustomAttributes(typeof(LogCallsAttributeBase), false);
-            if (attributes.Length == 0)
-            {
-                throw new ArgumentException("Target method must be decorated with the LogCallsAttribute.");
-            }
-
-            LogCallsAttributeBase logCallsAttribute = (LogCallsAttributeBase)attributes[0];
-            return new FormattingMethodLogger(targetMethod, logCallsAttribute.Settings, adapter, this.IndentationTracker, this.MethodEventFormatter);
+            return new FormattingMethodLogger(targetMethod, settings, adapter, this.IndentationTracker, this.MethodEventFormatter);
         }
     }
 }
