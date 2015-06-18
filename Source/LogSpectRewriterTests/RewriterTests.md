@@ -153,3 +153,77 @@ Output:
   TRACE|Enter BaseClass.Foo()
   TRACE|Leave BaseClass.Foo()
 ```
+
+
+
+### TryCatch
+
+```C#
+internal class Foo
+{
+    [LogCalls]
+    public static void Bar()
+    {
+        try
+        {
+            Dummy();
+        }
+        catch (Exception)
+        {
+            Dummy();
+        }
+    }
+
+    private static void Dummy()
+    {
+        // So the try-catch won't be optimized out by the compiler.
+    }
+}
+```
+
+```C#
+Foo.Bar();
+```
+
+Output:
+```
+  TRACE|Enter Foo.Bar()
+  TRACE|Leave Foo.Bar()
+```
+
+
+
+### TryFinally
+
+```C#
+internal class Foo
+{
+    [LogCalls]
+    public static void Bar()
+    {
+        try
+        {
+            Dummy();
+        }
+        finally
+        {
+            Dummy();
+        }
+    }
+
+    private static void Dummy()
+    {
+        // So the try-finally won't be optimized out by the compiler.
+    }
+}
+```
+
+```C#
+Foo.Bar();
+```
+
+Output:
+```
+  TRACE|Enter Foo.Bar()
+  TRACE|Leave Foo.Bar()
+```

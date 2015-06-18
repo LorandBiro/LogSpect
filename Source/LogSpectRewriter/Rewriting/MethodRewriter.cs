@@ -54,6 +54,25 @@
             this.RewriteBody(methodLoggerField, method, typeVariable, argsVariable, returnValueVariable, exceptionVariable);
         }
 
+        private static void UpdateRetReferences(MethodDefinition method, Instruction ret, Instruction replacement)
+        {
+            foreach (Instruction instruction in method.Body.Instructions)
+            {
+                if (instruction.Operand == ret)
+                {
+                    instruction.Operand = replacement;
+                }
+            }
+
+            foreach (ExceptionHandler handler in method.Body.ExceptionHandlers)
+            {
+                if (handler.HandlerEnd == ret)
+                {
+                    handler.HandlerEnd = replacement;
+                }
+            }
+        }
+
         private void RewriteBody(
             FieldDefinition methodLoggerField,
             MethodDefinition method,
@@ -240,22 +259,20 @@
 
                 if (instruction.OpCode == OpCodes.Ret)
                 {
+                    Instruction store = null;
                     if (returnValueVariable != null)
                     {
-                        instructions.Add(Instruction.Create(OpCodes.Stloc, returnValueVariable));
+                        // The method has a return value and we arrived to a ret instructions. This means the return value must be on the evaluation stack, so we store it.
+                        store = Instruction.Create(OpCodes.Stloc, returnValueVariable);
+                        instructions.Add(store);
                     }
 
                     Instruction leave = Instruction.Create(OpCodes.Leave, callingLogLeaveInstructions[0]);
                     leave.SequencePoint = instruction.SequencePoint;
                     instructions.Add(leave);
 
-                    foreach (Instruction instruction2 in method.Body.Instructions)
-                    {
-                        if (instruction2.Operand == instruction)
-                        {
-                            instruction2.Operand = leave;
-                        }
-                    }
+                    // The current ret instruction won't be added to the new code, so we have to fix the broken references (jumps and handler boundaries) with the new instructions.
+                    UpdateRetReferences(method, instruction, store ?? leave);
 
                     continue;
                 }
