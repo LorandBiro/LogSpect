@@ -1,4 +1,4 @@
-﻿### DoNotLogReturnValue
+﻿### ReturnValue
 
 ```C#
 public class Foo
@@ -24,7 +24,7 @@ Output:
 
 
 
-### DoNotLogParameter
+### Parameter
 
 ```C#
 public class Foo
@@ -48,7 +48,7 @@ Output:
 
 
 
-### DoNotLogProperty
+### Property
 
 ```C#
 public class Complex
@@ -76,4 +76,42 @@ Output:
 ```
   TRACE|Enter Foo.Bar(p: { Re: -, Im: 2 })
   TRACE|Leave Foo.Bar()
+```
+
+
+
+### OnMethodWithoutLogCallsAttribute
+
+```C#
+internal class Foo
+{
+    [DoNotLog]
+    public int Bar()
+    {
+        return 0;
+    }
+}
+```
+
+Warnings:
+```
+System.Int32 Foo::Bar() - DoNotLogAttribute doesn't have any effect on methods without LogCallsAttribute.
+```
+
+
+
+### OnParameterWithoutLogCallsAttribute
+
+```C#
+internal class Foo
+{
+    public void Bar([DoNotLog] int a)
+    {
+    }
+}
+```
+
+Warnings:
+```
+System.Void Foo::Bar(System.Int32) - DoNotLogAttribute doesn't have any effect on methods without LogCallsAttribute.
 ```

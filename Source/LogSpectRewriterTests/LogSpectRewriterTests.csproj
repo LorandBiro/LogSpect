@@ -62,9 +62,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="LogCallsAttributeTests.md" />
+    <None Include="LogItemAttributeTests.md" />
+    <None Include="LogMembersAttributeTests.md" />
     <None Include="Properties\TransformOnBuild.targets" />
     <None Include="RewriterTests.md" />
-    <None Include="FormattingTests.md" />
+    <None Include="DoNotLogAttributeTests.md" />
     <None Include="TestGenerator.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TestGenerator.cs</LastGenOutput>
