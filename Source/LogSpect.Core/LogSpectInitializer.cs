@@ -8,38 +8,14 @@
 
     public static class LogSpectInitializer
     {
-        private static IMethodLoggerFactory factoryInstance;
-
-        public static bool IsInitialized
+        static LogSpectInitializer()
         {
-            get
-            {
-                return factoryInstance != null;
-            }
+            Factory = DummyMethodLoggerFactory.Instance;
         }
 
-        public static IMethodLoggerFactory Factory
-        {
-            get
-            {
-                if (!IsInitialized)
-                {
-                    throw new InvalidOperationException("LogSpect is not initialized yet.");
-                }
+        public static bool IsInitialized { get; private set; }
 
-                return factoryInstance;
-            }
-
-            private set
-            {
-                if (IsInitialized)
-                {
-                    throw new InvalidOperationException("LogSpect is already initialized.");
-                }
-
-                factoryInstance = value;
-            }
-        }
+        public static IMethodLoggerFactory Factory { get; private set; }
 
         public static void Initialize(IMethodLoggerFactory factory)
         {
@@ -49,6 +25,7 @@
             }
 
             Factory = factory;
+            IsInitialized = true;
         }
 
         public static FormattingMethodLoggerFactory Initialize(ILoggerAdapterFactory loggerAdapterFactory)
@@ -75,7 +52,7 @@
             IMethodEventFormatter methodEventFormatter = new MethodEventFormatter(new ParameterFormatter(formattingModeReader, formatProvider, customValueFormatter));
 
             FormattingMethodLoggerFactory factory = new FormattingMethodLoggerFactory(loggerAdapterFactory, new IndentationTracker(), methodEventFormatter);
-            Factory = factory;
+            Initialize(factory);
             return factory;
         }
 
@@ -100,7 +77,7 @@
             }
 
             FormattingMethodLoggerFactory factory = new FormattingMethodLoggerFactory(loggerAdapterFactory, indentationTracker, methodEventFormatter);
-            Factory = factory;
+            Initialize(factory);
             return factory;
         }
     }

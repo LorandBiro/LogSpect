@@ -38,6 +38,8 @@
     <Compile Include="DoNotLogAttribute.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Formatting\ILoggerAdapterFactory.cs" />
+    <Compile Include="Logging\DummyMethodLogger.cs" />
+    <Compile Include="Logging\DummyMethodLoggerFactory.cs" />
     <Compile Include="Logging\IMethodLoggerFactory.cs" />
     <Compile Include="Logging\LogCallsAttributeBase.cs" />
     <Compile Include="Formatting\FormattingMethodLogger.cs" />
