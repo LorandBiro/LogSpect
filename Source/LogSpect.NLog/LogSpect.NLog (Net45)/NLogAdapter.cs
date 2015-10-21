@@ -27,7 +27,7 @@
 
         public void LogMessage(string message, Level level, Exception exception)
         {
-            this.logger.Log(ToNLogLevel(level), message, exception);
+            this.logger.LogException(ToNLogLevel(level), message, exception);
         }
 
         public bool IsLevelEnabled(Level level)
